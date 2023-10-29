@@ -1,0 +1,2 @@
+class InvalidService(Exception):
+    pass

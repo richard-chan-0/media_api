@@ -1,10 +1,17 @@
 from dotenv import load_dotenv
 import os
-from src.run_utility import main
+from .src.services import return_service
+from .src.data_types.ServiceMetaData import ServiceMetaData
 
 load_dotenv()
 
 if __name__ == "__main__":
-    directory_in = os.getenv("DIRECTORY_IN")
-    directory_out = os.getenv("DIRECTORY_OUT")
-    main(directory_in, directory_out)
+    utility_type = os.getenv("UTILITY_TYPE")
+
+    service_meta_data: ServiceMetaData = return_service(utility_type)
+
+    service = service_meta_data.service
+    directory_in = service_meta_data.directory_in
+    directory_out = service_meta_data.directory_out
+
+    service(directory_in, directory_out)
