@@ -3,7 +3,7 @@
 **/*.pyc
 **/*.pdf
 .env
-.venv
+*venv
 .vscode
 .DS_Store
 organize_chapters_to_vol.json
