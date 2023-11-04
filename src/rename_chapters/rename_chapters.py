@@ -1,4 +1,4 @@
-from .os_functions import rename_files, get_files
+from ..utilities.os_functions import rename_files, get_files
 
 
 def main(directory_in, directory_out):
