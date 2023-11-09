@@ -32,7 +32,7 @@ def move_pages_to_temp(directory_in: str, temp_path: str):
 
 
 def create_volume_from_pages(
-    pages: Iterable[DirEntry], directory_out: str, volume_name: str = "temp.cbz"
+    pages: Iterable[DirEntry], directory_out: str, volume_name: str
 ):
     """function to create volume from page files"""
     volume_path = f"{directory_out}/{volume_name}"
@@ -56,7 +56,7 @@ def clean_system(temp_path, chapters):
         SystemUtilities.remove_file(chapter.path)
 
 
-def rezip_chapters_to_vol(directory_in, directory_out):
+def rezip_chapters_to_vol(directory_in, directory_out, volume_name: str = "temp.cbz"):
     """function that processes multiple cbz files into single cbz file"""
     # get all files
     chapters = SystemUtilities.get_files(directory_in)
@@ -65,10 +65,10 @@ def rezip_chapters_to_vol(directory_in, directory_out):
     extract_pages_from_chapter(directory_in, chapters)
     pages = move_pages_to_temp(directory_in, temp_path)
 
-    volume_path = create_volume_from_pages(pages, directory_out)
+    volume_path = create_volume_from_pages(pages, directory_out, volume_name)
     print(f"pages written to volume: {volume_path}")
 
-    # clean_system(temp_path, chapters)
+    clean_system(temp_path, chapters)
 
 
 def main(directory_in, directory_out):

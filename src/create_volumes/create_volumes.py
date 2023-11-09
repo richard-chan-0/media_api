@@ -1,4 +1,5 @@
 import src.services as AppServices
+from src.rezip_chapters_to_vol.rezip_chapters_to_vol import rezip_chapters_to_vol
 from src.utilities.os_functions import get_sub_directories, get_files, move_file
 
 
@@ -11,21 +12,23 @@ def get_chapters_for_volumes(services):
 
     service(directory_in, directory_out)
 
-    return get_sub_directories(organize_service_data.directory_out)
+    return get_sub_directories(directory_out)
 
 
-def create_volume(services: dict, chaper_files_path: str):
+def create_volume(services: dict, chaper_files_path: str, volume_name: str):
     """function to create volume file using files in a volume directory"""
     rezip_service_data = services[AppServices.REZIP_CHAPTERS_TO_VOL_NAME]
-    service = rezip_service_data.service
+
     directory_in = rezip_service_data.directory_in
     directory_out = rezip_service_data.directory_out
 
     chapters = get_files(chaper_files_path)
     for file in chapters:
-        move_file(file.path, rezip_service_data.directory_in)
+        source = file.path
+        destination = f"{rezip_service_data.directory_in}/{file.name}"
+        move_file(source, destination)
 
-    service(directory_in, directory_out)
+    rezip_chapters_to_vol(directory_in, directory_out, volume_name)
 
 
 def create_volumes():
@@ -34,7 +37,8 @@ def create_volumes():
     volume_folders = get_chapters_for_volumes(services)
 
     for folder in volume_folders:
-        create_volume(services, folder.path)
+        zip_name = f"{folder.name}.cbz"
+        create_volume(services, folder.path, zip_name)
 
 
 def main(directory_in, directory_out):
