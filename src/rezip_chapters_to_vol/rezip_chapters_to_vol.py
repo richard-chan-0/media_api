@@ -39,7 +39,7 @@ def create_volume_from_pages(
     with ZipFile(volume_path, "w") as volume:
         for page in pages:
             try:
-                volume.write(page.path)
+                volume.write(page)
             except Exception as err:
                 raise RezipChaptersToVolError(err)
 
@@ -62,14 +62,13 @@ def rezip_chapters_to_vol(directory_in, directory_out):
     chapters = SystemUtilities.get_files(directory_in)
     temp_path = SystemUtilities.make_sub_directory(directory_in, TEMP_FOLDER)
 
-    # extract_pages_from_chapter(directory_in, chapters)
+    extract_pages_from_chapter(directory_in, chapters)
     pages = move_pages_to_temp(directory_in, temp_path)
 
-    # # rezip all files in temp folder
     volume_path = create_volume_from_pages(pages, directory_out)
     print(f"pages written to volume: {volume_path}")
 
-    clean_system(temp_path, chapters)
+    # clean_system(temp_path, chapters)
 
 
 def main(directory_in, directory_out):

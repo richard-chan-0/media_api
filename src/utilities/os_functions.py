@@ -15,6 +15,15 @@ def get_files(directory: str) -> Iterable[DirEntry]:
         return [entry for entry in entries if os.path.isfile(entry.path)]
 
 
+def get_sub_directories(directory: str) -> Iterable[DirEntry]:
+    """function to get list of files from a directory"""
+    if not os.path.exists(directory):
+        raise FileSystemError(f"could not find directory: {directory}")
+
+    with os.scandir(directory) as entries:
+        return [entry for entry in entries if os.path.isdir(entry.path)]
+
+
 def is_file_an_image(file_name: str) -> bool:
     """function to determine if file name is a image format"""
     return "png" in file_name or "jpg" in file_name

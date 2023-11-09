@@ -9,24 +9,32 @@ from src.rezip_chapters_to_vol.rezip_chapters_to_vol import (
     main as rezip_chapters_to_vol,
 )
 from src.create_volumes.create_volumes import main as create_volumes
-from .data_types.ServiceMetaData import ServiceMetaData
-from .exceptions.exceptions import InvalidService
+from src.data_types.ServiceMetaData import ServiceMetaData
+from src.exceptions.exceptions import InvalidService
+
+ORGANIZE_CHAPTERS_TO_VOL_NAME = "organize_chapters_to_vol"
+RENAME_CHAPTERS_NAME = "rename_chapters"
+SCRAPE_FOR_VOL_TO_CHAPTERS_NAME = "scrape_for_vol_to_chapters"
+REZIP_CHAPTERS_TO_VOL_NAME = "rezip_chapters_to_vol"
+CREATE_VOLUMES_NAME = "create_volumes"
 
 
-def get_services() -> dict:
+def get_services() -> dict[str, ServiceMetaData]:
     """returns mapping of service names to service metadata"""
     return {
-        "rename_chapters": ServiceMetaData("images_in", "images_out", rename_chapters),
-        "organize_chapters_to_vol": ServiceMetaData(
+        RENAME_CHAPTERS_NAME: ServiceMetaData(
+            "images_in", "images_out", rename_chapters
+        ),
+        ORGANIZE_CHAPTERS_TO_VOL_NAME: ServiceMetaData(
             "chapter_pdf_in", "chapter_pdf_out", organize_chapters_to_vol
         ),
-        "scrape_for_vol_to_chapters": ServiceMetaData(
+        SCRAPE_FOR_VOL_TO_CHAPTERS_NAME: ServiceMetaData(
             None, None, scrape_for_vol_to_chapters
         ),
-        "rezip_chapters_to_vol": ServiceMetaData(
+        REZIP_CHAPTERS_TO_VOL_NAME: ServiceMetaData(
             "chapter_zip_in", "chapter_zip_out", rezip_chapters_to_vol
         ),
-        "create_volumes": ServiceMetaData(None, None, create_volumes),
+        CREATE_VOLUMES_NAME: ServiceMetaData(None, None, create_volumes),
     }
 
 
