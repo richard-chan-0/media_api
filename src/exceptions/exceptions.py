@@ -6,13 +6,17 @@ class ServiceError(Exception):
     pass
 
 
-class OrganizeChaptersToVolError(Exception):
+class OrganizeChaptersToVolError(ServiceError):
     pass
 
 
-class RezipChaptersToVolError(Exception):
+class RezipChaptersToVolError(ServiceError):
     pass
 
 
-class FileSystemError(Exception):
+class FileSystemError(ServiceError):
+    pass
+
+
+class CreateVolumesError(ServiceError):
     pass

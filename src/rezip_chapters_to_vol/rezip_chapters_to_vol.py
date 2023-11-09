@@ -1,10 +1,6 @@
 from zipfile import ZipFile
-from src.exceptions.exceptions import (
-    RezipChaptersToVolError,
-    ServiceError,
-    FileSystemError,
-)
 import src.utilities.os_functions as SystemUtilities
+from src.exceptions.exceptions import RezipChaptersToVolError
 from posix import DirEntry
 from typing import Iterable
 
@@ -36,13 +32,16 @@ def move_pages_to_temp(directory_in: str, temp_path: str):
 
 
 def create_volume_from_pages(
-    pages: Iterable[DirEntry], directory_out: str, volume_name: str = "temp.cbz"
+    pages: Iterable[DirEntry], directory_out: str, volume_name: str
 ):
     """function to create volume from page files"""
     volume_path = f"{directory_out}/{volume_name}"
     with ZipFile(volume_path, "w") as volume:
         for page in pages:
-            volume.write(page.path)
+            try:
+                volume.write(page)
+            except Exception as err:
+                raise RezipChaptersToVolError(err)
 
     return volume_path
 
@@ -57,17 +56,16 @@ def clean_system(temp_path, chapters):
         SystemUtilities.remove_file(chapter.path)
 
 
-def rezip_chapters_to_vol(directory_in, directory_out):
+def rezip_chapters_to_vol(directory_in, directory_out, volume_name: str = "temp.cbz"):
     """function that processes multiple cbz files into single cbz file"""
     # get all files
     chapters = SystemUtilities.get_files(directory_in)
     temp_path = SystemUtilities.make_sub_directory(directory_in, TEMP_FOLDER)
 
-    # extract_pages_from_chapter(directory_in, chapters)
+    extract_pages_from_chapter(directory_in, chapters)
     pages = move_pages_to_temp(directory_in, temp_path)
 
-    # # rezip all files in temp folder
-    volume_path = create_volume_from_pages(pages, directory_out)
+    volume_path = create_volume_from_pages(pages, directory_out, volume_name)
     print(f"pages written to volume: {volume_path}")
 
     clean_system(temp_path, chapters)
@@ -75,13 +73,4 @@ def rezip_chapters_to_vol(directory_in, directory_out):
 
 def main(directory_in, directory_out):
     """service to open list of zip files and compile them into single zip file"""
-    try:
-        rezip_chapters_to_vol(directory_in, directory_out)
-    except Exception as error:
-        if isinstance(error, RezipChaptersToVolError):
-            print("issue with service processing files")
-        elif isinstance(error, FileSystemError):
-            print("issue with moving or writing files")
-        else:
-            print(error)
-        raise ServiceError(error)
+    rezip_chapters_to_vol(directory_in, directory_out)
