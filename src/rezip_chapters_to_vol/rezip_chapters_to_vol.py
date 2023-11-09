@@ -1,10 +1,6 @@
 from zipfile import ZipFile
-from src.exceptions.exceptions import (
-    RezipChaptersToVolError,
-    ServiceError,
-    FileSystemError,
-)
 import src.utilities.os_functions as SystemUtilities
+from src.exceptions.exceptions import RezipChaptersToVolError
 from posix import DirEntry
 from typing import Iterable
 
@@ -42,7 +38,10 @@ def create_volume_from_pages(
     volume_path = f"{directory_out}/{volume_name}"
     with ZipFile(volume_path, "w") as volume:
         for page in pages:
-            volume.write(page.path)
+            try:
+                volume.write(page.path)
+            except Exception as err:
+                raise RezipChaptersToVolError(err)
 
     return volume_path
 
@@ -75,13 +74,4 @@ def rezip_chapters_to_vol(directory_in, directory_out):
 
 def main(directory_in, directory_out):
     """service to open list of zip files and compile them into single zip file"""
-    try:
-        rezip_chapters_to_vol(directory_in, directory_out)
-    except Exception as error:
-        if isinstance(error, RezipChaptersToVolError):
-            print("issue with service processing files")
-        elif isinstance(error, FileSystemError):
-            print("issue with moving or writing files")
-        else:
-            print(error)
-        raise ServiceError(error)
+    rezip_chapters_to_vol(directory_in, directory_out)

@@ -1,4 +1,4 @@
-from src.exceptions.exceptions import ServiceError, OrganizeChaptersToVolError
+from src.exceptions.exceptions import OrganizeChaptersToVolError
 from src.utilities.os_functions import *
 from json import load
 from typing import Iterable
@@ -85,9 +85,4 @@ def organize_chapters_to_vol(directory_in: str, directory_out: str):
 
 def main(directory_in: str, directory_out: str):
     """main function for organizing files feature"""
-    try:
-        organize_chapters_to_vol(directory_in, directory_out)
-    except Exception as err:
-        if isinstance(err, OrganizeChaptersToVolError):
-            print("error occurred when organizing files")
-        raise ServiceError(err)
+    organize_chapters_to_vol(directory_in, directory_out)

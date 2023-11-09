@@ -8,6 +8,7 @@ from src.scrape_for_vol_to_chapters.scrape_for_vol_to_chapters import (
 from src.rezip_chapters_to_vol.rezip_chapters_to_vol import (
     main as rezip_chapters_to_vol,
 )
+from src.create_volumes.create_volumes import main as create_volumes
 from .data_types.ServiceMetaData import ServiceMetaData
 from .exceptions.exceptions import InvalidService
 
@@ -25,6 +26,7 @@ def get_services() -> dict:
         "rezip_chapters_to_vol": ServiceMetaData(
             "chapter_zip_in", "chapter_zip_out", rezip_chapters_to_vol
         ),
+        "create_volumes": ServiceMetaData(None, None, create_volumes),
     }
 
 
