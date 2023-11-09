@@ -8,3 +8,11 @@ class ServiceError(Exception):
 
 class OrganizeChaptersToVolError(Exception):
     pass
+
+
+class RezipChaptersToVolError(Exception):
+    pass
+
+
+class FileSystemError(Exception):
+    pass

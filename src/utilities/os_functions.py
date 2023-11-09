@@ -1,13 +1,33 @@
 import os
-from ..rename_chapters.name_functions import generate_name
+from src.rename_chapters.name_functions import generate_name
 from typing import Iterable
 from PIL import Image
+from posix import DirEntry
+from src.exceptions.exceptions import FileSystemError
 
 
-def get_files(directory: str) -> Iterable:
-    """function to get list of files"""
+def get_files(directory: str) -> Iterable[DirEntry]:
+    """function to get list of files from a directory"""
+    if not os.path.exists(directory):
+        raise FileSystemError(f"could not find directory: {directory}")
+
     with os.scandir(directory) as entries:
-        return [entry for entry in entries]
+        return [entry for entry in entries if os.path.isfile(entry.path)]
+
+
+def is_file_an_image(file_name: str) -> bool:
+    """function to determine if file name is a image format"""
+    return "png" in file_name or "jpg" in file_name
+
+
+def is_compressed(file_name: str) -> bool:
+    """function to determine if file name is compressed (.zip, .cbz)"""
+    return ".cbz" in file_name or ".zip" in file_name
+
+
+def get_images(directory: str) -> Iterable[DirEntry]:
+    """function to get list of files from a directory with a given extension"""
+    return [file for file in get_files(directory) if is_file_an_image(file.name)]
 
 
 def rename_files(directory_out, files):
@@ -37,4 +57,33 @@ def make_sub_directory(directory_out: str, sub_directory: str):
 
 def move_file(old_path: str, new_path: str):
     """function to move a file by changing path"""
-    os.rename(old_path, new_path)
+    if not os.path.exists(old_path):
+        raise FileSystemError(f"could not find file with path: {old_path}")
+    try:
+        os.rename(old_path, new_path)
+    except FileNotFoundError as err:
+        print(err)
+        raise FileSystemError(f"could not move file to path: {new_path}")
+
+
+def remove_directory(path: str):
+    """function to remove directory and it's contents"""
+    if not os.path.exists(path):
+        raise FileSystemError(f"could not remove file: {path}")
+    try:
+        files = get_files(path)
+        for file in files:
+            os.remove(file.path)
+        os.rmdir(path)
+    except Exception as err:
+        print(err)
+
+
+def remove_file(path: str):
+    """function to remove a file or directory"""
+    if not os.path.exists(path):
+        raise FileSystemError(f"could not remove file: {path}")
+    try:
+        os.remove(path)
+    except Exception as err:
+        print(err)

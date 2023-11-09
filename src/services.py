@@ -1,9 +1,12 @@
-from .rename_chapters.rename_chapters import main as rename_chapters
-from .organize_chapters_to_vol.organize_chapters_to_vol import (
+from src.rename_chapters.rename_chapters import main as rename_chapters
+from src.organize_chapters_to_vol.organize_chapters_to_vol import (
     main as organize_chapters_to_vol,
 )
-from .scrape_for_vol_to_chapters.scrape_for_vol_to_chapters import (
+from src.scrape_for_vol_to_chapters.scrape_for_vol_to_chapters import (
     main as scrape_for_vol_to_chapters,
+)
+from src.rezip_chapters_to_vol.rezip_chapters_to_vol import (
+    main as rezip_chapters_to_vol,
 )
 from .data_types.ServiceMetaData import ServiceMetaData
 from .exceptions.exceptions import InvalidService
@@ -18,6 +21,9 @@ def get_services() -> dict:
         ),
         "scrape_for_vol_to_chapters": ServiceMetaData(
             None, None, scrape_for_vol_to_chapters
+        ),
+        "rezip_chapters_to_vol": ServiceMetaData(
+            "chapter_zip_in", "chapter_zip_out", rezip_chapters_to_vol
         ),
     }
 
