@@ -72,7 +72,7 @@ def write_to_system(
 ):
     """creates directories for volumes and moves files into those directories"""
     for volume, chapter_details in mapping.items():
-        sub_directory = make_sub_directory(directory_out, volume)
+        sub_directory = create_sub_directory(directory_out, volume)
         write_chapters_for_volume(sub_directory, chapter_details, chapters)
 
 
