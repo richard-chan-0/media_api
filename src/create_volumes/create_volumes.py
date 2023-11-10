@@ -1,6 +1,9 @@
 import src.services as AppServices
 from src.rezip_chapters_to_vol.rezip_chapters_to_vol import rezip_chapters_to_vol
 from src.utilities.os_functions import get_sub_directories, get_files, move_file
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def get_chapters_for_volumes(services):

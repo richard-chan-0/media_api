@@ -4,6 +4,9 @@ from typing import Iterable
 from PIL import Image
 from posix import DirEntry
 from src.exceptions.exceptions import FileSystemError
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def get_files(directory: str) -> Iterable[DirEntry]:
@@ -35,7 +38,7 @@ def is_compressed(file_name: str) -> bool:
 
 
 def get_images(directory: str) -> Iterable[DirEntry]:
-    """function to get list of files from a directory with a given extension"""
+    """function to get list of files from a directory with a image (jpg,png) extension"""
     return [file for file in get_files(directory) if is_file_an_image(file.name)]
 
 
@@ -56,7 +59,7 @@ def get_organization_file():
     return os.getenv("ORGANIZATION_FILE")
 
 
-def make_sub_directory(directory_out: str, sub_directory: str):
+def create_sub_directory(directory_out: str, sub_directory: str):
     """function to create a sub directory"""
     sub_directory_path = f"{directory_out}/{sub_directory}"
     if not os.path.exists(sub_directory_path):
@@ -71,7 +74,7 @@ def move_file(old_path: str, new_path: str):
     try:
         os.rename(old_path, new_path)
     except FileNotFoundError as err:
-        print(err)
+        logger.error(err)
         raise FileSystemError(f"could not move file to path: {new_path}")
 
 
@@ -85,7 +88,8 @@ def remove_directory(path: str):
             os.remove(file.path)
         os.rmdir(path)
     except Exception as err:
-        print(err)
+        logger.error(err)
+        raise FileExistsError(err)
 
 
 def remove_file(path: str):
@@ -95,4 +99,10 @@ def remove_file(path: str):
     try:
         os.remove(path)
     except Exception as err:
-        print(err)
+        logger.error(err)
+        raise FileExistsError(err)
+
+
+def get_env(env_var: str) -> str:
+    """function to return environment variable"""
+    os.getenv(env_var)
