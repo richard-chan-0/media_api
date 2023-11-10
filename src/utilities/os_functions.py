@@ -2,29 +2,38 @@ import os
 from src.rename_chapters.name_functions import generate_name
 from typing import Iterable
 from PIL import Image
-from posix import DirEntry
 from src.exceptions.exceptions import FileSystemError
+from src.factories.factories import create_file
+from src.data_types.system_files import DirectoryFile
 import logging
 
 logger = logging.getLogger(__name__)
 
 
-def get_files(directory: str) -> Iterable[DirEntry]:
+def get_files(directory: str) -> Iterable[DirectoryFile]:
     """function to get list of files from a directory"""
     if not os.path.exists(directory):
         raise FileSystemError(f"could not find directory: {directory}")
 
     with os.scandir(directory) as entries:
-        return [entry for entry in entries if os.path.isfile(entry.path)]
+        return [
+            create_file(entry.name, entry.path)
+            for entry in entries
+            if os.path.isfile(entry.path)
+        ]
 
 
-def get_sub_directories(directory: str) -> Iterable[DirEntry]:
+def get_sub_directories(directory: str) -> Iterable[DirectoryFile]:
     """function to get list of files from a directory"""
     if not os.path.exists(directory):
         raise FileSystemError(f"could not find directory: {directory}")
 
     with os.scandir(directory) as entries:
-        return [entry for entry in entries if os.path.isdir(entry.path)]
+        return [
+            create_file(entry.name, entry.path)
+            for entry in entries
+            if os.path.isdir(entry.path)
+        ]
 
 
 def is_file_an_image(file_name: str) -> bool:
@@ -37,7 +46,7 @@ def is_compressed(file_name: str) -> bool:
     return ".cbz" in file_name or ".zip" in file_name
 
 
-def get_images(directory: str) -> Iterable[DirEntry]:
+def get_images(directory: str) -> Iterable[DirectoryFile]:
     """function to get list of files from a directory with a image (jpg,png) extension"""
     return [file for file in get_files(directory) if is_file_an_image(file.name)]
 
@@ -78,7 +87,7 @@ def move_file(old_path: str, new_path: str):
         raise FileSystemError(f"could not move file to path: {new_path}")
 
 
-def move_files(files_to_move: Iterable[DirEntry], destination_folder: str):
+def move_files(files_to_move: Iterable[DirectoryFile], destination_folder: str):
     """function to move several files into a single directory"""
     destination_paths = []
 

@@ -1,7 +1,8 @@
 from src.exceptions.exceptions import OrganizeChaptersToVolError
 from src.utilities.os_functions import *
+from src.data_types.system_files import DirectoryFile
 from json import load
-from typing import Iterable
+from typing import Iterable, Tuple
 from re import findall
 
 VOLUMES = "volumes"
@@ -24,7 +25,7 @@ def is_valid_chapter(chapter):
     return all([is_with_end, is_with_start, is_with_volume])
 
 
-def create_mapping_chapters_to_vols():
+def create_mapping_chapters_to_vols() -> dict[str, Tuple[str, str]]:
     """returns content of json organization file"""
     schema = get_chapters_to_vols_data()
     if "volumes" not in schema:
@@ -44,43 +45,59 @@ def create_mapping_chapters_to_vols():
     return mapping
 
 
-def get_chapter_number_from_file(file_name):
-    """function to get chapter number out of file name"""
-    return findall("[0-9]+", file_name)
+def update_chapter_list(
+    volume_path: str,
+    moved_files: Iterable[DirectoryFile],
+    chapters: Iterable[DirectoryFile],
+):
+    """function to remove chapters that have been moved"""
+    volume_files = {"volume_path": volume_path, "chapters": []}
+    for file in moved_files:
+        volume_files["chapters"].append(file.name)
+        chapters.remove(file)
+
+    return volume_files
 
 
-def write_chapters_for_volume(sub_directory, chapter_details, chapters: Iterable[str]):
+def move_chapters_for_volume_dir(
+    volume_path: str,
+    chapter_details: Tuple[str, str],
+    chapters: Iterable[DirectoryFile],
+):
+    """function to move chapter files into a designated volume directory"""
     start_chapter, end_chapter = chapter_details
     moved_files = []
+
     for chapter in chapters:
         chapter_name = chapter.name
         chapter_path = chapter.path
-        chapter_number = int(get_chapter_number_from_file(chapter_name)[0])
+        chapter_number = chapter.get_chapter_number_from_file()
         if not (start_chapter <= chapter_number <= end_chapter):
             continue
 
-        new_path = f"{sub_directory}/{chapter_name}"
+        new_path = f"{volume_path}/{chapter_name}"
         move_file(old_path=chapter_path, new_path=new_path)
         moved_files.append(chapter)
 
-    for file in moved_files:
-        chapters.remove(file)
+    return update_chapter_list(volume_path, moved_files, chapters)
 
 
-def write_to_system(
-    directory_out: str, chapters: Iterable[str], mapping: dict[str, str]
+def move_chapters_to_volumes(
+    directory_out: str,
+    chapters: Iterable[DirectoryFile],
+    mapping: dict[str, Tuple[str, str]],
 ):
     """creates directories for volumes and moves files into those directories"""
     for volume, chapter_details in mapping.items():
         sub_directory = create_sub_directory(directory_out, volume)
-        write_chapters_for_volume(sub_directory, chapter_details, chapters)
+        move_chapters_for_volume_dir(sub_directory, chapter_details, chapters)
 
 
 def organize_chapters_to_vol(directory_in: str, directory_out: str):
     """function to move chapters into corresponding subdirectory folders as volumes"""
     chapters = get_files(directory=directory_in)
     mapping = create_mapping_chapters_to_vols()
-    write_to_system(directory_out, chapters, mapping)
+    move_chapters_to_volumes(directory_out, chapters, mapping)
 
 
 def main(directory_in: str, directory_out: str):

@@ -1,13 +1,13 @@
 from zipfile import ZipFile
 import src.utilities.os_functions as SystemUtilities
 import logging
-from posix import DirEntry
+from src.data_types.system_files import DirectoryFile
 from typing import Iterable
 
 logger = logging.getLogger(__name__)
 
 
-def extract_pages_from_chapter(directory_in: str, chapters: Iterable[DirEntry]):
+def extract_pages_from_chapter(directory_in: str, chapters: Iterable[DirectoryFile]):
     """function to extract all page files from chapter files"""
     logger.info("unzipping pages from chapter file: %s", chapter.name)
     for chapter in chapters:
