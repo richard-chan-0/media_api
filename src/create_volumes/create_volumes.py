@@ -1,6 +1,6 @@
 import src.services as AppServices
 from src.rezip_chapters_to_vol.rezip_chapters_to_vol import rezip_chapters_to_vol
-from src.utilities.os_functions import get_sub_directories, get_files, move_file
+from src.utilities.os_functions import get_sub_directories, get_files, move_files
 import logging
 
 logger = logging.getLogger(__name__)
@@ -26,10 +26,7 @@ def create_volume(services: dict, chaper_files_path: str, volume_name: str):
     directory_out = rezip_service_data.directory_out
 
     chapters = get_files(chaper_files_path)
-    for file in chapters:
-        source = file.path
-        destination = f"{rezip_service_data.directory_in}/{file.name}"
-        move_file(source, destination)
+    move_files(chapters, rezip_service_data.directory_in)
 
     rezip_chapters_to_vol(directory_in, directory_out, volume_name)
 

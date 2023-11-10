@@ -78,6 +78,19 @@ def move_file(old_path: str, new_path: str):
         raise FileSystemError(f"could not move file to path: {new_path}")
 
 
+def move_files(files_to_move: Iterable[DirEntry], destination_folder: str):
+    """function to move several files into a single directory"""
+    destination_paths = []
+
+    for file in files_to_move:
+        source = file.path
+        destination = f"{destination_folder}/{file.name}"
+        move_file(source, destination)
+        destination_paths.append(destination)
+
+    return destination_paths
+
+
 def remove_directory(path: str):
     """function to remove directory and it's contents"""
     if not os.path.exists(path):

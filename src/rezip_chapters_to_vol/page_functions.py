@@ -20,12 +20,5 @@ def move_pages_to_temp(directory_in: str, temp_path: str):
     """function to move pages into temp folder"""
     logger.info("migrating page files into temporary folder")
     images = SystemUtilities.get_images(directory_in)
-    page_paths = []
 
-    for image in images:
-        source = image.path
-        destination = f"{temp_path}/{image.name}"
-        SystemUtilities.move_file(source, destination)
-        page_paths.append(destination)
-
-    return page_paths
+    return SystemUtilities.move_files(images, temp_path)
