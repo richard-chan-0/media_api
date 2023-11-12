@@ -1,11 +1,14 @@
 import os
-from src.rename_chapters.name_functions import generate_name
-from typing import Iterable
+from src.rename_chapters.name_functions import create_calibre_image_name
+from typing import Iterable, Callable
 from PIL import Image
 from src.exceptions.exceptions import FileSystemError
 from src.factories.factories import create_file
 from src.data_types.system_files import DirectoryFile
 import logging
+from dotenv import load_dotenv
+
+load_dotenv()
 
 logger = logging.getLogger(__name__)
 
@@ -51,16 +54,31 @@ def get_images(directory: str) -> Iterable[DirectoryFile]:
     return [file for file in get_files(directory) if is_file_an_image(file.name)]
 
 
-def rename_files(directory_out, files):
-    """rename files in a directory"""
+def rename_page_images(
+    directory_out: str, files: Iterable[DirectoryFile], name_function: Callable
+):
+    """rename image file in a directory"""
     story = os.getenv("STORY")
     chapter = os.getenv("CHAPTER")
 
     for page_number, file in enumerate(files):
-        new_name = generate_name(story, chapter, page_number)
-        img = Image.open(file)
+        new_name = name_function(story, chapter, page_number)
+        img = Image.open(file.path)
         img.save(f"{directory_out}/{new_name}")
-        os.remove(file)
+        os.remove(file.path)
+
+
+def rename_mkv_video_files(
+    directory_out: str, files: Iterable[DirectoryFile], name_function: Callable
+):
+    for file in files:
+        if "mkv" not in file.name:
+            raise FileExistsError("expected video file to mkv format")
+        file_metadata = file.get_season_from_file()
+        new_name = name_function(file_metadata)
+        new_path = f"{directory_out}/{new_name}"
+        print(new_path)
+        os.rename(file.path, new_path)
 
 
 def get_organization_file():
