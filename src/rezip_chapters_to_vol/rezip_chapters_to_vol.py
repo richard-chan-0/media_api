@@ -6,7 +6,7 @@ from src.rezip_chapters_to_vol.page_functions import (
     move_pages_to_temp,
 )
 import logging
-from posix import DirEntry
+from src.data_types.system_files import DirectoryFile
 from typing import Iterable
 
 logger = logging.getLogger(__name__)
@@ -14,7 +14,7 @@ TEMP_FOLDER = "temp"
 
 
 def create_volume_from_pages(
-    pages: Iterable[DirEntry], directory_out: str, volume_name: str
+    pages: Iterable[DirectoryFile], directory_out: str, volume_name: str
 ):
     """function to create volume from page files"""
     logger.info("zipping pages into volume")
@@ -30,7 +30,7 @@ def create_volume_from_pages(
     return volume_path
 
 
-def clean_system(temp_path: str, chapters: Iterable[DirEntry]):
+def clean_system(temp_path: str, chapters: Iterable[DirectoryFile]):
     """function to clean files after creating volume file"""
     logger.info("removing temporary folder")
     SystemUtilities.remove_directory(temp_path)

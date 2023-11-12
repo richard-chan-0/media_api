@@ -1,13 +1,13 @@
 from zipfile import ZipFile
 import src.utilities.os_functions as SystemUtilities
 import logging
-from posix import DirEntry
+from src.data_types.system_files import DirectoryFile
 from typing import Iterable
 
 logger = logging.getLogger(__name__)
 
 
-def extract_pages_from_chapter(directory_in: str, chapters: Iterable[DirEntry]):
+def extract_pages_from_chapter(directory_in: str, chapters: Iterable[DirectoryFile]):
     """function to extract all page files from chapter files"""
     logger.info("unzipping pages from chapter file: %s", chapter.name)
     for chapter in chapters:
@@ -20,12 +20,5 @@ def move_pages_to_temp(directory_in: str, temp_path: str):
     """function to move pages into temp folder"""
     logger.info("migrating page files into temporary folder")
     images = SystemUtilities.get_images(directory_in)
-    page_paths = []
 
-    for image in images:
-        source = image.path
-        destination = f"{temp_path}/{image.name}"
-        SystemUtilities.move_file(source, destination)
-        page_paths.append(destination)
-
-    return page_paths
+    return SystemUtilities.move_files(images, temp_path)
