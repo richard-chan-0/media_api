@@ -15,18 +15,16 @@ def create_calibre_image_name(story: str, chapter: str, page: int) -> str:
     return f"{story} - c{chapter_number} - p{page_number}.png"
 
 
-def create_seasoned_video_jellyfin_episode_name(season_name: str) -> str:
-    """function to create an episode name in jellyfin format"""
-    return f"Episode {season_name}.mkv"
-
-
-def create_episode_video_jellyfin_episode_name(
-    season_number: int, episode_number: int
-) -> str:
+def create_jellyfin_episode_name(season_number: int, episode_number: int) -> str:
     """function to create an episode name in jellyfin format with episode and season"""
     jellyfin_number_zeros = 2
     season = prepend_zeros(season_number, jellyfin_number_zeros)
     episode = prepend_zeros(episode_number, jellyfin_number_zeros)
-    season_name = f"S{season}E{episode}"
+    return f"Episode S{season}E{episode}.mkv"
 
-    return create_seasoned_video_jellyfin_episode_name(season_name)
+
+def create_jellyfin_comic_name(story_name: str, issue: int) -> str:
+    jellyfin_number_zeros = 2
+    issue_number = prepend_zeros(issue, jellyfin_number_zeros)
+
+    return f"{story_name} #{issue_number}.cbz"

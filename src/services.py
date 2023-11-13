@@ -1,9 +1,6 @@
-from src.rename_media.rename_media import RenameService
+import src.rename_media.rename_media as RenameService
 from src.organize_media.organize_chapters_to_vol import (
     main as organize_chapters_to_vol,
-)
-from src.scrape_for_vol_to_chapters.scrape_for_vol_to_chapters import (
-    main as scrape_for_vol_to_chapters,
 )
 from src.rezip_cbz_files.rezip_chapters_to_vol import (
     main as rezip_chapters_to_vol,
@@ -37,13 +34,12 @@ def get_services() -> dict[str, ServiceMetaData]:
             RenameService.rename_seasoned_video_to_jellyfin_name,
         ),
         RENAME_FILES_TO_LIST_OF_JELLY_NAME: ServiceMetaData(
-            IMAGES_IN, IMAGES_OUT, RenameService.rename_files_into_list_of_episodes
+            IMAGES_IN,
+            IMAGES_OUT,
+            RenameService.rename_files_into_list_of_jellyfin_episodes,
         ),
         ORGANIZE_CHAPTERS_TO_VOL_NAME: ServiceMetaData(
             "chapter_pdf_in", "chapter_pdf_out", organize_chapters_to_vol
-        ),
-        SCRAPE_FOR_VOL_TO_CHAPTERS_NAME: ServiceMetaData(
-            None, None, scrape_for_vol_to_chapters
         ),
         REZIP_CHAPTERS_TO_VOL_NAME: ServiceMetaData(
             "chapter_zip_in", "chapter_zip_out", rezip_chapters_to_vol
