@@ -1,5 +1,5 @@
 import os
-from src.rename_chapters.name_functions import create_calibre_image_name
+from src.rename_media.name_functions import create_calibre_image_name
 from typing import Iterable, Callable
 from PIL import Image
 from src.exceptions.exceptions import FileSystemError
@@ -68,17 +68,9 @@ def rename_page_images(
         os.remove(file.path)
 
 
-def rename_mkv_video_files(
-    directory_out: str, files: Iterable[DirectoryFile], name_function: Callable
-):
-    for file in files:
-        if "mkv" not in file.name:
-            raise FileExistsError("expected video file to mkv format")
-        file_metadata = file.get_season_from_file()
-        new_name = name_function(file_metadata)
-        new_path = f"{directory_out}/{new_name}"
-        print(new_path)
-        os.rename(file.path, new_path)
+def rename_files(rename_mapping: dict[str, str]):
+    for old_file_path, new_file_path in rename_mapping.items():
+        os.rename(old_file_path, new_file_path)
 
 
 def get_organization_file():
@@ -145,4 +137,4 @@ def remove_file(path: str):
 
 def get_env(env_var: str) -> str:
     """function to return environment variable"""
-    os.getenv(env_var)
+    return os.getenv(env_var)

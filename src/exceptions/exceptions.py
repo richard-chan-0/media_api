@@ -20,3 +20,7 @@ class FileSystemError(ServiceError):
 
 class CreateVolumesError(ServiceError):
     pass
+
+
+class RenameMediaError(ServiceError):
+    pass

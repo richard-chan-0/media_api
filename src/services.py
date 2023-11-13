@@ -1,29 +1,43 @@
-from src.rename_chapters.rename_chapters import main as rename_chapters
-from src.organize_chapters_to_vol.organize_chapters_to_vol import (
+from src.rename_media.rename_media import RenameService
+from src.organize_media.organize_chapters_to_vol import (
     main as organize_chapters_to_vol,
 )
 from src.scrape_for_vol_to_chapters.scrape_for_vol_to_chapters import (
     main as scrape_for_vol_to_chapters,
 )
-from src.rezip_chapters_to_vol.rezip_chapters_to_vol import (
+from src.rezip_cbz_files.rezip_chapters_to_vol import (
     main as rezip_chapters_to_vol,
 )
+from src.prepare_for_jellyfin.prepare_for_jellyfin import main as prepare_for_jellyfin
 from src.create_volumes.create_volumes import main as create_volumes
 from src.data_types.ServiceMetaData import ServiceMetaData
 from src.exceptions.exceptions import InvalidService
 
 ORGANIZE_CHAPTERS_TO_VOL_NAME = "organize_chapters_to_vol"
-RENAME_CHAPTERS_NAME = "rename_chapters"
+RENAME_TO_CALIBRE_IMAGE = "create_calibre_image_name"
+RENAME_SEASONED_TO_JELLY_NAME = "rename_seasoned_video_to_jellyfin_name"
+RENAME_FILES_TO_LIST_OF_JELLY_NAME = "rename_files_to_list_of_jellyfin_name"
 SCRAPE_FOR_VOL_TO_CHAPTERS_NAME = "scrape_for_vol_to_chapters"
 REZIP_CHAPTERS_TO_VOL_NAME = "rezip_chapters_to_vol"
 CREATE_VOLUMES_NAME = "create_volumes"
+PREPARE_FOR_JELLYFIN = "prepare_for_jellyfin"
+IMAGES_IN = "images_in"
+IMAGES_OUT = "images_out"
 
 
 def get_services() -> dict[str, ServiceMetaData]:
     """returns mapping of service names to service metadata"""
     return {
-        RENAME_CHAPTERS_NAME: ServiceMetaData(
-            "images_in", "images_out", rename_chapters
+        RENAME_TO_CALIBRE_IMAGE: ServiceMetaData(
+            IMAGES_IN, IMAGES_OUT, RenameService.rename_image_to_calibre_image
+        ),
+        RENAME_SEASONED_TO_JELLY_NAME: ServiceMetaData(
+            IMAGES_IN,
+            IMAGES_OUT,
+            RenameService.rename_seasoned_video_to_jellyfin_name,
+        ),
+        RENAME_FILES_TO_LIST_OF_JELLY_NAME: ServiceMetaData(
+            IMAGES_IN, IMAGES_OUT, RenameService.rename_files_into_list_of_episodes
         ),
         ORGANIZE_CHAPTERS_TO_VOL_NAME: ServiceMetaData(
             "chapter_pdf_in", "chapter_pdf_out", organize_chapters_to_vol
@@ -35,6 +49,9 @@ def get_services() -> dict[str, ServiceMetaData]:
             "chapter_zip_in", "chapter_zip_out", rezip_chapters_to_vol
         ),
         CREATE_VOLUMES_NAME: ServiceMetaData(None, None, create_volumes),
+        PREPARE_FOR_JELLYFIN: ServiceMetaData(
+            IMAGES_IN, IMAGES_OUT, prepare_for_jellyfin
+        ),
     }
 
 

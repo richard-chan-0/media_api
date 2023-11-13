@@ -1,5 +1,5 @@
 from pytest import fixture
-import src.organize_chapters_to_vol.organize_chapters_to_vol as OrganizeService
+import src.organize_media.organize_chapters_to_vol as OrganizeService
 from src.data_types.system_files import DirectoryFile
 from src.factories.factories import create_file
 

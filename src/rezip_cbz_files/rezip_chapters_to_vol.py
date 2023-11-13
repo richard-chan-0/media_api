@@ -1,7 +1,7 @@
 from zipfile import ZipFile
 import src.utilities.os_functions as SystemUtilities
 from src.exceptions.exceptions import RezipChaptersToVolError
-from src.rezip_chapters_to_vol.page_functions import (
+from src.rezip_cbz_files.page_functions import (
     extract_pages_from_chapter,
     move_pages_to_temp,
 )

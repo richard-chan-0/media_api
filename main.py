@@ -4,7 +4,6 @@ from src.services import return_service
 from src.data_types.ServiceMetaData import ServiceMetaData
 from src.exceptions.exceptions import ServiceError
 import logging
-import os
 
 logger = logging.getLogger(__name__)
 
@@ -31,5 +30,5 @@ def main(utility_type):
 
 
 if __name__ == "__main__":
-    utility_type = os.getenv("UTILITY_TYPE")
+    utility_type = get_env("UTILITY_TYPE")
     main(utility_type)

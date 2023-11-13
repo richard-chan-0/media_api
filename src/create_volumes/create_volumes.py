@@ -1,7 +1,7 @@
 # using 'import' to resolve circular import issue
 import src.services as AppServices
 
-from src.rezip_chapters_to_vol.rezip_chapters_to_vol import rezip_chapters_to_vol
+from src.rezip_cbz_files.rezip_chapters_to_vol import rezip_chapters_to_vol
 from src.utilities.os_functions import (
     get_sub_directories,
     get_files,
