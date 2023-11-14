@@ -12,6 +12,8 @@ load_dotenv()
 
 logger = logging.getLogger(__name__)
 
+ignore_files = [".DS_Store"]
+
 
 def get_files(directory: str) -> Iterable[DirectoryFile]:
     """function to get list of files from a directory"""
@@ -22,7 +24,7 @@ def get_files(directory: str) -> Iterable[DirectoryFile]:
         return [
             create_file(entry.name, entry.path)
             for entry in entries
-            if os.path.isfile(entry.path)
+            if os.path.isfile(entry.path) and entry.name not in ignore_files
         ]
 
 

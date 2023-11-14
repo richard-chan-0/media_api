@@ -24,7 +24,7 @@ def create_jellyfin_episode_name(season_number: int, episode_number: int) -> str
 
 
 def create_jellyfin_comic_name(story_name: str, issue: int) -> str:
-    jellyfin_number_zeros = 2
+    jellyfin_number_zeros = 3
     issue_number = prepend_zeros(issue, jellyfin_number_zeros)
 
     return f"{story_name} #{issue_number}.cbz"

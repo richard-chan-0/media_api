@@ -37,10 +37,12 @@ def rename_seasoned_video_to_jellyfin_name(directory_in: str, directory_out: str
     rename_files(rename_mapping)
 
 
-def get_sorted_files(directory_in: str) -> Iterable[DirectoryFile]:
+def get_sorted_files(
+    directory_in: str, sort_method=lambda entry: entry.name
+) -> Iterable[DirectoryFile]:
     """function to get list of files from a directory and sort them"""
     directory_entries = get_files(directory_in)
-    directory_entries.sort(key=lambda entry: entry.name)
+    directory_entries.sort(key=sort_method)
     return directory_entries
 
 
@@ -77,7 +79,8 @@ def rename_files_into_list_of_jellyfin_episodes(directory_in, directory_out):
 
 def rename_files_into_list_of_jellyfin_comics(directory_in, directory_out):
     """function to indiscriminately rename the files in a season folder into jellyfin name"""
-    directory_entries = get_sorted_files(directory_in)
+    sort_method = lambda entry: entry.get_chapter_number_from_file()
+    directory_entries = get_sorted_files(directory_in, sort_method)
     story_name = get_env("STORY")
     rename_mapping = create_rename_mapping(
         directory_entries,
