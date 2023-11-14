@@ -17,10 +17,6 @@ class DirectoryFile:
     def __get_season_episode_matches(self) -> Iterable[str]:
         return findall("S[0-9][0-9]E[0-9]+", self.name)
 
-    def __get_season_from_path(self) -> Iterable[str]:
-        clean_resolution_text = sub(self.name, "?", self.path)
-        return findall("[0-9]+", clean_resolution_text)
-
     def __get_episode_matches(self) -> Iterable[str]:
         clean_resolution_text = sub("(720|1080|360|1920|1440)", "?", self.name)
         return findall("[0-9]+", clean_resolution_text)
@@ -41,9 +37,3 @@ class DirectoryFile:
         if not self.__is_match_found(season_episode_matches):
             return
         return season_episode_matches[0]
-
-    def get_season_from_file_path(self) -> str:
-        season_matches = self.__get_season_from_path()
-        if not self.__is_match_found(season_matches):
-            return
-        return season_matches[0]

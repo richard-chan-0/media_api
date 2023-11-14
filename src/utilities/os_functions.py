@@ -4,7 +4,7 @@ from typing import Iterable, Callable
 from PIL import Image
 from src.exceptions.exceptions import FileSystemError
 from src.factories.factories import create_file
-from src.data_types.system_files import DirectoryFile
+from src.data_types.DirectoryFile import DirectoryFile
 import logging
 from dotenv import load_dotenv
 
@@ -26,6 +26,15 @@ def get_files(directory: str) -> Iterable[DirectoryFile]:
             for entry in entries
             if os.path.isfile(entry.path) and entry.name not in ignore_files
         ]
+
+
+def get_sorted_files(
+    directory_in: str, sort_method=lambda entry: entry.name
+) -> Iterable[DirectoryFile]:
+    """function to get list of files from a directory and sort them"""
+    directory_entries = get_files(directory_in)
+    directory_entries.sort(key=sort_method)
+    return directory_entries
 
 
 def get_sub_directories(directory: str) -> Iterable[DirectoryFile]:

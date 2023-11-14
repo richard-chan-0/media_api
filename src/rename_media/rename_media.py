@@ -2,6 +2,7 @@ from src.utilities.os_functions import (
     rename_page_images,
     get_files,
     rename_files,
+    get_sorted_files,
 )
 from src.rename_media.name_functions import (
     create_calibre_image_name,
@@ -9,9 +10,26 @@ from src.rename_media.name_functions import (
     create_jellyfin_comic_name,
 )
 from src.exceptions.exceptions import RenameMediaError
-from src.data_types.system_files import DirectoryFile
+from src.data_types.DirectoryFile import DirectoryFile
 from typing import Iterable, Callable
 from src.utilities.os_functions import get_env
+
+
+def create_rename_mapping(
+    files: Iterable[DirectoryFile],
+    directory_out: str,
+    create_name_function: Callable,
+    name_function_seed: str,
+):
+    """function to create a mapping between old file path and new file path for rename"""
+    rename_mapping = {}
+    for list_index, episode in enumerate(files):
+        episode_number = list_index + 1
+        new_name = create_name_function(name_function_seed, episode_number)
+        new_path = f"{directory_out}/{new_name}"
+        rename_mapping[episode.path] = new_path
+
+    return rename_mapping
 
 
 def rename_image_to_calibre_image(directory_in: str, directory_out: str):
@@ -35,32 +53,6 @@ def rename_seasoned_video_to_jellyfin_name(directory_in: str, directory_out: str
         rename_mapping[entry.path] = new_path
 
     rename_files(rename_mapping)
-
-
-def get_sorted_files(
-    directory_in: str, sort_method=lambda entry: entry.name
-) -> Iterable[DirectoryFile]:
-    """function to get list of files from a directory and sort them"""
-    directory_entries = get_files(directory_in)
-    directory_entries.sort(key=sort_method)
-    return directory_entries
-
-
-def create_rename_mapping(
-    files: Iterable[DirectoryFile],
-    directory_out: str,
-    create_name_function: Callable,
-    name_function_seed: str,
-):
-    """function to create a mapping between old file path and new file path for rename"""
-    rename_mapping = {}
-    for list_index, episode in enumerate(files):
-        episode_number = list_index + 1
-        new_name = create_name_function(name_function_seed, episode_number)
-        new_path = f"{directory_out}/{new_name}"
-        rename_mapping[episode.path] = new_path
-
-    return rename_mapping
 
 
 def rename_files_into_list_of_jellyfin_episodes(directory_in, directory_out):

@@ -6,7 +6,7 @@ from src.rezip_cbz_files.page_functions import (
     move_pages_to_temp,
 )
 import logging
-from src.data_types.system_files import DirectoryFile
+from src.data_types.DirectoryFile import DirectoryFile
 from typing import Iterable
 
 logger = logging.getLogger(__name__)
