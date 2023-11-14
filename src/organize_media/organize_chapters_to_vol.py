@@ -1,9 +1,10 @@
 from src.exceptions.exceptions import OrganizeChaptersToVolError
 from src.utilities.os_functions import *
 from src.data_types.DirectoryFile import DirectoryFile
+from src.data_types.ServiceArguments import ServiceArguments
 from json import load
 from typing import Iterable, Tuple
-from re import findall
+
 
 VOLUMES = "volumes"
 VOLUME = "volume"
@@ -93,13 +94,17 @@ def move_chapters_to_volumes(
         move_chapters_for_volume_dir(sub_directory, chapter_details, chapters)
 
 
-def organize_chapters_to_vol(directory_in: str, directory_out: str):
+def organize_chapters_to_vol(args: ServiceArguments):
     """function to move chapters into corresponding subdirectory folders as volumes"""
+    directory_in = args.directory_in
+    directory_out = args.directory_out
+
     chapters = get_files(directory=directory_in)
     mapping = create_mapping_chapters_to_vols()
     move_chapters_to_volumes(directory_out, chapters, mapping)
 
 
-def main(directory_in: str, directory_out: str):
+def main(args: ServiceArguments):
     """main function for organizing files feature"""
-    organize_chapters_to_vol(directory_in, directory_out)
+
+    organize_chapters_to_vol(args)

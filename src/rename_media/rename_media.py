@@ -11,8 +11,8 @@ from src.rename_media.name_functions import (
 )
 from src.exceptions.exceptions import RenameMediaError
 from src.data_types.DirectoryFile import DirectoryFile
+from src.data_types.ServiceArguments import ServiceArguments
 from typing import Iterable, Callable
-from src.utilities.os_functions import get_env
 
 
 def create_rename_mapping(
@@ -32,13 +32,19 @@ def create_rename_mapping(
     return rename_mapping
 
 
-def rename_image_to_calibre_image(directory_in: str, directory_out: str):
+def rename_image_to_calibre_image(args: ServiceArguments):
+    directory_in = args.directory_in
+    directory_out = args.directory_out
+
     directory_entries = get_files(directory_in)
     rename_page_images(directory_out, directory_entries, create_calibre_image_name)
 
 
-def rename_seasoned_video_to_jellyfin_name(directory_in: str, directory_out: str):
+def rename_seasoned_video_to_jellyfin_name(args: ServiceArguments):
     """renames a list of files in designated directory to jellyfin name with S[0-9][0-9]E[0-9][0-9] format"""
+    directory_in = args.directory_in
+    directory_out = args.directory_out
+
     directory_entries = get_files(directory_in)
     rename_mapping = {}
     for entry in directory_entries:
@@ -55,10 +61,16 @@ def rename_seasoned_video_to_jellyfin_name(directory_in: str, directory_out: str
     rename_files(rename_mapping)
 
 
-def rename_files_into_list_of_jellyfin_episodes(directory_in, directory_out):
+def rename_files_into_list_of_jellyfin_episodes(args: ServiceArguments):
     """function to indiscriminately rename the files in a season folder into jellyfin name"""
+    directory_in = args.directory_in
+    directory_out = args.directory_out
+    season_number = args.season_number
+
+    if not season_number:
+        raise RenameMediaError("environment variable for season is empty")
+
     directory_entries = get_sorted_files(directory_in)
-    season_number = get_env("SEASON_NUMBER")
     rename_mapping = create_rename_mapping(
         directory_entries,
         directory_out,
@@ -69,11 +81,17 @@ def rename_files_into_list_of_jellyfin_episodes(directory_in, directory_out):
     rename_files(rename_mapping)
 
 
-def rename_files_into_list_of_jellyfin_comics(directory_in, directory_out):
+def rename_files_into_list_of_jellyfin_comics(args: ServiceArguments):
     """function to indiscriminately rename the files in a season folder into jellyfin name"""
     sort_method = lambda entry: entry.get_chapter_number_from_file()
+    directory_in = args.directory_in
+    directory_out = args.directory_out
+    story_name = args.story
+
+    if not story_name:
+        raise RenameMediaError("environment variable for story is empty")
+
     directory_entries = get_sorted_files(directory_in, sort_method)
-    story_name = get_env("STORY")
     rename_mapping = create_rename_mapping(
         directory_entries,
         directory_out,
