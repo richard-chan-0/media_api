@@ -1,3 +1,6 @@
+from src.exceptions.exceptions import RenameMediaError
+
+
 def prepend_zeros(number: int, number_zeros: int = 3) -> str:
     """function to add zeros until number matches format [0-9]+"""
     str_number = str(number)
@@ -17,6 +20,9 @@ def create_calibre_image_name(story: str, chapter: str, page: int) -> str:
 
 def create_jellyfin_episode_name(season_number: int, episode_number: int) -> str:
     """function to create an episode name in jellyfin format with episode and season"""
+    if season_number < 0 or episode_number < 0:
+        raise RenameMediaError("season and episodes can't be negative")
+
     jellyfin_number_zeros = 2
     season = prepend_zeros(season_number, jellyfin_number_zeros)
     episode = prepend_zeros(episode_number, jellyfin_number_zeros)
