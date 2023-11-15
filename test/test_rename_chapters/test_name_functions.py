@@ -1,4 +1,4 @@
-import src.rename_chapters.name_functions as NameFunctions
+import src.rename_media.name_functions as NameFunctions
 
 
 def test_numbers_less_than_three_digits_has_zeros():

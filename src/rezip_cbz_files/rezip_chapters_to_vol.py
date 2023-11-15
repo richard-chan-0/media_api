@@ -1,12 +1,13 @@
 from zipfile import ZipFile
 import src.utilities.os_functions as SystemUtilities
 from src.exceptions.exceptions import RezipChaptersToVolError
-from src.rezip_chapters_to_vol.page_functions import (
+from src.rezip_cbz_files.page_functions import (
     extract_pages_from_chapter,
     move_pages_to_temp,
 )
 import logging
-from src.data_types.system_files import DirectoryFile
+from src.data_types.DirectoryFile import DirectoryFile
+from src.data_types.ServiceArguments import ServiceArguments
 from typing import Iterable
 
 logger = logging.getLogger(__name__)
@@ -42,10 +43,11 @@ def clean_system(temp_path: str, chapters: Iterable[DirectoryFile]):
     logger.info("app folders are cleaned")
 
 
-def rezip_chapters_to_vol(
-    directory_in: str, directory_out: str, volume_name: str = "temp.cbz"
-):
+def rezip_chapters_to_vol(args, volume_name: str = "temp.cbz"):
     """function that processes multiple cbz files into single cbz file"""
+    directory_in = args.directory_in
+    directory_out = args.directory_out
+
     logger.info("creating volume file: %s", volume_name)
     chapters = SystemUtilities.get_files(directory_in)
     temp_path = SystemUtilities.create_sub_directory(directory_in, TEMP_FOLDER)
@@ -60,6 +62,6 @@ def rezip_chapters_to_vol(
     clean_system(temp_path, chapters)
 
 
-def main(directory_in: str, directory_out: str):
+def main(args: ServiceArguments):
     """service to open list of zip files and compile them into single zip file"""
-    rezip_chapters_to_vol(directory_in, directory_out)
+    rezip_chapters_to_vol(args)

@@ -2,9 +2,9 @@ from dotenv import load_dotenv
 from src.utilities.os_functions import get_env, create_sub_directory
 from src.services import return_service
 from src.data_types.ServiceMetaData import ServiceMetaData
+from src.data_types.ServiceArguments import ServiceArguments
 from src.exceptions.exceptions import ServiceError
 import logging
-import os
 
 logger = logging.getLogger(__name__)
 
@@ -24,12 +24,21 @@ def main(utility_type):
     create_sub_directory(".", directory_in)
     create_sub_directory(".", directory_out)
 
+    service_args = ServiceArguments(
+        directory_in,
+        directory_out,
+        get_env("STORY"),
+        get_env("CHAPTER"),
+        get_env("ORGANIZATION_FILE"),
+        get_env("SEASON_NUMBER"),
+    )
+
     try:
-        service(directory_in, directory_out)
+        service(service_args)
     except ServiceError as err:
         logger.error(err)
 
 
 if __name__ == "__main__":
-    utility_type = os.getenv("UTILITY_TYPE")
+    utility_type = get_env("UTILITY_TYPE")
     main(utility_type)

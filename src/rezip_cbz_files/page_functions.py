@@ -1,7 +1,7 @@
 from zipfile import ZipFile
 import src.utilities.os_functions as SystemUtilities
 import logging
-from src.data_types.system_files import DirectoryFile
+from src.data_types.DirectoryFile import DirectoryFile
 from typing import Iterable
 
 logger = logging.getLogger(__name__)
