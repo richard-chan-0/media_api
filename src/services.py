@@ -6,7 +6,7 @@ from src.rezip_cbz_files.rezip_chapters_to_vol import (
     main as rezip_chapters_to_vol,
 )
 from src.prepare_for_jellyfin.prepare_for_jellyfin import main as prepare_for_jellyfin
-from src.create_volumes.create_volumes import main as create_volumes
+from src.create_volumes.create_volumes import create_volumes
 from src.data_types.ServiceMetaData import ServiceMetaData
 from src.exceptions.exceptions import InvalidService
 

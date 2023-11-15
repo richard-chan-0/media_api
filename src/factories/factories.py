@@ -12,4 +12,4 @@ def create_file(name: str, path: str):
 
 
 def create_basic_service_args(directory_in: str, directory_out: str):
-    return ServiceArguments(directory_in, directory_out, None, None, None, None)
+    return ServiceArguments(directory_in, directory_out)
