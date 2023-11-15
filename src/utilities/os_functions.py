@@ -110,6 +110,10 @@ def move_file(old_path: str, new_path: str):
 
 def move_files(files_to_move: Iterable[DirectoryFile], destination_folder: str):
     """function to move several files into a single directory"""
+    if not files_to_move:
+        logger.info("no files given to move")
+        return
+
     destination_paths = []
 
     for file in files_to_move:
