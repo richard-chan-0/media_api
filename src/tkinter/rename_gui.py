@@ -183,7 +183,7 @@ class RenameGui(Gui):
         service_args.story = get_widget_value(self.__story_name_text)
         try:
             logger.info("running service")
-            # self.__service(service_args)
+            self.__service(service_args)
             self.__update_service_message("Renaming Completed")
         except ServiceError as err:
             self.__update_service_message(str(err))

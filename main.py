@@ -18,8 +18,13 @@ logger = logging.getLogger(__name__)
 load_dotenv()
 
 
-def configure_environment(directory_in: str, directory_out: str) -> None:
+def configure_environment(utility_type: str) -> ServiceMetaData:
     """configures application environment"""
+    service_meta_data: ServiceMetaData = return_service(utility_type)
+
+    directory_in = service_meta_data.directory_in
+    directory_out = service_meta_data.directory_out
+
     download_dir = get_env("DOWNLOAD_DIR")
     transfer_files(download_dir, directory_in)
 
@@ -27,21 +32,18 @@ def configure_environment(directory_in: str, directory_out: str) -> None:
     create_sub_directory(".", directory_in)
     create_sub_directory(".", directory_out)
 
+    return service_meta_data
+
 
 def main(utility_type):
     """main function for utility"""
     logger.info("retrieving service")
-    service_meta_data: ServiceMetaData = return_service(utility_type)
 
-    service = service_meta_data.service
-    directory_in = service_meta_data.directory_in
-    directory_out = service_meta_data.directory_out
-
-    configure_environment(directory_in, directory_out)
+    service_metadata = configure_environment(utility_type)
 
     service_args = ServiceArguments(
-        directory_in,
-        directory_out,
+        service_metadata.directory_in,
+        service_metadata.directory_out,
         get_env("STORY"),
         get_env("CHAPTER"),
         get_env("ORGANIZATION_FILE"),
@@ -49,7 +51,7 @@ def main(utility_type):
     )
 
     try:
-        service(service_args)
+        service_metadata.service(service_args)
     except ServiceError as err:
         logger.error(err)
 
@@ -57,20 +59,14 @@ def main(utility_type):
 def main_gui(utility_type):
     """main function for utility"""
     logger.info("retrieving service")
-    service_meta_data: ServiceMetaData = return_service(utility_type)
-
-    service = service_meta_data.service
-    directory_in = service_meta_data.directory_in
-    directory_out = service_meta_data.directory_out
-
-    configure_environment(directory_in, directory_out)
+    configure_environment(utility_type)
 
     gui = return_gui(utility_type)
     gui.start()
 
 
 if __name__ == "__main__":
-    # utility_type = get_env("UTILITY_TYPE")
-    # main(utility_type)
-    gui = RenameGui()
-    gui.start()
+    utility_type = get_env("UTILITY_TYPE")
+    main_gui(utility_type)
+    # gui = RenameGui()
+    # gui.start()
