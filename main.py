@@ -54,7 +54,7 @@ def main(utility_type):
 
 
 if __name__ == "__main__":
-    utility_type = get_env("UTILITY_TYPE")
-    main(utility_type)
-    # gui = RenameGui()
-    # gui.start()
+    # utility_type = get_env("UTILITY_TYPE")
+    # main(utility_type)
+    gui = RenameGui()
+    gui.start()
