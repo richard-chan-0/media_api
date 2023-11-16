@@ -125,6 +125,12 @@ def move_files(files_to_move: Iterable[DirectoryFile], destination_folder: str):
     return destination_paths
 
 
+def transfer_files(source_directory: str, destination_directory: str):
+    """function to read files from source directory into destination directory"""
+    source_files = get_files(source_directory)
+    move_files(source_files, destination_directory)
+
+
 def remove_directory(path: str):
     """function to remove directory and it's contents"""
     if not os.path.exists(path):

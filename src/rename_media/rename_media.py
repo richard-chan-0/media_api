@@ -75,7 +75,7 @@ def rename_files_into_list_of_jellyfin_episodes(args: ServiceArguments):
         directory_entries,
         directory_out,
         create_jellyfin_episode_name,
-        season_number,
+        int(season_number),
     )
 
     rename_files(rename_mapping)
