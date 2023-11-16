@@ -2,15 +2,14 @@ from dotenv import load_dotenv
 from src.utilities.os_functions import (
     get_env,
     create_sub_directory,
-    get_files,
-    move_files,
+    transfer_files,
 )
 from src.services import return_service
 from src.data_types.ServiceMetaData import ServiceMetaData
 from src.data_types.ServiceArguments import ServiceArguments
 from src.exceptions.exceptions import ServiceError
 
-# from src.tkinter.rename_gui import RenameGui
+from src.tkinter.rename_gui import RenameGui
 import logging
 
 logger = logging.getLogger(__name__)
@@ -21,8 +20,7 @@ load_dotenv()
 def configure_environment(directory_in: str, directory_out: str) -> None:
     """configures application environment"""
     download_dir = get_env("DOWNLOAD_DIR")
-    download_files = get_files(download_dir)
-    move_files(download_files, directory_in)
+    transfer_files(download_dir, directory_in)
 
     logger.info("creating missing directories")
     create_sub_directory(".", directory_in)
