@@ -9,18 +9,16 @@ from src.prepare_for_jellyfin.prepare_for_jellyfin import main as prepare_for_je
 from src.create_volumes.create_volumes import create_volumes
 from src.data_types.ServiceMetaData import ServiceMetaData
 from src.exceptions.exceptions import InvalidService
+from typing import Iterable
+from src.data_types.service_constants import *
 
-ORGANIZE_CHAPTERS_TO_VOL_NAME = "organize_chapters_to_vol"
-RENAME_TO_CALIBRE_IMAGE = "create_calibre_image_name"
-RENAME_SEASONED_TO_JELLY_NAME = "rename_seasoned_video_to_jellyfin_name"
-RENAME_FILES_TO_JELLY_EPISODES = "rename_files_into_list_of_jellyfin_episodes"
-RENAME_FILES_TO_JELLY_COMICS = "rename_files_to_list_of_jellyfin_comic"
-SCRAPE_FOR_VOL_TO_CHAPTERS_NAME = "scrape_for_vol_to_chapters"
-REZIP_CHAPTERS_TO_VOL_NAME = "rezip_chapters_to_vol"
-CREATE_VOLUMES_NAME = "create_volumes"
-PREPARE_FOR_JELLYFIN = "prepare_for_jellyfin"
 IMAGES_IN = "images_in"
 IMAGES_OUT = "images_out"
+
+
+def get_list_service() -> Iterable[str]:
+    """function to get list of service names"""
+    return [key for key in get_services().keys()]
 
 
 def get_services() -> dict[str, ServiceMetaData]:

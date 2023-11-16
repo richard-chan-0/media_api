@@ -5,6 +5,7 @@ from src.utilities.os_functions import (
     transfer_files,
 )
 from src.services import return_service
+from src.guis import return_gui
 from src.data_types.ServiceMetaData import ServiceMetaData
 from src.data_types.ServiceArguments import ServiceArguments
 from src.exceptions.exceptions import ServiceError
@@ -51,6 +52,21 @@ def main(utility_type):
         service(service_args)
     except ServiceError as err:
         logger.error(err)
+
+
+def main_gui(utility_type):
+    """main function for utility"""
+    logger.info("retrieving service")
+    service_meta_data: ServiceMetaData = return_service(utility_type)
+
+    service = service_meta_data.service
+    directory_in = service_meta_data.directory_in
+    directory_out = service_meta_data.directory_out
+
+    configure_environment(directory_in, directory_out)
+
+    gui = return_gui(utility_type)
+    gui.start()
 
 
 if __name__ == "__main__":

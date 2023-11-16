@@ -1,6 +1,7 @@
 from tkinter import *
 from src.services import (
-    get_services,
+    get_list_service,
+    return_service,
     RENAME_FILES_TO_JELLY_EPISODES,
     RENAME_FILES_TO_JELLY_COMICS,
 )
@@ -9,12 +10,14 @@ from src.exceptions.exceptions import ServiceError
 from src.utilities.os_functions import transfer_files
 from src.tkinter.tkinter_functions import *
 from typing import Iterable
+from src.tkinter.gui import Gui
+
 from logging import getLogger
 
 logger = getLogger(__name__)
 
 
-class RenameGui:
+class RenameGui(Gui):
     def __init__(self):
         self.__root = Tk()
 
@@ -61,7 +64,9 @@ class RenameGui:
         self.__numeric_dropdown = menu
 
     def __create_numeric_dropdown_component(self):
-        create_label("Select Number for Volume/Season", self.__numeric_dropdown_row)
+        create_label(
+            self.__root, "Select Number for Volume/Season", self.__numeric_dropdown_row
+        )
         self.__create_numeric_dropdown_menu()
 
     def __create_service_dropdown_menu(self, options):
@@ -70,7 +75,7 @@ class RenameGui:
         # self.__service_dropdown = menu
 
     def __create_service_dropdown_component(self, options: Iterable[str]):
-        create_label("Select Service", self.__service_dropdown_row)
+        create_label(self.__root, "Select Service", self.__service_dropdown_row)
         self.__create_service_dropdown_button()
         self.__create_service_dropdown_menu(options)
 
@@ -86,7 +91,7 @@ class RenameGui:
 
     def __configure_service(self, service_name: str):
         logger.info("configuring utility...")
-        service_metadata = get_services()[service_name]
+        service_metadata = return_service(service_name)
         self.__directory_in = service_metadata.directory_in
         self.__directory_out = service_metadata.directory_out
         self.__service = service_metadata.service
@@ -134,7 +139,7 @@ class RenameGui:
         )
 
     def __create_submit_button(self):
-        create_label("Submit Button", row=self.__submit_button_row)
+        create_label(self.__root, "Submit Button", row=self.__submit_button_row)
 
         create_buttoon(
             self.__root,
@@ -144,7 +149,9 @@ class RenameGui:
         )
 
     def __create_download_files_entry(self):
-        create_label("Enter Download Directory: ", row=self.__download_entry_row)
+        create_label(
+            self.__root, "Enter Download Directory: ", row=self.__download_entry_row
+        )
         self.__create_download_button()
 
         text, entry = create_input_field(self.__root, self.__download_entry_row)
@@ -152,7 +159,7 @@ class RenameGui:
         self.__download_entry = entry
 
     def __create_story_name_entry(self):
-        create_label("Enter the Story Name:", row=self.__story_name_row)
+        create_label(self.__root, "Enter the Story Name:", row=self.__story_name_row)
         text, entry = create_input_field(self.__root, self.__story_name_row)
         self.__story_name_text = text
         self.__story_name_entry = entry
@@ -161,16 +168,11 @@ class RenameGui:
         logger.info("configuring menu")
         self.__create_window()
 
-        services = get_services()
-        options = [service for service in services.keys() if "jellyfin" in service]
+        options = [service for service in get_list_service() if "jellyfin" in service]
         self.__create_service_dropdown_component(options)
 
         self.__create_submit_button()
         self.__create_service_message()
-
-    def start(self):
-        self.__config()
-        self.__root.mainloop()
 
     def __run_service(self):
         logger.info("retrieving service configurations")
@@ -181,7 +183,7 @@ class RenameGui:
         service_args.story = get_widget_value(self.__story_name_text)
         try:
             logger.info("running service")
-            self.__service(service_args)
+            # self.__service(service_args)
             self.__update_service_message("Renaming Completed")
         except ServiceError as err:
             self.__update_service_message(str(err))
@@ -190,8 +192,19 @@ class RenameGui:
         self.__service_message.config(text=message)
 
     def __create_service_message(self):
-        create_label(text="Service Message", row=self.__service_message_row)
-
-        self.__service_message = create_label(
-            "", row=self.__service_message_row, column=COLUMN_COMPONENT
+        create_label(
+            self.__root, text="Service Message", row=self.__service_message_row
         )
+
+        options = {"background": "black"}
+        self.__service_message = create_label(
+            self.__root,
+            "",
+            row=self.__service_message_row,
+            column=COLUMN_COMPONENT,
+            options=options,
+        )
+
+    def start(self):
+        self.__config()
+        self.__root.mainloop()

@@ -37,13 +37,13 @@ def create_buttoon(root: Tk, button_text: str, action: Callable, row_position: s
         default="active",
         command=action,
     )
-    button.grid(row=row_position, column=COLUMN_BUTTON)
+    button.grid(row=row_position, column=COLUMN_BUTTON, sticky=W)
     return button
 
 
-def create_label(root: Tk, text: str, row: str, column: str = "0"):
+def create_label(root: Tk, text: str, row: str, options: dict = {}, column: str = "0"):
     """function to create tkinter label"""
-    label = Label(root, text=text)
+    label = Label(root, text=text, **options)
     label.grid(row=row, column=column, pady=DEFAULT_PADDINGY, sticky=W)
     return label
 
