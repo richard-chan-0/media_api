@@ -18,17 +18,23 @@ logger = logging.getLogger(__name__)
 load_dotenv()
 
 
+def pull_downloads(directory_in):
+    """function to pull downloads from directory given env var"""
+    download_dir = get_env("DOWNLOAD_DIR")
+    if not download_dir:
+        return
+    transfer_files(download_dir, directory_in)
+
+
 def configure_environment(utility_type: str) -> ServiceMetaData:
     """configures application environment"""
+    logger.info("configuring environment")
     service_meta_data: ServiceMetaData = return_service(utility_type)
 
     directory_in = service_meta_data.directory_in
     directory_out = service_meta_data.directory_out
 
-    download_dir = get_env("DOWNLOAD_DIR")
-    transfer_files(download_dir, directory_in)
-
-    logger.info("creating missing directories")
+    logger.info("creating any missing directories")
     create_sub_directory(".", directory_in)
     create_sub_directory(".", directory_out)
 
@@ -40,6 +46,7 @@ def main(utility_type):
     logger.info("retrieving service")
 
     service_metadata = configure_environment(utility_type)
+    pull_downloads(service_metadata.directory_in)
 
     service_args = ServiceArguments(
         service_metadata.directory_in,
@@ -62,7 +69,8 @@ def main_gui(utility_type):
     configure_environment(utility_type)
 
     gui = return_gui(utility_type)
-    gui.start()
+    service = gui()
+    service.start()
 
 
 if __name__ == "__main__":

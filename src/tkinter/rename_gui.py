@@ -33,6 +33,7 @@ class RenameGui(Gui):
         self.__submit_button = None
         self.__service_message = None
 
+        self.__download_label = None
         self.__download_text = None
         self.__download_entry = None
         self.__download_button = None
@@ -42,6 +43,7 @@ class RenameGui(Gui):
 
         self.__story_name_button = None
 
+        self.__numeric_label = None
         self.__numeric_dropdown = None
         self.__numeric_click = None
 
@@ -64,7 +66,7 @@ class RenameGui(Gui):
         self.__numeric_dropdown = menu
 
     def __create_numeric_dropdown_component(self):
-        create_label(
+        self.__numeric_label = create_label(
             self.__root, "Select Number for Volume/Season", self.__numeric_dropdown_row
         )
         self.__create_numeric_dropdown_menu()
@@ -80,12 +82,15 @@ class RenameGui(Gui):
         self.__create_service_dropdown_menu(options)
 
     def __cleanup(self):
+        """function to clean up widgets from window"""
         widgets: Iterable[Widget] = [
             self.__numeric_dropdown,
+            self.__numeric_label,
             self.__story_name_button,
             self.__story_name_entry,
             self.__download_entry,
             self.__download_button,
+            self.__download_label,
         ]
         destroy_widgets(widgets)
 
@@ -96,19 +101,23 @@ class RenameGui(Gui):
         self.__directory_out = service_metadata.directory_out
         self.__service = service_metadata.service
 
-    def __add_service_widgets(self):
+    def __add_download_widget(self):
+        logger.info("adding download widget to window")
         self.__cleanup()
-        self.__selected_service = self.__service_click.get()
-        self.__configure_service(self.__selected_service)
+        self.__create_download_files_entry()
+
+    def __add_service_widgets(self):
         if self.__selected_service == RENAME_FILES_TO_JELLY_EPISODES:
             self.__create_numeric_dropdown_component()
 
         elif self.__selected_service == RENAME_FILES_TO_JELLY_COMICS:
             self.__create_story_name_entry()
 
-        self.__create_download_files_entry()
-
     def __pull_files_from_download(self):
+        self.__cleanup()
+        self.__selected_service = self.__service_click.get()
+        self.__configure_service(self.__selected_service)
+
         download_path = get_widget_value(self.__download_text)
         if not download_path or not self.__directory_in:
             self.__update_service_message(
@@ -119,6 +128,7 @@ class RenameGui(Gui):
         try:
             transfer_files(download_path, self.__directory_in)
             self.__update_service_message("files have been pulled!")
+            self.__add_service_widgets()
         except ServiceError as err:
             self.__update_service_message(str(err))
 
@@ -134,7 +144,7 @@ class RenameGui(Gui):
         create_buttoon(
             self.__root,
             "Select Service",
-            self.__add_service_widgets,
+            self.__add_download_widget,
             self.__service_dropdown_row,
         )
 
@@ -149,7 +159,7 @@ class RenameGui(Gui):
         )
 
     def __create_download_files_entry(self):
-        create_label(
+        self.__download_label = create_label(
             self.__root, "Enter Download Directory: ", row=self.__download_entry_row
         )
         self.__create_download_button()
@@ -183,7 +193,7 @@ class RenameGui(Gui):
         service_args.story = get_widget_value(self.__story_name_text)
         try:
             logger.info("running service")
-            self.__service(service_args)
+            # self.__service(service_args)
             self.__update_service_message("Renaming Completed")
         except ServiceError as err:
             self.__update_service_message(str(err))
