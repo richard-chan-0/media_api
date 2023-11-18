@@ -19,7 +19,7 @@ class DirectoryFile:
         return matches[0]
 
     def __get_season_episode_matches(self) -> str:
-        return findall("S[0-9][0-9]E[0-9]+", self.name)[0]
+        return findall("S\d\dE\d+", self.name)[0]
 
     def __get_episode_matches(self) -> str:
         clean_resolution_text = sub("(720|1080|360|1920|1440)", "?", self.name)

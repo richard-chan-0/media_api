@@ -75,7 +75,8 @@ def rename_page_images(
     for page_number, file in enumerate(files):
         new_name = name_function(story, chapter, page_number)
         img = Image.open(file.path)
-        img.save(f"{directory_out}/{new_name}")
+        new_path = create_new_file_path(directory_out, new_name)
+        img.save(new_path)
         os.remove(file.path)
 
 
@@ -118,7 +119,7 @@ def move_files(files_to_move: Iterable[DirectoryFile], destination_folder: str):
 
     for file in files_to_move:
         source = file.path
-        destination = f"{destination_folder}/{file.name}"
+        destination = create_new_file_path(destination_folder, file.name)
         move_file(source, destination)
         destination_paths.append(destination)
 
@@ -159,3 +160,8 @@ def remove_file(path: str):
 def get_env(env_var: str) -> str:
     """function to return environment variable"""
     return os.getenv(env_var)
+
+
+def create_new_file_path(new_dir: str, file_name: str) -> str:
+    """function to concat directory and file into new path"""
+    return f"{new_dir}/{file_name}"

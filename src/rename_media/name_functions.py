@@ -46,6 +46,10 @@ def get_cleanup_regex():
 def cleanup_filename(story_name: str, file: DirectoryFile):
     """function to remove clutter from filename"""
     file_name = file.name
+    split_name = file_name.split(".")
+    name = split_name[0]
+    extensions = ".".join(split_name[1:])
     cleanup_regex = get_cleanup_regex()
-    cleaned_name = sub(cleanup_regex, "", file_name)
-    return f"{story_name}-{cleaned_name}"
+    cleaned_name = sub(cleanup_regex, "", name).strip()
+
+    return f"{story_name}-{cleaned_name}.{extensions}"

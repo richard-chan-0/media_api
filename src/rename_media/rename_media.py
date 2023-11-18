@@ -3,6 +3,7 @@ from src.utilities.os_functions import (
     get_files,
     rename_files,
     get_sorted_files,
+    create_new_file_path,
 )
 from src.rename_media.name_functions import (
     create_calibre_image_name,
@@ -27,7 +28,7 @@ def create_rename_mapping_with_sorted(
     for list_index, file in enumerate(files):
         episode_number = list_index + 1
         new_name = create_name_function(name_function_seed, episode_number)
-        new_path = f"{directory_out}/{new_name}"
+        new_path = create_new_file_path(directory_out, new_name)
         rename_mapping[file.path] = new_path
 
     return rename_mapping
@@ -43,7 +44,7 @@ def create_rename_mapping_with_filename(
     rename_mapping = {}
     for file in files:
         new_name = create_name_function(name_function_seed, file)
-        new_path = f"{directory_out}/{new_name}"
+        new_path = create_new_file_path(directory_out, new_name)
         rename_mapping[file.path] = new_path
 
     return rename_mapping
@@ -72,7 +73,7 @@ def rename_seasoned_video_to_jellyfin_name(args: ServiceArguments):
             )
 
         new_name = create_jellyfin_episode_name(season_episode)
-        new_path = f"{directory_out}/{new_name}"
+        new_path = create_new_file_path(directory_out, new_name)
         rename_mapping[entry.path] = new_path
 
     rename_files(rename_mapping)

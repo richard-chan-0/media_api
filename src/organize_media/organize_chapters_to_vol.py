@@ -76,7 +76,7 @@ def move_chapters_for_volume_dir(
         if not (start_chapter <= chapter_number <= end_chapter):
             continue
 
-        new_path = f"{volume_path}/{chapter_name}"
+        new_path = create_new_file_path(volume_path, chapter_name)
         move_file(old_path=chapter_path, new_path=new_path)
         moved_files.append(chapter)
 

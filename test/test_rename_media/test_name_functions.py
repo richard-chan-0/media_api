@@ -1,5 +1,6 @@
 import src.rename_media.name_functions as NameFunctions
 from src.exceptions.exceptions import RenameMediaError
+from src.factories.factories import create_file
 from pytest import raises
 
 
@@ -43,3 +44,14 @@ def test_create_jellyfin_episode_name_raise_error_for_negative():
 
     with raises(RenameMediaError):
         NameFunctions.create_jellyfin_episode_name(season_number, episode_number)
+
+
+def test_cleanup_filename_removes_all_text_in_parenthesis():
+    story_name = "some media"
+    dirty_string = "some media (2023) (abc) (1980x300).jpg"
+    cleaned_string = "some media-some media.jpg"
+    test_file = create_file(dirty_string, "")
+
+    result = NameFunctions.cleanup_filename(story_name, test_file)
+
+    assert result == cleaned_string

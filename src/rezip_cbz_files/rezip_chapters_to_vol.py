@@ -19,7 +19,7 @@ def create_volume_from_pages(
 ):
     """function to create volume from page files"""
     logger.info("zipping pages into volume")
-    volume_path = f"{directory_out}/{volume_name}"
+    volume_path = SystemUtilities.create_new_file_path(directory_out, volume_name)
     with ZipFile(volume_path, "w") as volume:
         for page in pages:
             try:
