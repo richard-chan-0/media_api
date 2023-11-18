@@ -52,6 +52,9 @@ def get_services() -> dict[str, ServiceMetaData]:
         PREPARE_FOR_JELLYFIN: ServiceMetaData(
             IMAGES_IN, IMAGES_OUT, prepare_for_jellyfin
         ),
+        RENAME_TO_CLEANUP: ServiceMetaData(
+            IMAGES_IN, IMAGES_IN, RenameService.rename_files_to_clean_up_downloads
+        ),
     }
 
 

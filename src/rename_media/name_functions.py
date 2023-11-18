@@ -1,4 +1,6 @@
 from src.exceptions.exceptions import RenameMediaError
+from src.data_types.DirectoryFile import DirectoryFile
+from re import sub
 
 
 def prepend_zeros(number: int, number_zeros: int = 3) -> str:
@@ -34,3 +36,16 @@ def create_jellyfin_comic_name(story_name: str, issue: int) -> str:
     issue_number = prepend_zeros(issue, jellyfin_number_zeros)
 
     return f"{story_name} #{issue_number}.cbz"
+
+
+def get_cleanup_regex():
+    """function to retrieve regex that cleans up characters in parenthesis or brackets"""
+    return "(\(.+\)|\[.+\])"
+
+
+def cleanup_filename(story_name: str, file: DirectoryFile):
+    """function to remove clutter from filename"""
+    file_name = file.name
+    cleanup_regex = get_cleanup_regex()
+    cleaned_name = sub(cleanup_regex, "", file_name)
+    return f"{story_name}-{cleaned_name}"

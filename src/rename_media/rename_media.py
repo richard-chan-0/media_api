@@ -8,6 +8,7 @@ from src.rename_media.name_functions import (
     create_calibre_image_name,
     create_jellyfin_episode_name,
     create_jellyfin_comic_name,
+    cleanup_filename,
 )
 from src.exceptions.exceptions import RenameMediaError
 from src.data_types.DirectoryFile import DirectoryFile
@@ -15,7 +16,7 @@ from src.data_types.ServiceArguments import ServiceArguments
 from typing import Iterable, Callable
 
 
-def create_rename_mapping(
+def create_rename_mapping_with_sorted(
     files: Iterable[DirectoryFile],
     directory_out: str,
     create_name_function: Callable,
@@ -23,11 +24,27 @@ def create_rename_mapping(
 ):
     """function to create a mapping between old file path and new file path for rename"""
     rename_mapping = {}
-    for list_index, episode in enumerate(files):
+    for list_index, file in enumerate(files):
         episode_number = list_index + 1
         new_name = create_name_function(name_function_seed, episode_number)
         new_path = f"{directory_out}/{new_name}"
-        rename_mapping[episode.path] = new_path
+        rename_mapping[file.path] = new_path
+
+    return rename_mapping
+
+
+def create_rename_mapping_with_filename(
+    files: Iterable[DirectoryFile],
+    directory_out: str,
+    create_name_function: Callable,
+    name_function_seed: str,
+):
+    """function to create a mapping between old file path and new file path for rename"""
+    rename_mapping = {}
+    for file in files:
+        new_name = create_name_function(name_function_seed, file)
+        new_path = f"{directory_out}/{new_name}"
+        rename_mapping[file.path] = new_path
 
     return rename_mapping
 
@@ -71,7 +88,7 @@ def rename_files_into_list_of_jellyfin_episodes(args: ServiceArguments):
         raise RenameMediaError("environment variable for season is empty")
 
     directory_entries = get_sorted_files(directory_in)
-    rename_mapping = create_rename_mapping(
+    rename_mapping = create_rename_mapping_with_sorted(
         directory_entries,
         directory_out,
         create_jellyfin_episode_name,
@@ -92,10 +109,28 @@ def rename_files_into_list_of_jellyfin_comics(args: ServiceArguments):
         raise RenameMediaError("environment variable for story is empty")
 
     directory_entries = get_sorted_files(directory_in, sort_method)
-    rename_mapping = create_rename_mapping(
+    rename_mapping = create_rename_mapping_with_sorted(
         directory_entries,
         directory_out,
         create_jellyfin_comic_name,
+        story_name,
+    )
+
+    rename_files(rename_mapping)
+
+
+def rename_files_to_clean_up_downloads(args: ServiceArguments):
+    """function to clean up file names of tags or metadata in name"""
+    directory_in = args.directory_in
+    directory_out = args.directory_out
+    story_name = args.story
+
+    directory_entries = get_sorted_files(directory_in)
+
+    rename_mapping = create_rename_mapping_with_filename(
+        directory_entries,
+        directory_out,
+        cleanup_filename,
         story_name,
     )
 

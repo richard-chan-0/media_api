@@ -24,3 +24,7 @@ class CreateVolumesError(ServiceError):
 
 class RenameMediaError(ServiceError):
     pass
+
+
+class DataTypeError(ServiceError):
+    pass
