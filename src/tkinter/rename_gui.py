@@ -4,6 +4,7 @@ from src.services import (
     return_service,
     RENAME_FILES_TO_JELLY_EPISODES,
     RENAME_FILES_TO_JELLY_COMICS,
+    RENAME_TO_CLEANUP,
 )
 from src.factories.factories import create_basic_service_args
 from src.exceptions.exceptions import ServiceError
@@ -110,7 +111,10 @@ class RenameGui(Gui):
         if self.__selected_service == RENAME_FILES_TO_JELLY_EPISODES:
             self.__create_numeric_dropdown_component()
 
-        elif self.__selected_service == RENAME_FILES_TO_JELLY_COMICS:
+        elif (
+            self.__selected_service == RENAME_FILES_TO_JELLY_COMICS
+            or self.__selected_service == RENAME_TO_CLEANUP
+        ):
             self.__create_story_name_entry()
 
     def __pull_files_from_download(self):
@@ -178,7 +182,7 @@ class RenameGui(Gui):
         logger.info("configuring menu")
         self.__create_window()
 
-        options = [service for service in get_list_service() if "jellyfin" in service]
+        options = [service for service in get_list_service() if "rename" in service]
         self.__create_service_dropdown_component(options)
 
         self.__create_submit_button()
@@ -193,7 +197,7 @@ class RenameGui(Gui):
         service_args.story = get_widget_value(self.__story_name_text)
         try:
             logger.info("running service")
-            # self.__service(service_args)
+            self.__service(service_args)
             self.__update_service_message("Renaming Completed")
         except ServiceError as err:
             self.__update_service_message(str(err))
