@@ -24,9 +24,6 @@ def get_list_service() -> Iterable[str]:
 def get_services() -> dict[str, ServiceMetaData]:
     """returns mapping of service names to service metadata"""
     return {
-        RENAME_TO_CALIBRE_IMAGE: ServiceMetaData(
-            IMAGES_IN, IMAGES_OUT, RenameService.rename_image_to_calibre_image
-        ),
         RENAME_SEASONED_TO_JELLY_NAME: ServiceMetaData(
             IMAGES_IN,
             IMAGES_OUT,
@@ -49,9 +46,6 @@ def get_services() -> dict[str, ServiceMetaData]:
             "chapter_zip_in", "chapter_zip_out", rezip_chapters_to_vol
         ),
         CREATE_VOLUMES_NAME: ServiceMetaData(None, None, create_volumes),
-        PREPARE_FOR_JELLYFIN: ServiceMetaData(
-            IMAGES_IN, IMAGES_OUT, prepare_for_jellyfin
-        ),
         RENAME_TO_CLEANUP: ServiceMetaData(
             IMAGES_IN, IMAGES_IN, RenameService.rename_files_to_clean_up_downloads
         ),

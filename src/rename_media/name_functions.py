@@ -20,7 +20,9 @@ def create_calibre_image_name(story: str, chapter: str, page: int) -> str:
     return f"{story} - c{chapter_number} - p{page_number}.png"
 
 
-def create_jellyfin_episode_name(season_number: int, episode_number: int) -> str:
+def create_jellyfin_episode_name(
+    episode_number: int, season_number: int, extension: str
+) -> str:
     """function to create an episode name in jellyfin format with episode and season"""
     if season_number < 0 or episode_number < 0:
         raise RenameMediaError("season and episodes can't be negative")
@@ -28,10 +30,10 @@ def create_jellyfin_episode_name(season_number: int, episode_number: int) -> str
     jellyfin_number_zeros = 2
     season = prepend_zeros(season_number, jellyfin_number_zeros)
     episode = prepend_zeros(episode_number, jellyfin_number_zeros)
-    return f"Episode S{season}E{episode}.mkv"
+    return f"Episode S{season}E{episode}.{extension}"
 
 
-def create_jellyfin_comic_name(story_name: str, issue: int) -> str:
+def create_jellyfin_comic_name(issue: int, story_name: str) -> str:
     jellyfin_number_zeros = 3
     issue_number = prepend_zeros(issue, jellyfin_number_zeros)
 

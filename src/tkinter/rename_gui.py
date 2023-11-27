@@ -21,6 +21,7 @@ logger = getLogger(__name__)
 class RenameGui(Gui):
     def __init__(self):
         self.__root = Tk()
+        self.__root.title("Media Utility")
 
         self.__directory_in = None
         self.__directory_out = None
@@ -28,7 +29,8 @@ class RenameGui(Gui):
         self.__service_dropdown_row = 0
         self.__story_name_row = 2
         self.__numeric_dropdown_row = 2
-        self.__submit_button_row = 3
+        self.__extension_dropdown_row = 3
+        self.__submit_button_row = 4
         self.__service_message_row = 5
 
         self.__submit_button = None
@@ -48,11 +50,18 @@ class RenameGui(Gui):
         self.__numeric_dropdown = None
         self.__numeric_click = None
 
+        self.__extension_label = None
+        self.__extension_dropdown = None
+        self.__extension_click = None
+
         self.__service_dropdown = None
         self.__service_click = None
         self.__service_dropdown_button = None
 
         self.__selected_service = None
+
+        self.__numeric_options = [i for i in range(15)]
+        self.__extension_options = ["mkv", "ass", "default.ass", "mp4"]
 
     def __create_window(self):
         width = 700
@@ -61,16 +70,30 @@ class RenameGui(Gui):
         self.__root.geometry(dimension)
 
     def __create_numeric_dropdown_menu(self):
-        options = [i for i in range(15)]
-        click, menu = create_dropdown(self.__root, options, self.__numeric_dropdown_row)
+        click, menu = create_dropdown(
+            self.__root, self.__numeric_options, self.__numeric_dropdown_row
+        )
         self.__numeric_click = click
         self.__numeric_dropdown = menu
+
+    def __create_extension_dropdown_menu(self):
+        click, menu = create_dropdown(
+            self.__root, self.__extension_options, self.__extension_dropdown_row
+        )
+        self.__extension_click = click
+        self.__extension_dropdown = menu
 
     def __create_numeric_dropdown_component(self):
         self.__numeric_label = create_label(
             self.__root, "Select Number for Volume/Season", self.__numeric_dropdown_row
         )
         self.__create_numeric_dropdown_menu()
+
+    def __create_extension_dropdown_component(self):
+        self.__extension_label = create_label(
+            self.__root, "Select Extension", self.__extension_dropdown_row
+        )
+        self.__create_extension_dropdown_menu()
 
     def __create_service_dropdown_menu(self, options):
         click, _ = create_dropdown(self.__root, options, self.__service_dropdown_row)
@@ -87,6 +110,8 @@ class RenameGui(Gui):
         widgets: Iterable[Widget] = [
             self.__numeric_dropdown,
             self.__numeric_label,
+            self.__extension_label,
+            self.__extension_dropdown,
             self.__story_name_button,
             self.__story_name_entry,
             self.__download_entry,
@@ -110,6 +135,7 @@ class RenameGui(Gui):
     def __add_service_widgets(self):
         if self.__selected_service == RENAME_FILES_TO_JELLY_EPISODES:
             self.__create_numeric_dropdown_component()
+            self.__create_extension_dropdown_component()
 
         elif (
             self.__selected_service == RENAME_FILES_TO_JELLY_COMICS
@@ -195,6 +221,7 @@ class RenameGui(Gui):
         )
         service_args.season_number = get_widget_value(self.__numeric_click)
         service_args.story = get_widget_value(self.__story_name_text)
+        service_args.extension = get_widget_value(self.__extension_click)
         try:
             logger.info("running service")
             self.__service(service_args)
