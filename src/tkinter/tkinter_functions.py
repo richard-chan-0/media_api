@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter.messagebox import askokcancel
+from tkinter.scrolledtext import ScrolledText
 from typing import Iterable, Tuple, Callable
 
 COLUMN_COMPONENT = "1"
@@ -76,6 +77,16 @@ def create_frame(
 def create_confirmation_window(title, message):
     """function to create a message box to give confiramation window"""
     return askokcancel(title=title, message=message)
+
+
+def create_console_textbox(root: Tk, options: dict, row: str, col: str):
+    """function to create a read-only textbox"""
+    console = ScrolledText(root, **options)
+    console.configure(state="disabled")
+    console.grid(
+        row=row, column=col, padx=DEFAULT_PADDINGX, pady=DEFAULT_PADDINGY, sticky=W
+    )
+    return console
 
 
 def destroy_widgets(widgets: Iterable[Widget]):
