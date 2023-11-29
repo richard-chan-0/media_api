@@ -9,9 +9,11 @@ from src.services import (
 from src.factories.factories import create_basic_service_args
 from src.exceptions.exceptions import ServiceError
 from src.utilities.os_functions import transfer_files
+from src.rename_media.rename_media import rename_files
 from src.tkinter.tkinter_functions import *
 from typing import Iterable
 from src.tkinter.gui import Gui
+from json import dumps
 
 from logging import getLogger
 
@@ -21,6 +23,7 @@ logger = getLogger(__name__)
 class RenameGui(Gui):
     def __init__(self):
         self.__root = Tk()
+        self.__root.title("Media Utility")
 
         self.__directory_in = None
         self.__directory_out = None
@@ -28,10 +31,10 @@ class RenameGui(Gui):
         self.__service_dropdown_row = 0
         self.__story_name_row = 2
         self.__numeric_dropdown_row = 2
-        self.__submit_button_row = 3
+        self.__extension_dropdown_row = 3
+        self.__submit_button_row = 4
         self.__service_message_row = 5
 
-        self.__submit_button = None
         self.__service_message = None
 
         self.__download_label = None
@@ -48,38 +51,63 @@ class RenameGui(Gui):
         self.__numeric_dropdown = None
         self.__numeric_click = None
 
-        self.__service_dropdown = None
-        self.__service_click = None
-        self.__service_dropdown_button = None
+        self.__extension_label = None
+        self.__extension_dropdown = None
+        self.__extension_click = None
 
-        self.__selected_service = None
+        self.__rename_mapping = None
+
+        self.__numeric_options = [i for i in range(15)]
+        self.__extension_options = ["mkv", "ass", "default.ass", "mp4"]
 
     def __create_window(self):
-        width = 700
-        height = 250
+        width = 900
+        height = 450
         dimension = f"{width}x{height}"
         self.__root.geometry(dimension)
 
     def __create_numeric_dropdown_menu(self):
-        options = [i for i in range(15)]
-        click, menu = create_dropdown(self.__root, options, self.__numeric_dropdown_row)
+        click, menu = create_dropdown(
+            self.__root,
+            self.__numeric_options,
+            self.__numeric_dropdown_row,
+            command=lambda x: self.__log_to_console(f"you selected {x}"),
+        )
         self.__numeric_click = click
         self.__numeric_dropdown = menu
 
+    def __create_extension_dropdown_menu(self):
+        click, menu = create_dropdown(
+            self.__root,
+            self.__extension_options,
+            self.__extension_dropdown_row,
+            command=lambda x: self.__log_to_console(f"you selected {x}"),
+        )
+        self.__extension_click = click
+        self.__extension_dropdown = menu
+
     def __create_numeric_dropdown_component(self):
         self.__numeric_label = create_label(
-            self.__root, "Select Number for Volume/Season", self.__numeric_dropdown_row
+            self.__root, "Volume/Season?", self.__numeric_dropdown_row
         )
         self.__create_numeric_dropdown_menu()
 
+    def __create_extension_dropdown_component(self):
+        self.__extension_label = create_label(
+            self.__root, "File Output Type", self.__extension_dropdown_row
+        )
+        self.__create_extension_dropdown_menu()
+
     def __create_service_dropdown_menu(self, options):
-        click, _ = create_dropdown(self.__root, options, self.__service_dropdown_row)
-        self.__service_click = click
-        # self.__service_dropdown = menu
+        create_dropdown(
+            self.__root,
+            options,
+            self.__service_dropdown_row,
+            command=self.__add_service_widgets,
+        )
 
     def __create_service_dropdown_component(self, options: Iterable[str]):
-        create_label(self.__root, "Select Service", self.__service_dropdown_row)
-        self.__create_service_dropdown_button()
+        create_label(self.__root, "Service?", self.__service_dropdown_row)
         self.__create_service_dropdown_menu(options)
 
     def __cleanup(self):
@@ -87,6 +115,8 @@ class RenameGui(Gui):
         widgets: Iterable[Widget] = [
             self.__numeric_dropdown,
             self.__numeric_label,
+            self.__extension_label,
+            self.__extension_dropdown,
             self.__story_name_button,
             self.__story_name_entry,
             self.__download_entry,
@@ -102,123 +132,152 @@ class RenameGui(Gui):
         self.__directory_out = service_metadata.directory_out
         self.__service = service_metadata.service
 
-    def __add_download_widget(self):
+    def __create_action_buttons(self):
+        """function to create frame and couple the buttons to the frame on gui"""
+        frame = create_frame(
+            self.__root, row=self.__submit_button_row, column=COLUMN_COMPONENT
+        )
+        self.__create_download_button(frame)
+        self.__create_submit_button(frame)
+        self.__create_rename_button(frame)
+
+    def __add_service_widgets(self, value: str):
+        """function to add widgets based on service selected"""
         logger.info("adding download widget to window")
+        self.__log_to_console(f"setting up {value} service")
+        self.__configure_service(value)
         self.__cleanup()
+
         self.__create_download_files_entry()
+        self.__create_action_buttons()
 
-    def __add_service_widgets(self):
-        if self.__selected_service == RENAME_FILES_TO_JELLY_EPISODES:
+        if value == RENAME_FILES_TO_JELLY_EPISODES:
             self.__create_numeric_dropdown_component()
+            self.__create_extension_dropdown_component()
 
-        elif (
-            self.__selected_service == RENAME_FILES_TO_JELLY_COMICS
-            or self.__selected_service == RENAME_TO_CLEANUP
-        ):
+        elif value == RENAME_FILES_TO_JELLY_COMICS or value == RENAME_TO_CLEANUP:
             self.__create_story_name_entry()
 
     def __pull_files_from_download(self):
-        self.__cleanup()
-        self.__selected_service = self.__service_click.get()
-        self.__configure_service(self.__selected_service)
-
         download_path = get_widget_value(self.__download_text)
         if not download_path or not self.__directory_in:
-            self.__update_service_message(
-                "no download directory or destination directory set"
-            )
+            self.__log_to_console("no download directory or destination directory set")
             return
 
         try:
             transfer_files(download_path, self.__directory_in)
-            self.__update_service_message("files have been pulled!")
-            self.__add_service_widgets()
+            self.__log_to_console("files have been pulled!")
         except ServiceError as err:
-            self.__update_service_message(str(err))
+            self.__log_to_console(str(err))
 
-    def __create_download_button(self):
+    def __create_download_button(self, root):
         self.__download_button = create_buttoon(
-            self.__root,
-            "Pull Files",
-            self.__pull_files_from_download,
-            self.__download_entry_row,
+            root=root,
+            button_text="Pull Files?",
+            action=self.__pull_files_from_download,
+            row_position=0,
+            col_position=0,
         )
 
-    def __create_service_dropdown_button(self):
+    def __create_rename_button(self, root):
         create_buttoon(
-            self.__root,
-            "Select Service",
-            self.__add_download_widget,
-            self.__service_dropdown_row,
+            root=root,
+            button_text="Update Files",
+            action=self.__update_files,
+            row_position=0,
+            col_position=2,
         )
 
-    def __create_submit_button(self):
-        create_label(self.__root, "Submit Button", row=self.__submit_button_row)
+    def __create_submit_button(self, root):
+        """function to create button for generating name mapping"""
+        create_label(self.__root, "Run", row=self.__submit_button_row)
 
         create_buttoon(
-            self.__root,
-            "Rename",
-            self.__run_service,
-            self.__submit_button_row,
+            root,
+            button_text="Create New File Names",
+            action=self.__create_rename_mapping,
+            row_position=0,
+            col_position=1,
         )
 
     def __create_download_files_entry(self):
+        """function to setup entry component for entering path of download folder"""
         self.__download_label = create_label(
-            self.__root, "Enter Download Directory: ", row=self.__download_entry_row
+            self.__root, "Download Directory: ", row=self.__download_entry_row
         )
-        self.__create_download_button()
 
         text, entry = create_input_field(self.__root, self.__download_entry_row)
         self.__download_text = text
         self.__download_entry = entry
 
     def __create_story_name_entry(self):
+        """function to setup entry component to enter name for comic functions"""
         create_label(self.__root, "Enter the Story Name:", row=self.__story_name_row)
         text, entry = create_input_field(self.__root, self.__story_name_row)
         self.__story_name_text = text
         self.__story_name_entry = entry
 
-    def __config(self):
+    def __init_gui(self):
+        """function to initialize the gui"""
         logger.info("configuring menu")
         self.__create_window()
 
         options = [service for service in get_list_service() if "rename" in service]
         self.__create_service_dropdown_component(options)
+        self.__create_console_message()
 
-        self.__create_submit_button()
-        self.__create_service_message()
-
-    def __run_service(self):
+    def __create_rename_mapping(self):
+        """function that runs rename methods"""
         logger.info("retrieving service configurations")
         service_args = create_basic_service_args(
             self.__directory_in, self.__directory_out
         )
         service_args.season_number = get_widget_value(self.__numeric_click)
         service_args.story = get_widget_value(self.__story_name_text)
-        try:
-            logger.info("running service")
-            self.__service(service_args)
-            self.__update_service_message("Renaming Completed")
-        except ServiceError as err:
-            self.__update_service_message(str(err))
+        service_args.extension = get_widget_value(self.__extension_click)
+        logger.info("creating name mapping")
 
-    def __update_service_message(self, message: str):
-        self.__service_message.config(text=message)
+        self.__rename_mapping = self.__service(service_args)
+        mapping = dumps(self.__rename_mapping, indent=4)
+        self.__log_to_console(mapping)
 
-    def __create_service_message(self):
-        create_label(
-            self.__root, text="Service Message", row=self.__service_message_row
+    def __update_files(self):
+        """function to rename the files"""
+        is_okay = create_confirmation_window(
+            "Confirmation", "Are you sure you want to rename these files?"
         )
 
-        options = {"background": "black"}
-        self.__service_message = create_label(
+        if not is_okay:
+            self.__log_to_console("rename files aborted!")
+            return
+
+        logger.info("updating file names in system")
+        self.__log_to_console("renaming files!")
+        rename_files(rename_mapping=self.__rename_mapping)
+
+    def __log_to_console(self, message: str):
+        """function to update the console window in gui to message"""
+        self.__service_message.configure(state="normal")
+        self.__service_message.delete(1.0, END)
+        self.__service_message.insert(INSERT, message)
+        self.__service_message.configure(state="disabled")
+
+    def __create_console_message(self):
+        """function to create the console window on gui"""
+        create_label(self.__root, text="Console", row=self.__service_message_row)
+
+        options = {
+            "background": "black",
+            "width": "100",
+            "height": "20",
+        }
+        self.__service_message = create_console_textbox(
             self.__root,
-            "",
-            row=self.__service_message_row,
-            column=COLUMN_COMPONENT,
             options=options,
+            row=self.__service_message_row,
+            col=1,
         )
 
     def start(self):
-        self.__config()
+        self.__init_gui()
         self.__root.mainloop()
