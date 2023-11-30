@@ -32,6 +32,7 @@ def get_services() -> dict[str, ServiceMetaData]:
             "chapter_zip_in", "chapter_zip_out", rezip_chapters_to_vol
         ),
         CREATE_VOLUMES_NAME: ServiceMetaData(None, None, create_volumes),
+        "ffmpeg": ServiceMetaData(None, None, None),
     }
 
 

@@ -1,4 +1,5 @@
 import os
+from subprocess import run, PIPE
 from src.rename_media.name_functions import create_calibre_image_name
 from typing import Iterable, Callable
 from PIL import Image
@@ -165,3 +166,8 @@ def get_env(env_var: str) -> str:
 def create_new_file_path(new_dir: str, file_name: str) -> str:
     """function to concat directory and file into new path"""
     return f"{new_dir}/{file_name}"
+
+
+def run_shell_command(command: [str]):
+    """runs a shell command given a list of arguments"""
+    return run(command, stdout=PIPE, encoding="utf-8")
