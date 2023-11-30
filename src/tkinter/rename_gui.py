@@ -21,6 +21,11 @@ logger = getLogger(__name__)
 
 
 class RenameGui(Gui):
+    BACKGROUND_COLOR = "#101010"
+    NUMERIC_OPTIONS = [i for i in range(15)]
+    EXTENSION_OPTIONS = ["mkv", "ass", "default.ass", "mp4"]
+    DEFAULT_OPTIONS = {"bg": BACKGROUND_COLOR, "highlightbackground": BACKGROUND_COLOR}
+
     def __init__(self):
         self.__root = Tk()
         self.__root.title("Media Utility")
@@ -32,8 +37,9 @@ class RenameGui(Gui):
         self.__story_name_row = 2
         self.__numeric_dropdown_row = 2
         self.__extension_dropdown_row = 3
-        self.__submit_button_row = 4
-        self.__service_message_row = 5
+        self.__submit_button_row = 5
+        self.__service_message_row = 100
+        self.__start_number_row = 4
 
         self.__service_message = None
 
@@ -44,7 +50,6 @@ class RenameGui(Gui):
 
         self.__story_name_text = None
         self.__story_name_entry = None
-
         self.__story_name_button = None
 
         self.__numeric_label = None
@@ -55,21 +60,23 @@ class RenameGui(Gui):
         self.__extension_dropdown = None
         self.__extension_click = None
 
-        self.__rename_mapping = None
+        self.__start_number_label = None
+        self.__start_number_text = None
+        self.__start_number_entry = None
 
-        self.__numeric_options = [i for i in range(15)]
-        self.__extension_options = ["mkv", "ass", "default.ass", "mp4"]
+        self.__rename_mapping = None
 
     def __create_window(self):
         width = 900
         height = 450
         dimension = f"{width}x{height}"
         self.__root.geometry(dimension)
+        self.__root.configure(bg=self.BACKGROUND_COLOR)
 
     def __create_numeric_dropdown_menu(self):
         click, menu = create_dropdown(
             self.__root,
-            self.__numeric_options,
+            self.NUMERIC_OPTIONS,
             self.__numeric_dropdown_row,
             command=lambda x: self.__log_to_console(f"you selected {x}"),
         )
@@ -79,7 +86,7 @@ class RenameGui(Gui):
     def __create_extension_dropdown_menu(self):
         click, menu = create_dropdown(
             self.__root,
-            self.__extension_options,
+            self.EXTENSION_OPTIONS,
             self.__extension_dropdown_row,
             command=lambda x: self.__log_to_console(f"you selected {x}"),
         )
@@ -88,13 +95,19 @@ class RenameGui(Gui):
 
     def __create_numeric_dropdown_component(self):
         self.__numeric_label = create_label(
-            self.__root, "Volume/Season?", self.__numeric_dropdown_row
+            self.__root,
+            "Volume/Season?",
+            self.__numeric_dropdown_row,
+            options=self.DEFAULT_OPTIONS,
         )
         self.__create_numeric_dropdown_menu()
 
     def __create_extension_dropdown_component(self):
         self.__extension_label = create_label(
-            self.__root, "File Output Type", self.__extension_dropdown_row
+            self.__root,
+            "File Output Type",
+            self.__extension_dropdown_row,
+            options=self.DEFAULT_OPTIONS,
         )
         self.__create_extension_dropdown_menu()
 
@@ -107,7 +120,12 @@ class RenameGui(Gui):
         )
 
     def __create_service_dropdown_component(self, options: Iterable[str]):
-        create_label(self.__root, "Service?", self.__service_dropdown_row)
+        create_label(
+            self.__root,
+            "Service?",
+            self.__service_dropdown_row,
+            options=self.DEFAULT_OPTIONS,
+        )
         self.__create_service_dropdown_menu(options)
 
     def __cleanup(self):
@@ -122,6 +140,8 @@ class RenameGui(Gui):
             self.__download_entry,
             self.__download_button,
             self.__download_label,
+            self.__start_number_entry,
+            self.__start_number_label,
         ]
         destroy_widgets(widgets)
 
@@ -135,7 +155,10 @@ class RenameGui(Gui):
     def __create_action_buttons(self):
         """function to create frame and couple the buttons to the frame on gui"""
         frame = create_frame(
-            self.__root, row=self.__submit_button_row, column=COLUMN_COMPONENT
+            self.__root,
+            row=self.__submit_button_row,
+            column=COLUMN_COMPONENT,
+            options=self.DEFAULT_OPTIONS,
         )
         self.__create_download_button(frame)
         self.__create_submit_button(frame)
@@ -149,6 +172,7 @@ class RenameGui(Gui):
         self.__cleanup()
 
         self.__create_download_files_entry()
+        self.__create_optional_start_entry()
         self.__create_action_buttons()
 
         if value == RENAME_FILES_TO_JELLY_EPISODES:
@@ -177,6 +201,7 @@ class RenameGui(Gui):
             action=self.__pull_files_from_download,
             row_position=0,
             col_position=0,
+            options=self.DEFAULT_OPTIONS,
         )
 
     def __create_rename_button(self, root):
@@ -186,11 +211,17 @@ class RenameGui(Gui):
             action=self.__update_files,
             row_position=0,
             col_position=2,
+            options=self.DEFAULT_OPTIONS,
         )
 
     def __create_submit_button(self, root):
         """function to create button for generating name mapping"""
-        create_label(self.__root, "Run", row=self.__submit_button_row)
+        create_label(
+            self.__root,
+            "Run",
+            row=self.__submit_button_row,
+            options=self.DEFAULT_OPTIONS,
+        )
 
         create_buttoon(
             root,
@@ -198,21 +229,43 @@ class RenameGui(Gui):
             action=self.__create_rename_mapping,
             row_position=0,
             col_position=1,
+            options=self.DEFAULT_OPTIONS,
         )
 
     def __create_download_files_entry(self):
         """function to setup entry component for entering path of download folder"""
         self.__download_label = create_label(
-            self.__root, "Download Directory: ", row=self.__download_entry_row
+            self.__root,
+            "Download Directory:",
+            row=self.__download_entry_row,
+            options=self.DEFAULT_OPTIONS,
         )
 
         text, entry = create_input_field(self.__root, self.__download_entry_row)
         self.__download_text = text
         self.__download_entry = entry
 
+    def __create_optional_start_entry(self):
+        """function to setup entry component for entering path of download folder"""
+        create_label(
+            self.__root,
+            "Start Number:",
+            row=self.__start_number_row,
+            options=self.DEFAULT_OPTIONS,
+        )
+
+        text, entry = create_input_field(self.__root, self.__start_number_row)
+        self.__start_number_text = text
+        self.__start_number_entry = entry
+
     def __create_story_name_entry(self):
         """function to setup entry component to enter name for comic functions"""
-        create_label(self.__root, "Enter the Story Name:", row=self.__story_name_row)
+        create_label(
+            self.__root,
+            "Enter the Story Name:",
+            row=self.__story_name_row,
+            options=self.DEFAULT_OPTIONS,
+        )
         text, entry = create_input_field(self.__root, self.__story_name_row)
         self.__story_name_text = text
         self.__story_name_entry = entry
@@ -226,6 +279,34 @@ class RenameGui(Gui):
         self.__create_service_dropdown_component(options)
         self.__create_console_message()
 
+    def __log_to_console(self, message: str):
+        """function to update the console window in gui to message"""
+        self.__service_message.configure(state="normal")
+        self.__service_message.delete(1.0, END)
+        self.__service_message.insert(INSERT, message)
+        self.__service_message.configure(state="disabled")
+
+    def __create_console_message(self):
+        """function to create the console window on gui"""
+        create_label(
+            self.__root,
+            text="Console",
+            row=self.__service_message_row,
+            options=self.DEFAULT_OPTIONS,
+        )
+
+        options = {
+            "background": "black",
+            "width": "100",
+            "height": "20",
+        }
+        self.__service_message = create_console_textbox(
+            self.__root,
+            options=options,
+            row=self.__service_message_row,
+            col=1,
+        )
+
     def __create_rename_mapping(self):
         """function that runs rename methods"""
         logger.info("retrieving service configurations")
@@ -235,6 +316,7 @@ class RenameGui(Gui):
         service_args.season_number = get_widget_value(self.__numeric_click)
         service_args.story = get_widget_value(self.__story_name_text)
         service_args.extension = get_widget_value(self.__extension_click)
+        service_args.start_number = get_widget_value(self.__start_number_text)
         logger.info("creating name mapping")
 
         self.__rename_mapping = self.__service(service_args)
@@ -254,29 +336,6 @@ class RenameGui(Gui):
         logger.info("updating file names in system")
         self.__log_to_console("renaming files!")
         rename_files(rename_mapping=self.__rename_mapping)
-
-    def __log_to_console(self, message: str):
-        """function to update the console window in gui to message"""
-        self.__service_message.configure(state="normal")
-        self.__service_message.delete(1.0, END)
-        self.__service_message.insert(INSERT, message)
-        self.__service_message.configure(state="disabled")
-
-    def __create_console_message(self):
-        """function to create the console window on gui"""
-        create_label(self.__root, text="Console", row=self.__service_message_row)
-
-        options = {
-            "background": "black",
-            "width": "100",
-            "height": "20",
-        }
-        self.__service_message = create_console_textbox(
-            self.__root,
-            options=options,
-            row=self.__service_message_row,
-            col=1,
-        )
 
     def start(self):
         self.__init_gui()
