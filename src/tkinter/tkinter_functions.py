@@ -40,10 +40,12 @@ def create_buttoon(
     action: Callable,
     row_position: str,
     col_position: int,
-    options: dict = {"width": DEFUALT_BUTTON_WIDTH},
+    options: dict = {},
 ):
     """function to create a tkinter button"""
-    button = Button(root, text=button_text, default="active", command=action, **options)
+    button_options = {**options, "width": DEFUALT_BUTTON_WIDTH}
+    button = Button(root, text=button_text, default="active", command=action)
+    button.configure(**button_options)
     button.grid(row=row_position, column=col_position, sticky=W)
     return button
 
@@ -52,11 +54,13 @@ def create_label(
     root: Tk,
     text: str,
     row: str,
-    options: dict = {"width": DEFAULT_LABEL_WIDTH, "anchor": "w"},
+    options: dict = {},
     column: str = "0",
 ):
     """function to create tkinter label"""
-    label = Label(root, text=text, **options)
+    label_options = {**options, "width": DEFAULT_LABEL_WIDTH, "anchor": "w"}
+    label = Label(root, text=text)
+    label.configure(**label_options)
     label.grid(
         row=row, column=column, padx=DEFAULT_PADDINGX, pady=DEFAULT_PADDINGY, sticky=W
     )
@@ -67,9 +71,11 @@ def create_frame(
     root: Tk,
     row: str,
     column: str,
+    options: dict = {},
 ):
     """function to create tkinter label"""
     frame = Frame(root)
+    frame.configure(**options)
     frame.grid(row=row, column=column, sticky=NSEW)
     return frame
 

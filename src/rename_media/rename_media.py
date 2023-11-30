@@ -25,11 +25,13 @@ def create_rename_mapping_with_sorted(
     directory_out: str,
     create_name_function: Callable,
     name_args: dict,
+    start_number: str,
 ):
     """function to create a mapping between old file path and new file path for rename"""
+    start = 0 if not start_number or not start_number.isnumeric() else int(start_number)
     rename_mapping = {}
     for list_index, file in enumerate(files):
-        file_number = list_index + 1
+        file_number = list_index + 1 + start
         new_name = create_name_function(file_number, **name_args)
         new_path = create_new_file_path(directory_out, new_name)
         rename_mapping[file.path] = new_path
@@ -64,6 +66,7 @@ def rename_image_to_calibre_image(args: ServiceArguments):
 
 def create_jellyfin_episodes_mapping_with_seasoned_name(args):
     """renames a list of files in designated directory to jellyfin name with S[0-9][0-9]E[0-9][0-9] format"""
+    deprecate_function()
     directory_in = args.directory_in
     directory_out = args.directory_out
 
@@ -85,30 +88,34 @@ def create_jellyfin_episodes_mapping_with_seasoned_name(args):
 
 def rename_seasoned_video_to_jellyfin_name(args: ServiceArguments):
     """renames a list of files in designated directory to jellyfin name with S[0-9][0-9]E[0-9][0-9] format"""
+    deprecate_function()
     rename_mapping = create_jellyfin_episodes_mapping_with_seasoned_name(args)
     rename_files(rename_mapping)
 
 
-def create_jellyfin_episodes_mapping(args):
+def create_jellyfin_episodes_mapping(args: ServiceArguments):
     """function to create the file names into jellyfin name"""
     directory_in = args.directory_in
     directory_out = args.directory_out
-    season_number = int(args.season_number)
+    season_number = args.season_number
+    start_number = args.start_number
     extension = args.extension
 
-    filename_args = {"extension": extension, "season_number": season_number}
+    filename_args = {"extension": extension, "season_number": int(season_number)}
 
     directory_entries = get_sorted_files(directory_in)
     return create_rename_mapping_with_sorted(
-        directory_entries,
-        directory_out,
-        create_jellyfin_episode_name,
-        filename_args,
+        files=directory_entries,
+        directory_out=directory_out,
+        create_name_function=create_jellyfin_episode_name,
+        name_args=filename_args,
+        start_number=start_number,
     )
 
 
 def rename_files_into_list_of_jellyfin_episodes(args: ServiceArguments):
     """function to indiscriminately rename the files in a season folder into jellyfin name"""
+    deprecate_function()
     rename_mapping = create_jellyfin_episodes_mapping(args)
     rename_files(rename_mapping)
 
@@ -136,6 +143,7 @@ def create_jellyfin_comics_mapping(args):
 
 def rename_files_into_list_of_jellyfin_comics(args: ServiceArguments):
     """function to indiscriminately rename the files in a season folder into jellyfin name"""
+    deprecate_function()
     rename_mapping = create_jellyfin_comics_mapping(args)
     rename_files(rename_mapping)
 
@@ -158,6 +166,7 @@ def create_cleaned_filenames_mapping(args: ServiceArguments):
 
 def rename_files_to_clean_up_downloads(args: ServiceArguments):
     """function to clean up file names of tags or metadata in name"""
+    deprecate_function()
     rename_mapping = create_cleaned_filenames_mapping(args)
     rename_files(rename_mapping)
 
