@@ -1,11 +1,12 @@
 from tkinter import *
-from src.data_types.media_types import MediaStream
+from src.data_types.media_types import MediaStream, StreamType
 from src.tkinter.tkinter_functions import *
 from src.ffmpeg.ffmpeg_functions import *
 from typing import Iterable
 from src.tkinter.gui import Gui
 from json import dumps
 from src.exceptions.exceptions import ServiceError
+from src.ffmpeg.ffmpeg_builder import FfmpegCommandBuilder
 
 from logging import getLogger
 
@@ -22,8 +23,8 @@ class FfmpegGui(Gui):
 
         self.__file_entry_row = 0
         self.__inspect_file_button_row = 1
-        self.__subtitles_dropdown_row = 2
-        self.__audio_dropdown_row = 3
+        self.__subtitles_dropdown_row = 3
+        self.__audio_dropdown_row = 2
         self.__set_default_streams_row = 4
 
         self.__service_message_row = 100
@@ -42,7 +43,19 @@ class FfmpegGui(Gui):
         self.__root.configure(bg=self.BACKGROUND_COLOR)
 
     def __set_default_streams(self):
-        self.__log_to_console("updating streams!")
+        # file = get_widget_value(self.__file_entry_text)
+        file = "/Users/richardchan/Macbook/projects/media_utility/images_out/My Hero Academia - UA Heroes Battle.mkv"
+        audio, _ = get_widget_value(self.__default_audio).split(": ")
+        subtitle, _ = get_widget_value(self.__default_subtitle).split(": ")
+
+        builder = FfmpegCommandBuilder(file)
+        builder.add_stream(audio, StreamType.AUDIO)
+        builder.add_stream(subtitle, StreamType.SUBTITLE)
+        builder.set_default(audio, StreamType.AUDIO)
+        builder.set_default(subtitle, StreamType.SUBTITLE)
+        builder.set_output_file("test.mkv")
+        builder.build()
+        self.__log_to_console(builder.print_command())
 
     def __add_audio_component(self):
         create_label(
@@ -51,7 +64,7 @@ class FfmpegGui(Gui):
             self.__audio_dropdown_row,
             self.DEFAULT_OPTIONS,
         )
-        create_dropdown(
+        self.__default_audio, _ = create_dropdown(
             self.__root,
             self.__audio_list,
             self.__audio_dropdown_row,
@@ -65,7 +78,7 @@ class FfmpegGui(Gui):
             self.__subtitles_dropdown_row,
             self.DEFAULT_OPTIONS,
         )
-        create_dropdown(
+        self.__default_subtitle, _ = create_dropdown(
             self.__root,
             self.__subtitles_list,
             self.__subtitles_dropdown_row,
@@ -77,7 +90,7 @@ class FfmpegGui(Gui):
 
     def __inspect_files(self):
         """function to inspect files and save streams"""
-        path = self.__file_entry_text
+        path = get_widget_value(self.__file_entry_text)
         try:
             streams = get_media_streams(
                 "/Users/richardchan/Macbook/projects/media_utility/images_out/My Hero Academia - UA Heroes Battle.mkv"
@@ -157,6 +170,3 @@ class FfmpegGui(Gui):
     def start(self):
         self.__init_gui()
         self.__root.mainloop()
-
-
-# /Users/richardchan/Macbook/projects/media_utility/images_out/Episode S01E01.mkv

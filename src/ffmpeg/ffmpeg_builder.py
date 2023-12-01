@@ -16,7 +16,7 @@ class FfmpegCommandBuilder:
         if not is_file(file_path):
             raise FileSystemError("invalid file path given")
 
-        command = ["-i", file_path]
+        command = ["-i", f'"{file_path}"']
         self.__command.extend(command)
 
     def __create_stream(self, stream_number: int, stream_type: StreamType):
@@ -27,7 +27,7 @@ class FfmpegCommandBuilder:
 
     def __add_video(self, stream_number: int = 0):
         """maps the video stream into the command, should be zero"""
-        video_command = ["-map", str(stream_number), "-c", "copy"]
+        video_command = ["-map", f"0:{stream_number}", "-c", "copy"]
         self.__command.extend(video_command)
 
         return self
@@ -35,7 +35,7 @@ class FfmpegCommandBuilder:
     def add_stream(self, stream_number: int, stream_type: StreamType):
         """maps the subtitle stream into the command"""
         stream = self.__create_stream(stream_number, stream_type)
-        stream_command = ["-map", f"-0:{stream}"]
+        stream_command = ["-map", f"0:{stream}"]
         self.__command.extend(stream_command)
 
         return self
@@ -50,7 +50,7 @@ class FfmpegCommandBuilder:
     def set_output_file(self, output_file_path: str = ""):
         self.__is_output_added = True
         output_path = output_file_path if output_file_path else self.__input_file_path
-        output_command = ["-n", output_path]
+        output_command = ["-n", f'"{output_path}"']
 
         self.__command.extend(output_command)
         return self
