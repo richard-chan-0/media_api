@@ -1,5 +1,11 @@
 from dataclasses import dataclass
 from abc import ABC
+from enum import Enum
+
+
+class StreamType(Enum):
+    AUDIO = 1
+    SUBTITLE = 2
 
 
 class MediaStream(ABC):
@@ -8,7 +14,7 @@ class MediaStream(ABC):
 
 @dataclass
 class AudioStream(MediaStream):
-    steam_number: int
+    stream_number: int
     language: str
     is_default: bool
 

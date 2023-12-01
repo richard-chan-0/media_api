@@ -1,8 +1,9 @@
-from src.utilities.os_functions import run_shell_command
+from src.utilities.os_functions import run_shell_command, is_dir
 from src.factories.factories import create_audio_stream, create_subtitle_stream
 from typing import Iterable, Callable
 from json import loads
 from logging import getLogger
+from src.data_types.media_types import MediaStream
 
 logger = getLogger(__name__)
 
@@ -19,13 +20,14 @@ def get_media_stream_creator(media_type: str) -> Callable:
 
 def get_media_streams(path: str) -> Iterable[dict]:
     """function to run ffprobe to get audio, video, subtitle information as json"""
+    is_dir_path = is_dir(path)
     shell_output = run_shell_command(
         ["ffprobe", "-hide_banner", "-show_streams", "-print_format", "json", path]
     )
     return loads(shell_output.stdout)["streams"]
 
 
-def parse_streams(streams: Iterable[dict]):
+def parse_streams(streams: Iterable[dict]) -> dict[Iterable[MediaStream]]:
     """function to create object for streams"""
     media_streams = {}
     for stream_metadata in streams:

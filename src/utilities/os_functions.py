@@ -171,3 +171,17 @@ def create_new_file_path(new_dir: str, file_name: str) -> str:
 def run_shell_command(command: [str]):
     """runs a shell command given a list of arguments"""
     return run(command, stdout=PIPE, encoding="utf-8")
+
+
+def is_dir(path: str):
+    """function to determine if path is directory"""
+    if not os.path.exists(path):
+        raise FileExistsError("path does not exist")
+    return os.path.isdir(path)
+
+
+def is_file(path: str):
+    """function to determine if path is directory"""
+    if not os.path.exists(path):
+        raise FileExistsError("path does not exist")
+    return os.path.isfile(path)
