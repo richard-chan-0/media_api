@@ -99,7 +99,7 @@ def organize_chapters_to_vol(args: ServiceArguments):
     directory_in = args.directory_in
     directory_out = args.directory_out
 
-    chapters = get_files(directory=directory_in)
+    chapters = get_files(path=directory_in)
     mapping = create_mapping_chapters_to_vols()
     move_chapters_to_volumes(directory_out, chapters, mapping)
 

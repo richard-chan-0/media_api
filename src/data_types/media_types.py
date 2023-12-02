@@ -6,6 +6,7 @@ from enum import Enum
 class StreamType(Enum):
     AUDIO = 1
     SUBTITLE = 2
+    ATTACHMENT = 3
 
 
 class MediaStream(ABC):
@@ -24,3 +25,9 @@ class SubtitleStream(MediaStream):
     stream_number: int
     language: str
     is_default: bool
+
+
+@dataclass
+class AttachmentStream(MediaStream):
+    stream_number: int
+    filename: str

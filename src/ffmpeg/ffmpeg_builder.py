@@ -6,8 +6,6 @@ from src.data_types.media_types import StreamType
 class FfmpegCommandBuilder:
     def __init__(self, file_path, video_stream: int = 0):
         self.__command = ["ffmpeg"]
-        self.__input_file_path = file_path
-        self.__is_output_added = False
         self.__add_file(file_path)
         self.__add_video(video_stream)
 
@@ -16,7 +14,7 @@ class FfmpegCommandBuilder:
         if not is_file(file_path):
             raise FileSystemError("invalid file path given")
 
-        command = ["-i", f'"{file_path}"']
+        command = ["-i", f"{file_path}"]
         self.__command.extend(command)
 
     def __create_stream(self, stream_number: int, stream_type: StreamType):
@@ -24,10 +22,13 @@ class FfmpegCommandBuilder:
             return f"a:{stream_number}"
         elif stream_type == StreamType.SUBTITLE:
             return f"s:{stream_number}"
+        elif stream_type == StreamType.ATTACHMENT:
+            return f"t:{stream_number}"
+        return f"{stream_number}"
 
     def __add_video(self, stream_number: int = 0):
         """maps the video stream into the command, should be zero"""
-        video_command = ["-map", f"0:{stream_number}", "-c", "copy"]
+        video_command = ["-map", f"0:v:{stream_number}", "-c", "copy"]
         self.__command.extend(video_command)
 
         return self
@@ -47,18 +48,14 @@ class FfmpegCommandBuilder:
 
         return self
 
-    def set_output_file(self, output_file_path: str = ""):
-        self.__is_output_added = True
-        output_path = output_file_path if output_file_path else self.__input_file_path
-        output_command = ["-n", f'"{output_path}"']
-
+    def __set_output_file(self, output_file_path: str):
+        output_command = [f"{output_file_path}"]
         self.__command.extend(output_command)
         return self
 
     def print_command(self):
         return " ".join(self.__command)
 
-    def build(self):
-        if not self.__is_output_added:
-            self.set_output_file()
+    def build(self, output_file_path):
+        self.__set_output_file(output_file_path)
         return self.__command
