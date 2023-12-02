@@ -22,7 +22,7 @@ def create_dropdown(
 ) -> Tuple[Variable, Widget]:
     """function to create tkinter dropdown menu"""
     dropdown_option = StringVar()
-    dropdown_option.set(options[0])
+    dropdown_option.set("Select an item")
     dropdown_menu = OptionMenu(root, dropdown_option, *options, command=command)
     dropdown_menu.config(width=DEFAULT_DROPMENU_WIDTH)
     dropdown_menu.grid(

@@ -1,4 +1,5 @@
 import os
+from subprocess import run, PIPE
 from src.rename_media.name_functions import create_calibre_image_name
 from typing import Iterable, Callable
 from PIL import Image
@@ -15,12 +16,17 @@ logger = logging.getLogger(__name__)
 ignore_files = [".DS_Store"]
 
 
-def get_files(directory: str) -> Iterable[DirectoryFile]:
-    """function to get list of files from a directory"""
-    if not os.path.exists(directory):
-        raise FileSystemError(f"could not find directory: {directory}")
+def get_files(path: str) -> Iterable[DirectoryFile]:
+    """function to get list of files from a path"""
+    if not os.path.exists(path):
+        raise FileSystemError(f"could not find: {path}")
 
-    with os.scandir(directory) as entries:
+    if is_file(path):
+        filename = os.path.basename(path)
+        file_path = os.path.normpath(path)
+        return [create_file(filename, file_path)]
+
+    with os.scandir(path) as entries:
         return [
             create_file(entry.name, entry.path)
             for entry in entries
@@ -165,3 +171,22 @@ def get_env(env_var: str) -> str:
 def create_new_file_path(new_dir: str, file_name: str) -> str:
     """function to concat directory and file into new path"""
     return f"{new_dir}/{file_name}"
+
+
+def run_shell_command(command: Iterable[str]):
+    """runs a shell command given a list of arguments"""
+    return run(command, stdout=PIPE, encoding="utf-8")
+
+
+def is_dir(path: str):
+    """function to determine if path is directory"""
+    if not os.path.exists(path):
+        raise FileExistsError("path does not exist")
+    return os.path.isdir(path)
+
+
+def is_file(path: str):
+    """function to determine if path is directory"""
+    if not os.path.exists(path):
+        raise FileExistsError("path does not exist")
+    return os.path.isfile(path)

@@ -1,0 +1,246 @@
+from tkinter import *
+from src.data_types.media_types import *
+from src.tkinter.tkinter_functions import *
+from src.ffmpeg.ffmpeg_functions import *
+from typing import Iterable
+from src.tkinter.gui import Gui
+from src.exceptions.exceptions import ServiceError
+from src.ffmpeg.ffmpeg_builder import FfmpegCommandBuilder
+
+from logging import getLogger
+
+logger = getLogger(__name__)
+
+
+class FfmpegGui(Gui):
+    BLANK = "n/a"
+    BACKGROUND_COLOR = "#101010"
+    DEFAULT_OPTIONS = {"bg": BACKGROUND_COLOR, "highlightbackground": BACKGROUND_COLOR}
+
+    def __init__(self):
+        self.__root = Tk()
+        self.__root.title("ffmpeg Utility")
+
+        self.__file_entry_row = 0
+        self.__inspect_file_button_row = 1
+        self.__subtitles_dropdown_row = 3
+        self.__audio_dropdown_row = 2
+        self.__attachment_dropdown_row = 4
+        self.__buttons_component_row = 50
+
+        self.__service_message_row = 100
+
+        self.__file_entry_text = None
+        self.__default_attachment = None
+        self.__default_audio = None
+        self.__default_subtitle = None
+
+        self.__service_message = None
+        self.__subtitles_list = []
+        self.__audio_list = []
+        self.__attachments_list = []
+
+    def __create_window(self):
+        width = 900
+        height = 450
+        dimension = f"{width}x{height}"
+        self.__root.geometry(dimension)
+        self.__root.configure(bg=self.BACKGROUND_COLOR)
+
+    def __build_command(
+        self,
+        file_path: str,
+        audio: str,
+        subtitle: str,
+        attachment: str,
+        output_file_path: str,
+    ) -> Iterable[str]:
+        builder = FfmpegCommandBuilder(file_path)
+        builder.add_stream(audio, StreamType.AUDIO)
+        builder.add_stream(subtitle, StreamType.SUBTITLE)
+        builder.set_default(audio, StreamType.AUDIO)
+        builder.set_default(subtitle, StreamType.SUBTITLE)
+
+        if attachment:
+            builder.add_stream(attachment, StreamType.ATTACHMENT)
+
+        command = builder.build(output_file_path)
+        self.__log_to_console(builder.print_command(), is_clear=False)
+        return command
+
+    def __set_default_streams(self):
+        path = get_widget_value(self.__file_entry_text)
+        audio, _ = get_widget_value(self.__default_audio).split(": ")
+        subtitle, _ = get_widget_value(self.__default_subtitle).split(": ")
+        # attachment, _ = get_widget_value(self.__default_attachment).split(": ")
+        self.__log_to_console("")
+        files = get_files(path)
+        if not files:
+            return
+        file = files[0]
+        self.__log_to_console(f"building command for file {file.name}", is_clear=False)
+        command = self.__build_command(
+            file_path=file.path,
+            audio=audio,
+            subtitle=subtitle,
+            attachment=None,
+            output_file_path=f"images_out/{file.name}",
+        )
+        run_shell_command(command)
+
+    def __set_bulk_default_streams(self):
+        pass
+
+    def __add_audio_component(self):
+        create_label(
+            self.__root,
+            "Audio Streams",
+            self.__audio_dropdown_row,
+            self.DEFAULT_OPTIONS,
+        )
+        self.__default_audio, _ = create_dropdown(
+            self.__root,
+            self.__audio_list,
+            self.__audio_dropdown_row,
+            lambda x: self.__log_to_console(f"selected {x}"),
+        )
+
+    def __add_subtitle_component(self):
+        create_label(
+            self.__root,
+            "Subtitle Streams",
+            self.__subtitles_dropdown_row,
+            self.DEFAULT_OPTIONS,
+        )
+        self.__default_subtitle, _ = create_dropdown(
+            self.__root,
+            self.__subtitles_list,
+            self.__subtitles_dropdown_row,
+            lambda x: self.__log_to_console(f"selected {x}"),
+        )
+
+    def __add_attachments_component(self):
+        create_label(
+            self.__root,
+            "Attachments",
+            self.__attachment_dropdown_row,
+            self.DEFAULT_OPTIONS,
+        )
+        self.__default_attachment, _ = create_dropdown(
+            self.__root,
+            self.__attachments_list,
+            self.__attachment_dropdown_row,
+            lambda x: self.__log_to_console(f"selected {x}"),
+        )
+
+    def create_options(self, options: Iterable[MediaStream]):
+        all_options = [self.BLANK]
+        if isinstance(options[0], AudioStream) or isinstance(
+            options[0], SubtitleStream
+        ):
+            language_options = [
+                f"{index}: {stream.language}" for index, stream in enumerate(options)
+            ]
+            all_options.extend(language_options)
+        elif isinstance(options[0], AttachmentStream):
+            extras_options = [
+                f"{index}: {stream.filename}" for index, stream in enumerate(options)
+            ]
+            all_options.extend(extras_options)
+        return all_options
+
+    def __create_buttons_component(self):
+        frame = create_frame(
+            self.__root, self.__buttons_component_row, 1, self.DEFAULT_OPTIONS
+        )
+        create_buttoon(
+            root=frame,
+            button_text="Set Defaults",
+            action=self.__set_default_streams,
+            row_position=0,
+            col_position=0,
+            options=self.DEFAULT_OPTIONS,
+        )
+        create_buttoon(
+            root=frame,
+            button_text="Set Bulk Defaults",
+            action=self.__set_bulk_default_streams,
+            row_position=0,
+            col_position=1,
+            options=self.DEFAULT_OPTIONS,
+        )
+
+    def __inspect_files(self):
+        """function to inspect files and save streams"""
+        path = get_widget_value(self.__file_entry_text)
+        try:
+            streams = get_media_streams(path)
+        except ServiceError as se:
+            self.__log_to_console(se)
+            return
+
+        stream_objs = parse_streams(streams)
+        self.__subtitles_list = self.create_options(stream_objs["subtitle"])
+        self.__audio_list = self.create_options(stream_objs["audio"])
+        self.__attachments_list = self.create_options(stream_objs["attachment"])
+        self.__log_to_console(stream_objs)
+        self.__add_audio_component()
+        self.__add_subtitle_component()
+        # self.__add_attachments_component()
+        self.__create_buttons_component()
+
+    def __init_gui(self):
+        """function to initialize the gui"""
+        logger.info("configuring menu")
+        self.__create_window()
+        create_label(
+            self.__root,
+            "Enter a File/Directory",
+            self.__file_entry_row,
+            self.DEFAULT_OPTIONS,
+        )
+        self.__file_entry_text, _ = create_input_field(
+            self.__root, self.__file_entry_row
+        )
+        create_buttoon(
+            self.__root,
+            "Inspect File(s)",
+            self.__inspect_files,
+            self.__inspect_file_button_row,
+            1,
+        )
+
+        self.__create_console_message()
+
+    def __log_to_console(self, message, is_clear: bool = True):
+        """function to update the console window in gui to message"""
+        self.__service_message.configure(state="normal")
+        if is_clear:
+            self.__service_message.delete(1.0, END)
+        self.__service_message.insert(INSERT, f"{message}\n")
+        self.__service_message.configure(state="disabled")
+
+    def __create_console_message(self):
+        """function to create the console window on gui"""
+        create_label(
+            self.__root,
+            text="Console",
+            row=self.__service_message_row,
+            options=self.DEFAULT_OPTIONS,
+        )
+
+        options = {
+            "background": "black",
+            "width": "100",
+            "height": "20",
+        }
+        self.__service_message = create_console_textbox(
+            self.__root,
+            options=options,
+            row=self.__service_message_row,
+            col=1,
+        )
+
+    def start(self):
+        self.__init_gui()
+        self.__root.mainloop()

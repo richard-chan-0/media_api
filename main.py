@@ -12,6 +12,7 @@ from src.exceptions.exceptions import ServiceError
 
 from src.tkinter.rename_gui import RenameGui
 import logging
+from src.ffmpeg.ffmpeg_functions import *
 
 logger = logging.getLogger(__name__)
 
@@ -73,6 +74,13 @@ def main_gui(utility_type):
     service.start()
 
 
+def ffmpeg_main():
+    streams = get_media_streams("images_out/Episode S01E01.mkv")
+    stream_objs = parse_streams(streams)
+    print(stream_objs)
+
+
 if __name__ == "__main__":
     utility_type = get_env("UTILITY_TYPE")
     main_gui(utility_type)
+    # ffmpeg_main()
