@@ -16,6 +16,7 @@ class MediaStream(ABC):
 @dataclass
 class AudioStream(MediaStream):
     stream_number: int
+    title: str
     language: str
     is_default: bool
 
@@ -23,6 +24,7 @@ class AudioStream(MediaStream):
 @dataclass
 class SubtitleStream(MediaStream):
     stream_number: int
+    title: str
     language: str
     is_default: bool
 
