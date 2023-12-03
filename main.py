@@ -1,4 +1,5 @@
 from dotenv import load_dotenv
+from tkinter import *
 from src.utilities.os_functions import (
     get_env,
     create_sub_directory,
@@ -70,7 +71,8 @@ def main_gui(utility_type):
     configure_environment(utility_type)
 
     gui = return_gui(utility_type)
-    service = gui()
+    root = Tk()
+    service = gui(root)
     service.start()
 
 
