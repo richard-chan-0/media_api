@@ -1,6 +1,7 @@
 from src.tkinter.gui import Gui
 from src.data_types.service_constants import *
-from src.tkinter.rename_gui import RenameGui
+from src.tkinter.rename_videos_gui import RenameVideosGui
+from src.tkinter.rename_comics_gui import RenameComicsGui
 from src.tkinter.ffmpeg_gui import FfmpegGui
 from src.exceptions.exceptions import InvalidService
 
@@ -8,10 +9,8 @@ from src.exceptions.exceptions import InvalidService
 def get_services_gui() -> Gui:
     """returns mapping of service names to service metadata"""
     return {
-        RENAME_TO_CALIBRE_IMAGE: RenameGui,
-        RENAME_SEASONED_TO_JELLY_NAME: RenameGui,
-        RENAME_FILES_TO_JELLY_EPISODES: RenameGui,
-        RENAME_FILES_TO_JELLY_COMICS: RenameGui,
+        RENAME_FILES_TO_JELLY_EPISODES: RenameVideosGui,
+        RENAME_FILES_TO_JELLY_COMICS: RenameComicsGui,
         "ffmpeg": FfmpegGui,
     }
 

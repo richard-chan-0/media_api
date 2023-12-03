@@ -14,12 +14,12 @@ logger = getLogger(__name__)
 
 class FfmpegGui(Gui):
     BLANK = "n/a"
-    BACKGROUND_COLOR = "#101010"
+    # BACKGROUND_COLOR = "#101010"
+    BACKGROUND_COLOR = "yellow"
     DEFAULT_OPTIONS = {"bg": BACKGROUND_COLOR, "highlightbackground": BACKGROUND_COLOR}
 
-    def __init__(self):
-        self.__root = Tk()
-        self.__root.title("ffmpeg Utility")
+    def __init__(self, root: Tk):
+        self.__root = root
 
         self.__file_entry_row = 0
         self.__inspect_file_button_row = 1
@@ -66,7 +66,7 @@ class FfmpegGui(Gui):
             builder.add_stream(attachment, StreamType.ATTACHMENT)
 
         command = builder.build(output_file_path)
-        self.__log_to_console(builder.print_command(), is_clear=False)
+        self.log_to_console(builder.print_command(), is_clear=False)
         return command
 
     def __set_default_streams(self):
@@ -74,12 +74,12 @@ class FfmpegGui(Gui):
         audio, _ = get_widget_value(self.__default_audio).split(": ")
         subtitle, _ = get_widget_value(self.__default_subtitle).split(": ")
         # attachment, _ = get_widget_value(self.__default_attachment).split(": ")
-        self.__log_to_console("")
+        self.log_to_console("")
         files = get_files(path)
         if not files:
             return
         file = files[0]
-        self.__log_to_console(f"building command for file {file.name}", is_clear=False)
+        self.log_to_console(f"building command for file {file.name}", is_clear=False)
         self.__commands = [
             self.__build_command(
                 file_path=file.path,
@@ -112,13 +112,13 @@ class FfmpegGui(Gui):
         _, subtitle_name, subtitle_language = get_widget_value(
             self.__default_subtitle
         ).split(":")
-        self.__log_to_console("")
+        self.log_to_console("")
         files = get_files(path)
         if not files:
             return
         commands = []
         for file in files:
-            self.__log_to_console(
+            self.log_to_console(
                 f"building command for file {file.name}", is_clear=False
             )
             streams = get_media_streams(file.path)
@@ -131,7 +131,7 @@ class FfmpegGui(Gui):
                 "subtitle", stream_objs, subtitle_name, subtitle_language
             )
             if new_audio_number == -1 or new_subtitle_number == -1:
-                self.__log_to_console(
+                self.log_to_console(
                     f"** could not find the language setting you are looking for {file.name}\n"
                 )
                 continue
@@ -157,7 +157,7 @@ class FfmpegGui(Gui):
             self.__root,
             self.__audio_list,
             self.__audio_dropdown_row,
-            lambda x: self.__log_to_console(f"selected {x}"),
+            lambda x: self.log_to_console(f"selected {x}"),
         )
 
     def __add_subtitle_component(self):
@@ -171,7 +171,7 @@ class FfmpegGui(Gui):
             self.__root,
             self.__subtitles_list,
             self.__subtitles_dropdown_row,
-            lambda x: self.__log_to_console(f"selected {x}"),
+            lambda x: self.log_to_console(f"selected {x}"),
         )
 
     def __add_attachments_component(self):
@@ -185,7 +185,7 @@ class FfmpegGui(Gui):
             self.__root,
             self.__attachments_list,
             self.__attachment_dropdown_row,
-            lambda x: self.__log_to_console(f"selected {x}"),
+            lambda x: self.log_to_console(f"selected {x}"),
         )
 
     def create_options(self, options: Iterable[MediaStream]):
@@ -214,7 +214,7 @@ class FfmpegGui(Gui):
         )
 
         if not is_okay:
-            self.__log_to_console("ffmpeg aborted!")
+            self.log_to_console("ffmpeg aborted!")
             return
 
         for command in self.__commands:
@@ -249,29 +249,29 @@ class FfmpegGui(Gui):
             options=self.DEFAULT_OPTIONS,
         )
 
-    def __inspect_files(self):
+    def inspect_files(self):
         """function to inspect files and save streams"""
         path = get_widget_value(self.__file_entry_text)
         try:
             streams = get_media_streams(path)
         except ServiceError as se:
-            self.__log_to_console(se)
+            self.log_to_console(se)
             return
 
         stream_objs = parse_streams(streams)
         self.__subtitles_list = self.create_options(stream_objs.get("subtitle"))
         self.__audio_list = self.create_options(stream_objs.get("audio"))
         self.__attachments_list = self.create_options(stream_objs.get("attachment"))
-        self.__log_to_console(stream_objs)
+        self.log_to_console(stream_objs)
         self.__add_audio_component()
         self.__add_subtitle_component()
         # self.__add_attachments_component()
         self.__create_buttons_component()
 
-    def __init_gui(self):
+    def init_gui(self):
         """function to initialize the gui"""
         logger.info("configuring menu")
-        self.__create_window()
+
         create_label(
             self.__root,
             "Enter a File/Directory",
@@ -284,14 +284,14 @@ class FfmpegGui(Gui):
         create_buttoon(
             self.__root,
             "Inspect File(s)",
-            self.__inspect_files,
+            self.inspect_files,
             self.__inspect_file_button_row,
             1,
         )
 
         self.__create_console_message()
 
-    def __log_to_console(self, message, is_clear: bool = True):
+    def log_to_console(self, message, is_clear: bool = True):
         """function to update the console window in gui to message"""
         self.__service_message.configure(state="normal")
         if is_clear:
@@ -321,5 +321,6 @@ class FfmpegGui(Gui):
         )
 
     def start(self):
-        self.__init_gui()
+        self.__create_window()
+        self.init_gui()
         self.__root.mainloop()
