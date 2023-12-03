@@ -190,3 +190,10 @@ def is_file(path: str):
     if not os.path.exists(path):
         raise FileExistsError("path does not exist")
     return os.path.isfile(path)
+
+
+def parse_path(path: str):
+    """function to determine if path is directory"""
+    if not os.path.exists(path):
+        raise FileExistsError("path does not exist")
+    return os.path.split(path)

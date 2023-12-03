@@ -1,5 +1,6 @@
 from tkinter import *
 from src.data_types.media_types import *
+from src.utilities.os_functions import create_sub_directory, parse_path
 from src.tkinter.tkinter_functions import *
 from src.ffmpeg.ffmpeg_functions import *
 from typing import Iterable
@@ -14,7 +15,7 @@ logger = getLogger(__name__)
 
 class FfmpegGui(Gui):
     BLANK = "n/a"
-    BACKGROUND_COLOR = "#101010"
+    BACKGROUND_COLOR = "#141c15"
     DEFAULT_OPTIONS = {"bg": BACKGROUND_COLOR, "highlightbackground": BACKGROUND_COLOR}
 
     def __init__(self, root: Tk):
@@ -78,6 +79,8 @@ class FfmpegGui(Gui):
         if not files:
             return
         file = files[0]
+        out_dir, _ = parse_path(file.path)
+        out_path = create_sub_directory(out_dir, "updated")
         self.log_to_console(f"building command for file {file.name}", is_clear=False)
         self.__commands = [
             self.__build_command(
@@ -85,7 +88,7 @@ class FfmpegGui(Gui):
                 audio=audio,
                 subtitle=subtitle,
                 attachment=None,
-                output_file_path=f"images_out/{file.name}",
+                output_file_path=f"{out_path}/{file.name}",
             )
         ]
 
@@ -111,10 +114,14 @@ class FfmpegGui(Gui):
         _, subtitle_name, subtitle_language = get_widget_value(
             self.__default_subtitle
         ).split(":")
+
         self.log_to_console("")
         files = get_files(path)
+
         if not files:
             return
+        out_dir, _ = parse_path(files[0].path)
+        out_path = create_sub_directory(out_dir, "updated")
         commands = []
         for file in files:
             self.log_to_console(
@@ -139,7 +146,7 @@ class FfmpegGui(Gui):
                 audio=new_audio_number,
                 subtitle=new_subtitle_number,
                 attachment=None,
-                output_file_path=f"images_out/{file.name}",
+                output_file_path=f"{out_path}/{file.name}",
             )
             commands.append(command)
 
@@ -218,6 +225,8 @@ class FfmpegGui(Gui):
 
         for command in self.__commands:
             run_shell_command(command)
+
+        self.log_to_console("completed default reset")
 
     def __create_buttons_component(self):
         frame = create_frame(
