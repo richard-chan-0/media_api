@@ -1,5 +1,4 @@
 from src.tkinter.rename_gui import RenameGui
-from src.tkinter.ffmpeg_gui import FfmpegGui
 from src.tkinter.tkinter_functions import *
 from src.data_types.service_constants import RENAME_FILES_TO_JELLY_EPISODES
 from src.rename_media.rename_media import rename_files

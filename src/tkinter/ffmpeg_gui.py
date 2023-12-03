@@ -14,8 +14,7 @@ logger = getLogger(__name__)
 
 class FfmpegGui(Gui):
     BLANK = "n/a"
-    # BACKGROUND_COLOR = "#101010"
-    BACKGROUND_COLOR = "yellow"
+    BACKGROUND_COLOR = "#101010"
     DEFAULT_OPTIONS = {"bg": BACKGROUND_COLOR, "highlightbackground": BACKGROUND_COLOR}
 
     def __init__(self, root: Tk):

@@ -1,19 +1,11 @@
 from tkinter import *
 from src.services import (
-    get_list_service,
     return_service,
-    RENAME_FILES_TO_JELLY_EPISODES,
-    RENAME_FILES_TO_JELLY_COMICS,
-    RENAME_TO_CLEANUP,
 )
-from src.factories.factories import create_basic_service_args
 from src.exceptions.exceptions import ServiceError
 from src.utilities.os_functions import transfer_files
-from src.rename_media.rename_media import rename_files
 from src.tkinter.tkinter_functions import *
-from typing import Iterable
 from src.tkinter.gui import Gui
-from json import dumps
 
 from logging import getLogger
 
