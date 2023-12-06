@@ -11,7 +11,6 @@ def get_services_gui() -> Gui:
     return {
         RENAME_FILES_TO_JELLY_EPISODES: RenameVideosGui,
         RENAME_FILES_TO_JELLY_COMICS: RenameComicsGui,
-        "ffmpeg": FfmpegGui,
     }
 
 
