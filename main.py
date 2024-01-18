@@ -3,13 +3,10 @@ from tkinter import *
 from src.utilities.os_functions import (
     get_env,
     create_sub_directory,
-    transfer_files,
 )
 from src.services import return_service
 from src.guis import return_gui
 from src.data_types.ServiceMetaData import ServiceMetaData
-from src.data_types.ServiceArguments import ServiceArguments
-from src.exceptions.exceptions import ServiceError
 import logging
 
 logger = logging.getLogger(__name__)

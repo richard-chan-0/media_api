@@ -13,7 +13,7 @@ load_dotenv()
 
 logger = logging.getLogger(__name__)
 
-ignore_files = [".DS_Store"]
+ignore_files = [".DS_Store", ".localized"]
 
 
 def get_files(path: str) -> Iterable[DirectoryFile]:
