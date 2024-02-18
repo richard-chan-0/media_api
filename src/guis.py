@@ -8,8 +8,8 @@ from src.exceptions.exceptions import InvalidService
 def get_services_gui() -> Gui:
     """returns mapping of service names to service metadata"""
     return {
-        RENAME_FILES_TO_JELLY_EPISODES: RenameVideosGui,
-        RENAME_FILES_TO_JELLY_COMICS: RenameComicsGui,
+        "videos": RenameVideosGui,
+        "books": RenameComicsGui,
     }
 
 

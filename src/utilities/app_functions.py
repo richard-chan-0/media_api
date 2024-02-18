@@ -1,4 +1,5 @@
 from warnings import warn
+from argparse import ArgumentParser
 
 
 def deprecate_function():
@@ -17,3 +18,14 @@ def read_dict(dict_path: str, dict_obj: dict):
         dict_obj = value
 
     return value
+
+
+def get_parser() -> ArgumentParser:
+    parser = ArgumentParser(description="process media to go into server")
+    parser.add_argument(
+        "type",
+        type=str,
+        choices=["books", "videos"],
+        help="media utility type",
+    )
+    return parser

@@ -2,8 +2,8 @@
 **/*.png
 **/*.pyc
 **/*.pdf
-*_in
-*_out
+input
+output
 .env
 *venv
 .vscode
