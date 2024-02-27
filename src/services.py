@@ -12,9 +12,6 @@ from src.exceptions.exceptions import InvalidService
 from typing import Iterable
 from src.data_types.service_constants import *
 
-IMAGES_IN = "images_in"
-IMAGES_OUT = "images_out"
-
 
 def get_list_service() -> Iterable[str]:
     """function to get list of service names"""

@@ -175,8 +175,8 @@ def rename_files_to_clean_up_downloads(args: ServiceArguments):
     rename_files(rename_mapping)
 
 
-IMAGES_IN = "images_in"
-IMAGES_OUT = "images_out"
+IMAGES_IN = "input"
+IMAGES_OUT = "output"
 
 rename_services = {
     RENAME_FILES_TO_JELLY_EPISODES: ServiceMetaData(
