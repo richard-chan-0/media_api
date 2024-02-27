@@ -1,41 +1,31 @@
-from dotenv import load_dotenv
 from tkinter import *
 from src.utilities.os_functions import (
-    get_env,
     create_sub_directory,
-    transfer_files,
 )
-from src.services import return_service
+
 from src.guis import return_gui
 from src.data_types.ServiceMetaData import ServiceMetaData
-from src.data_types.ServiceArguments import ServiceArguments
-from src.exceptions.exceptions import ServiceError
+from src.utilities.app_functions import get_parser
 import logging
 
 logger = logging.getLogger(__name__)
 
-load_dotenv()
 
-
-def configure_environment(utility_type: str) -> ServiceMetaData:
+def configure_environment() -> ServiceMetaData:
     """configures application environment"""
     logger.info("configuring environment")
-    service_meta_data: ServiceMetaData = return_service(utility_type)
-
-    directory_in = service_meta_data.directory_in
-    directory_out = service_meta_data.directory_out
-
     logger.info("creating any missing directories")
-    create_sub_directory(".", directory_in)
-    create_sub_directory(".", directory_out)
-
-    return service_meta_data
+    create_sub_directory(".", "input")
+    create_sub_directory(".", "output")
 
 
 def main_gui(utility_type):
     """main function for utility"""
     logger.info("retrieving service")
-    configure_environment(utility_type)
+    if not utility_type:
+        return
+
+    configure_environment()
 
     gui = return_gui(utility_type)
     root = Tk()
@@ -44,5 +34,8 @@ def main_gui(utility_type):
 
 
 if __name__ == "__main__":
-    utility_type = get_env("UTILITY_TYPE")
+    parser = get_parser()
+    args = parser.parse_args()
+    utility_type = args.type
+
     main_gui(utility_type)

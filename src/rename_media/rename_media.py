@@ -28,10 +28,14 @@ def create_rename_mapping_with_sorted(
     start_number: str,
 ):
     """function to create a mapping between old file path and new file path for rename"""
-    start = 0 if not start_number or not start_number.isnumeric() else int(start_number)
+    start_index = (
+        0 if (not start_number or not start_number.isnumeric()) else int(start_number)
+    )
+    is_start_from_one = start_index == 0
+    buffer = 1 if is_start_from_one else 0
     rename_mapping = {}
-    for list_index, file in enumerate(files):
-        file_number = list_index + 1 + start
+    for index, file in enumerate(files):
+        file_number = index + start_index + buffer
         new_name = create_name_function(file_number, **name_args)
         new_path = create_new_file_path(directory_out, new_name)
         rename_mapping[file.path] = new_path
@@ -171,8 +175,8 @@ def rename_files_to_clean_up_downloads(args: ServiceArguments):
     rename_files(rename_mapping)
 
 
-IMAGES_IN = "images_in"
-IMAGES_OUT = "images_out"
+IMAGES_IN = "input"
+IMAGES_OUT = "output"
 
 rename_services = {
     RENAME_FILES_TO_JELLY_EPISODES: ServiceMetaData(

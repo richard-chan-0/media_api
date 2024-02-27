@@ -117,7 +117,6 @@ class RenameComicsGui:
         rename_files(rename_mapping=self.__rename_mapping)
 
     def start(self):
-        self.__base_gui.init_gui()
         self.__base_gui.init_gui(RENAME_FILES_TO_JELLY_COMICS)
         self.__add_service_widgets()
         self.__root.mainloop()
