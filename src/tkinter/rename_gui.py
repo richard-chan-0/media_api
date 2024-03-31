@@ -64,17 +64,30 @@ class RenameGui(Gui):
         except ServiceError as err:
             self.log_to_console(str(err))
 
-    def __create_download_files_entry(self):
-        """function to setup entry component for entering path of download folder"""
-        create_label(
-            self.__root,
-            "Download Directory:",
-            row=self.__download_entry_row,
+    def __create_download_button(self, root, row, col):
+        create_buttoon(
+            root=root,
+            button_text="Pull Files?",
+            action=self.pull_files_from_download,
+            row_position=row,
+            col_position=col,
             options=self.DEFAULT_OPTIONS,
         )
 
-        text, _ = create_input_field(self.__root, self.__download_entry_row)
+    def __create_download_files_entry(self):
+        """function to setup entry component for entering path of download folder"""
+        download_frame = create_frame(self.__root, 0, 0, self.DEFAULT_OPTIONS)
+        create_label(
+            download_frame,
+            "Download Directory:",
+            row=0,
+            options=self.DEFAULT_OPTIONS,
+        )
+
+        text, _ = create_input_field(download_frame, 0)
         self.__download_text = text
+
+        self.__create_download_button(download_frame, 0, 2)
 
     def log_to_console(self, message: str):
         """function to update the console window in gui to message"""
@@ -85,8 +98,11 @@ class RenameGui(Gui):
 
     def __create_console_message(self):
         """function to create the console window on gui"""
+        console_frame = create_frame(
+            self.__root, self.__service_message_row, 0, self.DEFAULT_OPTIONS
+        )
         create_label(
-            self.__root,
+            console_frame,
             text="Console",
             row=self.__service_message_row,
             options=self.DEFAULT_OPTIONS,
@@ -98,7 +114,7 @@ class RenameGui(Gui):
             "height": "20",
         }
         self.__service_message = create_console_textbox(
-            self.__root,
+            console_frame,
             options=options,
             row=self.__service_message_row,
             col=1,

@@ -89,7 +89,7 @@ class RenameVideosGui:
             options=self.__rename_module.DEFAULT_OPTIONS,
         )
 
-        text, _ = create_input_field(self.__root, self.__start_number_row)
+        text, _ = create_input_field(root, self.__start_number_row)
         self.__start_number_text = text
 
     def __create_submit_button(self, root):
@@ -101,16 +101,6 @@ class RenameVideosGui:
             action=self.__create_rename_mapping,
             row_position=0,
             col_position=1,
-            options=self.__rename_module.DEFAULT_OPTIONS,
-        )
-
-    def __create_download_button(self, root):
-        create_buttoon(
-            root=root,
-            button_text="Pull Files?",
-            action=self.__rename_module.pull_files_from_download,
-            row_position=0,
-            col_position=0,
             options=self.__rename_module.DEFAULT_OPTIONS,
         )
 
@@ -127,7 +117,7 @@ class RenameVideosGui:
     def __create_action_buttons(self, root):
         """function to create frame and couple the buttons to the frame on gui"""
         create_label(
-            self.__root,
+            root,
             "Run",
             row=self.__submit_button_row,
             options=self.__rename_module.DEFAULT_OPTIONS,
@@ -138,16 +128,18 @@ class RenameVideosGui:
             column=COLUMN_COMPONENT,
             options=self.__rename_module.DEFAULT_OPTIONS,
         )
-        self.__create_download_button(frame)
         self.__create_submit_button(frame)
         self.__create_rename_button(frame)
 
     def __add_service_widgets(self):
-        self.__create_numeric_dropdown_component(self.__root)
-        self.__create_extension_dropdown_component(self.__root)
-        self.__create_optional_start_entry(self.__root)
+        service_frame = create_frame(
+            self.__root, row=1, column=0, options=self.__rename_module.DEFAULT_OPTIONS
+        )
+        self.__create_numeric_dropdown_component(service_frame)
+        self.__create_extension_dropdown_component(service_frame)
+        self.__create_optional_start_entry(service_frame)
 
-        self.__create_action_buttons(self.__root)
+        self.__create_action_buttons(service_frame)
 
     def __update_files(self):
         """function to rename the files"""
