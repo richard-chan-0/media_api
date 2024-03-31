@@ -136,7 +136,7 @@ class RenameVideosGui:
             self.__root, row=1, column=0, options=self.__rename_module.DEFAULT_OPTIONS
         )
         self.__create_numeric_dropdown_component(service_frame)
-        # self.__create_extension_dropdown_component(service_frame)
+        self.__create_extension_dropdown_component(service_frame)
         self.__create_optional_start_entry(service_frame)
 
         self.__create_action_buttons(service_frame)
