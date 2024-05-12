@@ -65,7 +65,7 @@ class RenameGui(Gui):
             self.log_to_console(str(err))
 
     def __create_download_button(self, root, row, col):
-        create_buttoon(
+        create_button(
             root=root,
             button_text="Pull Files?",
             action=self.pull_files_from_download,

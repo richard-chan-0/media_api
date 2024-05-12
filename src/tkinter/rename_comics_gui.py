@@ -17,8 +17,8 @@ class RenameComicsGui:
         self.__base_gui = RenameGui(root)
 
         self.__story_name_text = None
-        self.__story_name_row = 2
-        self.__submit_button_row = 5
+        self.__story_name_row = 1
+        self.__submit_button_row = 2
 
         self.__story_name_text = None
 
@@ -26,13 +26,16 @@ class RenameComicsGui:
 
     def __create_story_name_entry(self):
         """function to setup entry component to enter name for comic functions"""
+        story_frame = create_frame(
+            self.__root, self.__story_name_row, 0, self.__base_gui.DEFAULT_OPTIONS
+        )
         create_label(
-            self.__root,
+            story_frame,
             "Enter the Story Name:",
-            row=self.__story_name_row,
+            row=0,
             options=self.__base_gui.DEFAULT_OPTIONS,
         )
-        text, _ = create_input_field(self.__root, self.__story_name_row)
+        text, _ = create_input_field(story_frame, 0)
         self.__story_name_text = text
 
     def __create_rename_mapping(self):
@@ -50,14 +53,7 @@ class RenameComicsGui:
 
     def __create_submit_button(self, root):
         """function to create button for generating name mapping"""
-        create_label(
-            self.__root,
-            "Run",
-            row=self.__submit_button_row,
-            options=self.__base_gui.DEFAULT_OPTIONS,
-        )
-
-        create_buttoon(
+        create_button(
             root,
             button_text="Create New File Names",
             action=self.__create_rename_mapping,
@@ -66,18 +62,8 @@ class RenameComicsGui:
             options=self.__base_gui.DEFAULT_OPTIONS,
         )
 
-    def __create_download_button(self, root):
-        create_buttoon(
-            root=root,
-            button_text="Pull Files?",
-            action=self.__base_gui.pull_files_from_download,
-            row_position=0,
-            col_position=0,
-            options=self.__base_gui.DEFAULT_OPTIONS,
-        )
-
     def __create_rename_button(self, root):
-        create_buttoon(
+        create_button(
             root=root,
             button_text="Update Files",
             action=self.__update_files,
@@ -91,10 +77,15 @@ class RenameComicsGui:
         frame = create_frame(
             self.__root,
             row=self.__submit_button_row,
-            column=COLUMN_COMPONENT,
+            column=0,
             options=self.__base_gui.DEFAULT_OPTIONS,
         )
-        self.__create_download_button(frame)
+        create_label(
+            frame,
+            "Run",
+            row=0,
+            options=self.__base_gui.DEFAULT_OPTIONS,
+        )
         self.__create_submit_button(frame)
         self.__create_rename_button(frame)
 

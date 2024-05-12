@@ -95,7 +95,7 @@ class RenameVideosGui:
     def __create_submit_button(self, root):
         """function to create button for generating name mapping"""
 
-        create_buttoon(
+        create_button(
             root,
             button_text="Create New File Names",
             action=self.__create_rename_mapping,
@@ -105,7 +105,7 @@ class RenameVideosGui:
         )
 
     def __create_rename_button(self, root):
-        create_buttoon(
+        create_button(
             root=root,
             button_text="Update Files",
             action=self.__update_files,
