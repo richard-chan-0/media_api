@@ -138,10 +138,7 @@ def create_jellyfin_comics_mapping(args):
 
     directory_entries = get_sorted_files(directory_in, sort_method)
     return create_rename_mapping_with_sorted(
-        directory_entries,
-        directory_out,
-        create_jellyfin_comic_name,
-        filename_args,
+        directory_entries, directory_out, create_jellyfin_comic_name, filename_args, 0
     )
 
 

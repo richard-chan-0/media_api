@@ -1,16 +1,16 @@
-import src.rename_media.rename_media as RenameService
-from src.organize_media.organize_chapters_to_vol import (
+import src.services.rename_media.rename_media as RenameService
+from src.services.organize_media.organize_chapters_to_vol import (
     main as organize_chapters_to_vol,
 )
-from src.rezip_cbz_files.rezip_chapters_to_vol import (
+from src.services.rezip_cbz_files.rezip_chapters_to_vol import (
     main as rezip_chapters_to_vol,
 )
 
 from src.create_volumes.create_volumes import create_volumes
-from src.data_types.ServiceMetaData import ServiceMetaData
-from src.exceptions.exceptions import InvalidService
+from src.lib.data_types.ServiceMetaData import ServiceMetaData
+from src.lib.exceptions.exceptions import InvalidService
 from typing import Iterable
-from src.data_types.service_constants import *
+from src.lib.data_types.service_constants import *
 
 
 def get_list_service() -> Iterable[str]:
