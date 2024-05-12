@@ -1,12 +1,15 @@
 from src.tkinter.rename_gui import DownloadFilesGui
 from src.tkinter.tkinter_functions import *
-from src.data_types.service_constants import ORGANIZE_CHAPTERS_TO_VOL_NAME
-from src.rezip_cbz_files.rezip_chapters_to_vol import rezip_chapters_to_vol
+from src.data_types.service_constants import REZIP_CHAPTERS_TO_VOL_NAME
+from src.rezip_cbz_files.rezip_chapters_to_vol import (
+    rezip_chapters_to_vol,
+)
+from src.rename_media.name_functions import create_jellyfin_comic_name
 from src.factories.factories import create_basic_service_args
 from tkinter import *
 from logging import getLogger
-from json import dumps
 from src.guis import Gui
+from src.exceptions.exceptions import RezipChaptersToVolError
 
 logger = getLogger(__name__)
 
@@ -18,27 +21,30 @@ class ReorganizeComicsGui(Gui):
         self.__root.title("Reorganize Comics Utility")
 
         self.__base_gui = DownloadFilesGui(self.__root)
-        self.__numeric_dropdown_row = 2
-        self.__extension_dropdown_row = 3
         self.__submit_button_row = 5
-        self.__start_number_row = 4
 
-        self.__numeric_click = None
-        self.__extension_click = None
-        self.__start_number_text = None
-        self.__rename_mapping = None
+        self.__story_name_text = None
+        self.__issue_number_text = None
 
-    def __create_optional_start_entry(self, root):
+    def __create_story_name_entry(self, root):
         """function to setup entry component for entering path of download folder"""
         create_label(
             root,
-            "Start Number:",
-            row=self.__start_number_row,
+            "Comic Name:",
+            row=0,
+            options=self.__base_gui.DEFAULT_OPTIONS,
+        )
+        create_label(
+            root,
+            "Issue Number:",
+            row=1,
             options=self.__base_gui.DEFAULT_OPTIONS,
         )
 
-        text, _ = create_input_field(root, self.__start_number_row)
-        self.__start_number_text = text
+        text, _ = create_input_field(root, 0)
+        self.__story_name_text = text
+        text2, _ = create_input_field(root, 1)
+        self.__issue_number_text = text2
 
     def __create_rename_button(self, root):
         create_button(
@@ -70,8 +76,7 @@ class ReorganizeComicsGui(Gui):
         service_frame = create_frame(
             self.__root, row=1, column=0, options=self.__base_gui.DEFAULT_OPTIONS
         )
-        self.__create_optional_start_entry(service_frame)
-
+        self.__create_story_name_entry(service_frame)
         self.__create_action_buttons(service_frame)
 
     def __update_files(self):
@@ -79,10 +84,13 @@ class ReorganizeComicsGui(Gui):
         service_args = create_basic_service_args(
             self.__base_gui.directory_in, self.__base_gui.directory_out
         )
-        volume_name = "my super cool file.cbz"
+        service_args.volume_name = create_jellyfin_comic_name(
+            issue=get_widget_value(self.__issue_number_text),
+            story_name=get_widget_value(self.__story_name_text),
+        )
         is_okay = create_confirmation_window(
             "Confirmation",
-            f"Are you sure you want to remap these files to {volume_name}?",
+            f"Are you sure you want to remap these files to {service_args.volume_name}?",
         )
 
         if not is_okay:
@@ -91,8 +99,10 @@ class ReorganizeComicsGui(Gui):
 
         logger.info("updating file names in system")
         self.__base_gui.log_to_console("creating volume...!")
-
-        # rezip_chapters_to_vol(service_args)
+        try:
+            rezip_chapters_to_vol(service_args)
+        except RezipChaptersToVolError as e:
+            self.__base_gui.log_to_console(e)
 
     def __create_window(self):
         width = 900
@@ -103,6 +113,6 @@ class ReorganizeComicsGui(Gui):
 
     def start(self):
         self.__create_window()
-        self.__base_gui.init_gui(ORGANIZE_CHAPTERS_TO_VOL_NAME)
+        self.__base_gui.init_gui(REZIP_CHAPTERS_TO_VOL_NAME)
         self.__add_service_widgets()
         self.__root.mainloop()

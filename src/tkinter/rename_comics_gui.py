@@ -20,8 +20,6 @@ class RenameComicsGui:
         self.__story_name_row = 1
         self.__submit_button_row = 2
 
-        self.__story_name_text = None
-
         self.__rename_mapping = None
 
     def __create_story_name_entry(self):

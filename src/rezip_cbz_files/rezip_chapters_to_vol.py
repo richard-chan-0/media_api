@@ -43,17 +43,24 @@ def clean_system(temp_path: str, chapters: Iterable[DirectoryFile]):
     logger.info("app folders are cleaned")
 
 
-def rezip_chapters_to_vol(args, volume_name: str = "temp.cbz"):
+def rezip_chapters_to_vol(args):
     """function that processes multiple cbz files into single cbz file"""
     directory_in = args.directory_in
     directory_out = args.directory_out
+    volume_name = args.volume_name
+
+    logger.info("creating temp folder")
+    temp_path = SystemUtilities.create_sub_directory(directory_in, TEMP_FOLDER)
 
     logger.info("creating volume file: %s", volume_name)
     chapters = SystemUtilities.get_files(directory_in)
-    temp_path = SystemUtilities.create_sub_directory(directory_in, TEMP_FOLDER)
 
     logger.info("collecting pages from chapter files")
-    extract_pages_from_chapter(directory_in, chapters)
+    try:
+        extract_pages_from_chapter(directory_in, chapters)
+    except Exception as e:
+        raise RezipChaptersToVolError(e)
+
     pages = move_pages_to_temp(directory_in, temp_path)
 
     volume_path = create_volume_from_pages(pages, directory_out, volume_name)

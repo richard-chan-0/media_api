@@ -9,10 +9,10 @@ logger = logging.getLogger(__name__)
 
 def extract_pages_from_chapter(directory_in: str, chapters: Iterable[DirectoryFile]):
     """function to extract all page files from chapter files"""
-    logger.info("unzipping pages from chapter file: %s", chapter.name)
     for chapter in chapters:
+        logger.info("unzipping pages from chapter file: %s", chapter.name)
         if SystemUtilities.is_compressed(chapter.name):
-            with ZipFile(chapter, "r") as zip:
+            with ZipFile(chapter.path, "r") as zip:
                 zip.extractall(directory_in)
 
 
