@@ -34,7 +34,7 @@ def create_dropdown(
     return (dropdown_option, dropdown_menu)
 
 
-def create_buttoon(
+def create_button(
     root: Tk,
     button_text: str,
     action: Callable,

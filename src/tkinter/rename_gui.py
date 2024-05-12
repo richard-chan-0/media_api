@@ -12,7 +12,7 @@ from logging import getLogger
 logger = getLogger(__name__)
 
 
-class RenameGui(Gui):
+class DownloadFilesGui(Gui):
     BACKGROUND_COLOR = "#101010"
     DEFAULT_OPTIONS = {"bg": BACKGROUND_COLOR, "highlightbackground": BACKGROUND_COLOR}
 
@@ -65,7 +65,7 @@ class RenameGui(Gui):
             self.log_to_console(str(err))
 
     def __create_download_button(self, root, row, col):
-        create_buttoon(
+        create_button(
             root=root,
             button_text="Pull Files?",
             action=self.pull_files_from_download,

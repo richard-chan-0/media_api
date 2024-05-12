@@ -25,7 +25,7 @@ def get_parser() -> ArgumentParser:
     parser.add_argument(
         "type",
         type=str,
-        choices=["books", "videos"],
+        choices=["books", "videos", "reorganize"],
         help="media utility type",
     )
     return parser

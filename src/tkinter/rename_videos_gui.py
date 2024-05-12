@@ -1,4 +1,4 @@
-from src.tkinter.rename_gui import RenameGui
+from src.tkinter.rename_gui import DownloadFilesGui
 from src.tkinter.tkinter_functions import *
 from src.data_types.service_constants import RENAME_FILES_TO_JELLY_EPISODES
 from src.rename_media.rename_media import rename_files
@@ -18,7 +18,7 @@ class RenameVideosGui:
         self.__root = root
         self.__root.title("Rename Videos Utility")
 
-        self.__rename_module = RenameGui(self.__root)
+        self.__rename_module = DownloadFilesGui(self.__root)
         self.__numeric_dropdown_row = 2
         self.__extension_dropdown_row = 3
         self.__submit_button_row = 5
@@ -95,7 +95,7 @@ class RenameVideosGui:
     def __create_submit_button(self, root):
         """function to create button for generating name mapping"""
 
-        create_buttoon(
+        create_button(
             root,
             button_text="Create New File Names",
             action=self.__create_rename_mapping,
@@ -105,7 +105,7 @@ class RenameVideosGui:
         )
 
     def __create_rename_button(self, root):
-        create_buttoon(
+        create_button(
             root=root,
             button_text="Update Files",
             action=self.__update_files,
@@ -160,7 +160,7 @@ class RenameVideosGui:
         height = 450
         dimension = f"{width}x{height}"
         self.__root.geometry(dimension)
-        self.__root.configure(bg=RenameGui.BACKGROUND_COLOR)
+        self.__root.configure(bg=DownloadFilesGui.BACKGROUND_COLOR)
 
     def start(self):
         self.__create_window()
