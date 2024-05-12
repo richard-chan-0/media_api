@@ -1,22 +1,22 @@
-from src.data_types.service_constants import *
-from src.data_types.ServiceMetaData import ServiceMetaData
-from src.utilities.app_functions import deprecate_function
-from src.utilities.os_functions import (
+from src.lib.data_types.service_constants import *
+from src.lib.data_types.ServiceMetaData import ServiceMetaData
+from src.lib.utilities.app_functions import deprecate_function
+from src.lib.utilities.os_functions import (
     rename_page_images,
     get_files,
     rename_files,
     get_sorted_files,
     create_new_file_path,
 )
-from src.rename_media.name_functions import (
+from src.services.rename_media.name_functions import (
     create_calibre_image_name,
     create_jellyfin_episode_name,
     create_jellyfin_comic_name,
     cleanup_filename,
 )
-from src.exceptions.exceptions import RenameMediaError
-from src.data_types.DirectoryFile import DirectoryFile
-from src.data_types.ServiceArguments import ServiceArguments
+from src.lib.exceptions.exceptions import RenameMediaError
+from src.lib.data_types.DirectoryFile import DirectoryFile
+from src.lib.data_types.ServiceArguments import ServiceArguments
 from typing import Iterable, Callable
 
 

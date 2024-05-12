@@ -1,8 +1,10 @@
-from src.organize_media.organize_chapters_to_vol import organize_chapters_to_vol
-from src.rezip_cbz_files.rezip_chapters_to_vol import rezip_chapters_to_vol
-from src.data_types.ServiceArguments import ServiceArguments
-from src.factories.factories import create_basic_service_args
-from src.utilities.os_functions import (
+from src.services.organize_media.organize_chapters_to_vol import (
+    organize_chapters_to_vol,
+)
+from src.services.rezip_cbz_files.rezip_chapters_to_vol import rezip_chapters_to_vol
+from src.lib.data_types.ServiceArguments import ServiceArguments
+from src.lib.factories.factories import create_basic_service_args
+from src.lib.utilities.os_functions import (
     get_sub_directories,
     get_files,
     move_files,

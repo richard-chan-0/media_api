@@ -1,7 +1,7 @@
-from src.exceptions.exceptions import OrganizeChaptersToVolError
-from src.utilities.os_functions import *
-from src.data_types.DirectoryFile import DirectoryFile
-from src.data_types.ServiceArguments import ServiceArguments
+from src.lib.exceptions.exceptions import OrganizeChaptersToVolError
+from src.lib.utilities.os_functions import *
+from src.lib.data_types.DirectoryFile import DirectoryFile
+from src.lib.data_types.ServiceArguments import ServiceArguments
 from json import load
 from typing import Iterable, Tuple
 
