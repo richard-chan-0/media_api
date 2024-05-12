@@ -26,7 +26,7 @@ def get_services() -> dict[str, ServiceMetaData]:
             "chapter_pdf_in", "chapter_pdf_out", organize_chapters_to_vol
         ),
         REZIP_CHAPTERS_TO_VOL_NAME: ServiceMetaData(
-            "chapter_zip_in", "chapter_zip_out", rezip_chapters_to_vol
+            IMAGES_IN, IMAGES_OUT, rezip_chapters_to_vol
         ),
         CREATE_VOLUMES_NAME: ServiceMetaData(None, None, create_volumes),
         "ffmpeg": ServiceMetaData(None, None, None),

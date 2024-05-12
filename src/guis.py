@@ -2,6 +2,7 @@ from src.tkinter.gui import Gui
 from src.data_types.service_constants import *
 from src.tkinter.rename_videos_gui import RenameVideosGui
 from src.tkinter.rename_comics_gui import RenameComicsGui
+from src.tkinter.reorganize_comics_gui import ReorganizeComicsGui
 from src.exceptions.exceptions import InvalidService
 
 
@@ -10,6 +11,7 @@ def get_services_gui() -> Gui:
     return {
         "videos": RenameVideosGui,
         "books": RenameComicsGui,
+        "reorganize": ReorganizeComicsGui,
     }
 
 

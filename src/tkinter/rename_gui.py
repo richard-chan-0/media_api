@@ -12,7 +12,7 @@ from logging import getLogger
 logger = getLogger(__name__)
 
 
-class RenameGui(Gui):
+class DownloadFilesGui(Gui):
     BACKGROUND_COLOR = "#101010"
     DEFAULT_OPTIONS = {"bg": BACKGROUND_COLOR, "highlightbackground": BACKGROUND_COLOR}
 

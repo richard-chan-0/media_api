@@ -1,4 +1,4 @@
-from src.tkinter.rename_gui import RenameGui
+from src.tkinter.rename_gui import DownloadFilesGui
 from src.tkinter.tkinter_functions import *
 from src.rename_media.rename_media import rename_files
 from src.data_types.service_constants import RENAME_FILES_TO_JELLY_COMICS
@@ -14,7 +14,7 @@ class RenameComicsGui:
     def __init__(self, root: Tk):
         self.__root = root
         self.__root.title("Rename Comics Utility")
-        self.__base_gui = RenameGui(root)
+        self.__base_gui = DownloadFilesGui(root)
 
         self.__story_name_text = None
         self.__story_name_row = 1
