@@ -8,6 +8,7 @@ from src.lib.factories.factories import create_file
 from src.lib.data_types.DirectoryFile import DirectoryFile
 import logging
 from dotenv import load_dotenv
+from zipfile import ZipFile
 
 load_dotenv()
 
@@ -197,3 +198,24 @@ def parse_path(path: str):
     if not os.path.exists(path):
         raise FileExistsError("path does not exist")
     return os.path.split(path)
+
+
+def extract_zip_file_content(directory_in: str, zip_files: Iterable[DirectoryFile]):
+    """function to extract all page files from chapter files"""
+    for file in zip_files:
+        logger.info("unzipping file: %s", file.name)
+        if is_compressed(file.name):
+            with ZipFile(file.path, "r") as zip:
+                zip.extractall(directory_in)
+
+
+def create_zip_file(zip_file_path: str, files_to_zip: Iterable[DirectoryFile]):
+    """function to zip a list of files"""
+    with ZipFile(zip_file_path, "w") as zip:
+        for file in files_to_zip:
+            try:
+                zip.write(file)
+            except Exception as err:
+                raise FileSystemError(err)
+
+        logger.info("zip created with path %s", zip_file_path)

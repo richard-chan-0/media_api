@@ -1,12 +1,12 @@
 import src.services.rename_media.rename_media as RenameService
-from src.services.organize_media.organize_chapters_to_vol import (
+from src.services.manage_media.organize_chapters_to_vol import (
     main as organize_chapters_to_vol,
 )
-from src.services.rezip_cbz_files.rezip_chapters_to_vol import (
+from src.services.manage_media.rezip_chapters_to_vol import (
     main as rezip_chapters_to_vol,
 )
 
-from src.services.create_volumes.create_volumes import create_volumes
+from src.services.manage_media.create_volumes import create_volumes
 from src.lib.data_types.ServiceMetaData import ServiceMetaData
 from src.lib.exceptions.exceptions import InvalidService
 from typing import Iterable
