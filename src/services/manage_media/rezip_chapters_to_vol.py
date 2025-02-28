@@ -1,13 +1,9 @@
 from zipfile import ZipFile
-import src.utilities.os_functions as SystemUtilities
-from src.exceptions.exceptions import RezipChaptersToVolError
-from src.rezip_cbz_files.page_functions import (
-    extract_pages_from_chapter,
-    move_pages_to_temp,
-)
+import src.lib.utilities.os_functions as SystemUtilities
+from src.lib.exceptions.exceptions import RezipChaptersToVolError
 import logging
-from src.data_types.DirectoryFile import DirectoryFile
-from src.data_types.ServiceArguments import ServiceArguments
+from src.lib.data_types.DirectoryFile import DirectoryFile
+from src.lib.data_types.ServiceArguments import ServiceArguments
 from typing import Iterable
 
 logger = logging.getLogger(__name__)
@@ -20,14 +16,8 @@ def create_volume_from_pages(
     """function to create volume from page files"""
     logger.info("zipping pages into volume")
     volume_path = SystemUtilities.create_new_file_path(directory_out, volume_name)
-    with ZipFile(volume_path, "w") as volume:
-        for page in pages:
-            try:
-                volume.write(page)
-            except Exception as err:
-                raise RezipChaptersToVolError(err)
+    SystemUtilities.create_zip_file(volume_path, pages)
 
-    logger.info("volume created with path %s", volume_path)
     return volume_path
 
 
@@ -41,6 +31,14 @@ def clean_system(temp_path: str, chapters: Iterable[DirectoryFile]):
         SystemUtilities.remove_file(chapter.path)
 
     logger.info("app folders are cleaned")
+
+
+def move_pages_to_temp(directory_in: str, temp_path: str):
+    """function to move pages into temp folder"""
+    logger.info("migrating page files into temporary folder")
+    images = SystemUtilities.get_images(directory_in)
+
+    return SystemUtilities.move_files(images, temp_path)
 
 
 def rezip_chapters_to_vol(args):
@@ -57,7 +55,7 @@ def rezip_chapters_to_vol(args):
 
     logger.info("collecting pages from chapter files")
     try:
-        extract_pages_from_chapter(directory_in, chapters)
+        SystemUtilities.extract_zip_file_content(directory_in, chapters)
     except Exception as e:
         raise RezipChaptersToVolError(e)
 

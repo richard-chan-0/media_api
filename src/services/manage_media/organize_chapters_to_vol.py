@@ -1,7 +1,7 @@
-from src.exceptions.exceptions import OrganizeChaptersToVolError
-from src.utilities.os_functions import *
-from src.data_types.DirectoryFile import DirectoryFile
-from src.data_types.ServiceArguments import ServiceArguments
+from src.lib.exceptions.exceptions import OrganizeChaptersToVolError
+from src.lib.utilities.os_functions import *
+from src.lib.data_types.DirectoryFile import DirectoryFile
+from src.lib.data_types.ServiceArguments import ServiceArguments
 from json import load
 from typing import Iterable, Tuple
 
@@ -26,11 +26,11 @@ def is_valid_chapter(chapter):
     return all([is_with_end, is_with_start, is_with_volume])
 
 
-def create_mapping_chapters_to_vols() -> dict[str, Tuple[str, str]]:
+def create_mapping_chapters_to_vols(organization_file) -> dict[str, Tuple[str, str]]:
     """returns content of json organization file"""
-    schema = get_chapters_to_vols_data()
-    if "volumes" not in schema:
-        raise OrganizeChaptersToVolError("expected volumes attribute in schema")
+    schema = get_chapters_to_vols_data() if not organization_file else organization_file
+    if not schema or "volumes" not in schema:
+        raise OrganizeChaptersToVolError("schema error")
 
     chapters = schema[VOLUMES]
     mapping = {}
@@ -98,9 +98,10 @@ def organize_chapters_to_vol(args: ServiceArguments):
     """function to move chapters into corresponding subdirectory folders as volumes"""
     directory_in = args.directory_in
     directory_out = args.directory_out
+    organization_file = args.organization_file
 
     chapters = get_files(path=directory_in)
-    mapping = create_mapping_chapters_to_vols()
+    mapping = create_mapping_chapters_to_vols(organization_file)
     move_chapters_to_volumes(directory_out, chapters, mapping)
 
 

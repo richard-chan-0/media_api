@@ -1,9 +1,9 @@
 from tkinter import *
-from src.services import (
+from src.service_controller import (
     return_service,
 )
-from src.exceptions.exceptions import ServiceError
-from src.utilities.os_functions import transfer_files
+from src.lib.exceptions.exceptions import ServiceError
+from src.lib.utilities.os_functions import transfer_files
 from src.tkinter.tkinter_functions import *
 from src.tkinter.gui import Gui
 

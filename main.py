@@ -1,11 +1,11 @@
 from tkinter import *
-from src.utilities.os_functions import (
+from src.lib.utilities.os_functions import (
     create_sub_directory,
 )
 
-from src.guis import return_gui
-from src.data_types.ServiceMetaData import ServiceMetaData
-from src.utilities.app_functions import get_parser
+from src.gui_controller import return_gui
+from src.lib.data_types.ServiceMetaData import ServiceMetaData
+from src.lib.utilities.app_functions import get_parser
 import logging
 
 logger = logging.getLogger(__name__)

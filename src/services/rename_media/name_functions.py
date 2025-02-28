@@ -1,5 +1,5 @@
-from src.exceptions.exceptions import RenameMediaError
-from src.data_types.DirectoryFile import DirectoryFile
+from src.lib.exceptions.exceptions import RenameMediaError
+from src.lib.data_types.DirectoryFile import DirectoryFile
 from re import sub
 
 

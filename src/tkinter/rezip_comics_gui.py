@@ -1,15 +1,15 @@
 from src.tkinter.rename_gui import DownloadFilesGui
 from src.tkinter.tkinter_functions import *
-from src.data_types.service_constants import REZIP_CHAPTERS_TO_VOL_NAME
-from src.rezip_cbz_files.rezip_chapters_to_vol import (
+from src.lib.data_types.service_constants import REZIP_CHAPTERS_TO_VOL_NAME
+from src.services.manage_media.rezip_chapters_to_vol import (
     rezip_chapters_to_vol,
 )
-from src.rename_media.name_functions import create_jellyfin_comic_name
-from src.factories.factories import create_basic_service_args
+from src.services.rename_media.name_functions import create_jellyfin_comic_name
+from src.lib.factories.factories import create_basic_service_args
 from tkinter import *
 from logging import getLogger
-from src.guis import Gui
-from src.exceptions.exceptions import RezipChaptersToVolError
+from src.gui_controller import Gui
+from src.lib.exceptions.exceptions import RezipChaptersToVolError
 
 logger = getLogger(__name__)
 
