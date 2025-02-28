@@ -29,7 +29,6 @@ def get_services() -> dict[str, ServiceMetaData]:
             IMAGES_IN, IMAGES_OUT, rezip_chapters_to_vol
         ),
         CREATE_VOLUMES_NAME: ServiceMetaData(None, None, create_volumes),
-        "ffmpeg": ServiceMetaData(None, None, None),
     }
 
 

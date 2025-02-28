@@ -1,7 +1,7 @@
 from src.tkinter.rename_gui import DownloadFilesGui
 from src.tkinter.tkinter_functions import *
 from src.lib.data_types.service_constants import REZIP_CHAPTERS_TO_VOL_NAME
-from src.services.rezip_cbz_files.rezip_chapters_to_vol import (
+from src.services.manage_media.rezip_chapters_to_vol import (
     rezip_chapters_to_vol,
 )
 from src.services.rename_media.name_functions import create_jellyfin_comic_name
