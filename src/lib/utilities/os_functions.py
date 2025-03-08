@@ -1,6 +1,6 @@
 import os
 from subprocess import run, PIPE
-from src.services.rename_media.name_functions import create_calibre_image_name
+from src.lib.utilities.name_functions import create_calibre_image_name
 from typing import Iterable, Callable
 from PIL import Image
 from src.lib.exceptions.exceptions import FileSystemError

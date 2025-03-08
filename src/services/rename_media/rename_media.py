@@ -8,7 +8,7 @@ from src.lib.utilities.os_functions import (
     get_sorted_files,
     create_new_file_path,
 )
-from src.services.rename_media.name_functions import (
+from src.lib.utilities.name_functions import (
     create_calibre_image_name,
     create_jellyfin_episode_name,
     create_jellyfin_comic_name,
