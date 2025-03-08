@@ -1,5 +1,6 @@
 from flask import Flask, request
-from src.api.videos import get_jellyfin_names, update_video_names
+from src.api.videos import get_jellyfin_video_names, update_video_names
+from src.api.comics import get_jellyfin_comic_names, update_comic_names
 import logging
 import datetime
 
@@ -26,7 +27,7 @@ def hello_world():
 def rename_videos():
     if request.method == "GET":
         logger.info("Getting new names for videos...")
-        return get_jellyfin_names(request.get_json())
+        return get_jellyfin_video_names(request.get_json())
 
     try:
         logger.info("Updating video names...")
@@ -37,9 +38,19 @@ def rename_videos():
         return "Error renaming videos."
 
 
-@app.route("/books")
-def rename_books():
-    return "<p>Renaming books...</p>"
+@app.route("/comics", methods=["GET", "POST"])
+def rename_comics():
+    if request.method == "GET":
+        logger.info("Getting new names for comics...")
+        return get_jellyfin_comic_names(request.get_json())
+
+    try:
+        logger.info("Updating comic names...")
+        update_comic_names(request.get_json())
+        return "Successfully renamed comics to Jellyfin format."
+    except Exception as e:
+        logger.error(f"Error renaming comics: {e}")
+        return "Error renaming comics."
 
 
 if __name__ == "__main__":

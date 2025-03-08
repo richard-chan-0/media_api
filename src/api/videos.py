@@ -4,7 +4,7 @@ from src.lib.data_types.service_constants import IMAGES_IN, IMAGES_OUT
 from src.services.rename_media.rename_media import create_jellyfin_episodes_mapping
 
 
-def get_jellyfin_names(request_args):
+def get_jellyfin_video_names(request_args):
     request = VideoRequest(**request_args)
 
     transfer_files(request.source, IMAGES_IN)
