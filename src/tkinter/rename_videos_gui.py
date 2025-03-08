@@ -1,6 +1,6 @@
 from src.tkinter.rename_gui import DownloadFilesGui
 from src.tkinter.tkinter_functions import *
-from src.lib.data_types.service_constants import RENAME_FILES_TO_JELLY_EPISODES
+from src.lib.service_constants import RENAME_FILES_TO_JELLY_EPISODES
 from src.services.rename_media.rename_media import rename_files
 from src.lib.factories.factories import create_basic_service_args
 from tkinter import *

@@ -1,5 +1,5 @@
 from src.tkinter.gui import Gui
-from src.lib.data_types.service_constants import *
+from src.lib.service_constants import *
 from src.tkinter.rename_videos_gui import RenameVideosGui
 from src.tkinter.rename_comics_gui import RenameComicsGui
 from src.tkinter.rezip_comics_gui import ReorganizeComicsGui

@@ -1,6 +1,5 @@
 from posix import DirEntry
-from src.lib.data_types.DirectoryFile import DirectoryFile
-from src.lib.data_types.ServiceArguments import ServiceArguments
+from src.lib.dataclasses import DirectoryFile, ServiceArguments
 from src.lib.utilities.app_functions import read_dict
 
 

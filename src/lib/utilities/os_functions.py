@@ -1,11 +1,10 @@
 import os
 from subprocess import run, PIPE
-from src.lib.utilities.name_functions import create_calibre_image_name
 from typing import Iterable, Callable
 from PIL import Image
 from src.lib.exceptions.exceptions import FileSystemError
 from src.lib.factories.factories import create_file
-from src.lib.data_types.DirectoryFile import DirectoryFile
+from src.lib.dataclasses import DirectoryFile
 import logging
 from dotenv import load_dotenv
 from zipfile import ZipFile

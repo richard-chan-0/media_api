@@ -1,7 +1,6 @@
 from pytest import fixture
-import src.organize_media.organize_chapters_to_vol as OrganizeService
-from src.data_types.DirectoryFile import DirectoryFile
-from src.factories.factories import create_file
+from src.services.manage_media.organize_chapters_to_vol import update_chapter_list
+from src.lib.factories.factories import create_file
 
 
 @fixture
@@ -20,7 +19,7 @@ def test_remove_files_from_list():
     moved_files = chapters[:3]
     expected = {"volume_path": volume_path, "chapters": [0, 1, 2]}
 
-    result = OrganizeService.update_chapter_list(volume_path, moved_files, chapters)
+    result = update_chapter_list(volume_path, moved_files, chapters)
 
     assert result == expected
 

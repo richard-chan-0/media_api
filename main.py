@@ -4,7 +4,7 @@ from src.lib.utilities.os_functions import (
 )
 
 from src.gui_controller import return_gui
-from src.lib.data_types.ServiceMetaData import ServiceMetaData
+from src.lib.dataclasses import ServiceMetaData
 from src.lib.utilities.app_functions import get_parser
 import logging
 

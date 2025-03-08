@@ -2,8 +2,8 @@ from zipfile import ZipFile
 import src.lib.utilities.os_functions as SystemUtilities
 from src.lib.exceptions.exceptions import RezipChaptersToVolError
 import logging
-from src.lib.data_types.DirectoryFile import DirectoryFile
-from src.lib.data_types.ServiceArguments import ServiceArguments
+from src.lib.dataclasses import DirectoryFile, ServiceArguments
+
 from typing import Iterable
 
 logger = logging.getLogger(__name__)

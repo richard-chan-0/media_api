@@ -1,5 +1,5 @@
-from src.lib.data_types.service_constants import *
-from src.lib.data_types.ServiceMetaData import ServiceMetaData
+from src.lib.service_constants import *
+from src.lib.dataclasses import ServiceMetaData
 from src.lib.utilities.app_functions import deprecate_function
 from src.lib.utilities.os_functions import (
     rename_page_images,
@@ -15,8 +15,7 @@ from src.lib.utilities.name_functions import (
     cleanup_filename,
 )
 from src.lib.exceptions.exceptions import RenameMediaError
-from src.lib.data_types.DirectoryFile import DirectoryFile
-from src.lib.data_types.ServiceArguments import ServiceArguments
+from src.lib.dataclasses import DirectoryFile, ServiceArguments
 from typing import Iterable, Callable
 
 

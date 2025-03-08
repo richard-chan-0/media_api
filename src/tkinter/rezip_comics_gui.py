@@ -1,6 +1,6 @@
 from src.tkinter.rename_gui import DownloadFilesGui
 from src.tkinter.tkinter_functions import *
-from src.lib.data_types.service_constants import REZIP_CHAPTERS_TO_VOL_NAME
+from src.lib.service_constants import REZIP_CHAPTERS_TO_VOL_NAME
 from src.services.manage_media.rezip_chapters_to_vol import (
     rezip_chapters_to_vol,
 )

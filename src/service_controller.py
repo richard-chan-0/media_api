@@ -7,10 +7,10 @@ from src.services.manage_media.rezip_chapters_to_vol import (
 )
 
 from src.services.manage_media.create_volumes import create_volumes
-from src.lib.data_types.ServiceMetaData import ServiceMetaData
+from src.lib.dataclasses import ServiceMetaData
 from src.lib.exceptions.exceptions import InvalidService
 from typing import Iterable
-from src.lib.data_types.service_constants import *
+from src.lib.service_constants import *
 
 
 def get_list_service() -> Iterable[str]:
