@@ -1,5 +1,6 @@
 from warnings import warn
 from argparse import ArgumentParser
+from src.lib.dataclasses.api import NameChange, NameChangeRequest
 
 
 def deprecate_function():
@@ -29,3 +30,8 @@ def get_parser() -> ArgumentParser:
         help="media utility type",
     )
     return parser
+
+
+def convert_to_name_change_request(rename_mapping: dict[str, str]):
+    changes = [NameChange(old=old, new=new) for old, new in rename_mapping.items()]
+    return NameChangeRequest(changes=changes)

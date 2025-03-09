@@ -4,7 +4,7 @@ from typing import Iterable, Callable
 from PIL import Image
 from src.lib.exceptions.exceptions import FileSystemError
 from src.lib.factories.factories import create_file
-from src.lib.dataclasses import DirectoryFile
+from src.lib.dataclasses import DirectoryFile, NameChangeRequest
 import logging
 from dotenv import load_dotenv
 from zipfile import ZipFile
@@ -90,6 +90,11 @@ def rename_page_images(
 def rename_files(rename_mapping: dict[str, str]):
     for old_file_path, new_file_path in rename_mapping.items():
         os.rename(old_file_path, new_file_path)
+
+
+def rename_list_files(rename_mapping: NameChangeRequest):
+    for change in rename_mapping.changes:
+        os.rename(change.old_path, change.new_path)
 
 
 def get_organization_file():
