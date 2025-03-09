@@ -12,3 +12,4 @@ class VideoRequest:
 class ComicRequest:
     source: str
     comic_name: str
+    start_number: int = 0

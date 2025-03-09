@@ -17,6 +17,9 @@ from src.lib.utilities.name_functions import (
 from src.lib.exceptions.exceptions import RenameMediaError
 from src.lib.dataclasses import DirectoryFile, ServiceArguments
 from typing import Iterable, Callable
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def create_rename_mapping_with_sorted(
@@ -32,7 +35,9 @@ def create_rename_mapping_with_sorted(
     )
     is_start_from_one = start_index == 0
     buffer = 1 if is_start_from_one else 0
+
     rename_mapping = {}
+    logger.info(f"creating new names for files")
     for index, file in enumerate(files):
         file_number = index + start_index + buffer
         new_name = create_name_function(file_number, **name_args)
@@ -123,12 +128,13 @@ def rename_files_into_list_of_jellyfin_episodes(args: ServiceArguments):
     rename_files(rename_mapping)
 
 
-def create_jellyfin_comics_mapping(args):
+def create_jellyfin_comics_mapping(args: ServiceArguments):
     """function to create mapping for cbz files into jellyfin comic name schema"""
     sort_method = lambda entry: entry.get_chapter_number_from_file()
     directory_in = args.directory_in
     directory_out = args.directory_out
     story_name = args.story
+    start_number = args.start_number
 
     filename_args = {"story_name": story_name}
 
@@ -137,7 +143,11 @@ def create_jellyfin_comics_mapping(args):
 
     directory_entries = get_sorted_files(directory_in, sort_method)
     return create_rename_mapping_with_sorted(
-        directory_entries, directory_out, create_jellyfin_comic_name, filename_args, 0
+        directory_entries,
+        directory_out,
+        create_jellyfin_comic_name,
+        filename_args,
+        start_number,
     )
 
 

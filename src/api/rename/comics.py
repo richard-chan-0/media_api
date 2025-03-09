@@ -15,6 +15,7 @@ def get_jellyfin_comic_names(request_args):
                 "directory_in": IMAGES_IN,
                 "directory_out": IMAGES_OUT,
                 "story": request.comic_name,
+                "start_number": request.start_number,
             }
         )
     )

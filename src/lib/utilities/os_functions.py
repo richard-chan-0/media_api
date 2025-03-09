@@ -18,6 +18,7 @@ ignore_files = [".DS_Store", ".localized"]
 
 def get_files(path: str) -> Iterable[DirectoryFile]:
     """function to get list of files from a path"""
+    logger.info(f"getting files from path: {path}")
     if not os.path.exists(path):
         raise FileSystemError(f"could not find: {path}")
 
