@@ -28,3 +28,7 @@ class RenameMediaError(ServiceError):
 
 class DataTypeError(ServiceError):
     pass
+
+
+class BadSchemaError(ServiceError):
+    pass

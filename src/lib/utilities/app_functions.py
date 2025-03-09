@@ -1,5 +1,8 @@
 from warnings import warn
 from argparse import ArgumentParser
+from src.lib.dataclasses.api import NameChange, NameChangeRequest
+from marshmallow import ValidationError
+from src.lib.exceptions.exceptions import BadSchemaError
 
 
 def deprecate_function():
@@ -29,3 +32,15 @@ def get_parser() -> ArgumentParser:
         help="media utility type",
     )
     return parser
+
+
+def convert_to_name_change_request(rename_mapping: dict[str, str]):
+    changes = [NameChange(old, new) for old, new in rename_mapping.items()]
+    return NameChangeRequest(changes=changes)
+
+
+def check_request_schema(schema, request):
+    try:
+        return schema.load(request.get_json())
+    except ValidationError as e:
+        raise BadSchemaError(f"Invalid request schema: {e}")
