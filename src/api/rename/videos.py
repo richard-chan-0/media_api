@@ -13,7 +13,7 @@ def get_jellyfin_video_names(request: VideoRequest):
                 "directory_in": IMAGES_IN,
                 "directory_out": IMAGES_OUT,
                 "start_number": request.start_number,
-                "season_number": request.volume_number,
+                "season_number": request.season_number,
             }
         )
     )

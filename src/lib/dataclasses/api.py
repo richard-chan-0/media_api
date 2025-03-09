@@ -5,7 +5,7 @@ from marshmallow_dataclass import class_schema
 @dataclass
 class VideoRequest:
     source: str
-    volume_number: int
+    season_number: int = 1
     start_number: int = 0
 
 

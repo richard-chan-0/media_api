@@ -10,3 +10,6 @@ PREPARE_FOR_JELLYFIN = "prepare_for_jellyfin"
 RENAME_TO_CLEANUP = "rename_files_to_clean_up_downloads"
 IMAGES_IN = "input"
 IMAGES_OUT = "output"
+
+INTERNAL_SERVER_ERROR_CODE = 500
+BAD_REQUEST_CODE = 400
