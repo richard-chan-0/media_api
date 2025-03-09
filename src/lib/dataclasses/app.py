@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from re import findall, sub
-from typing import Iterable
 from src.lib.exceptions.exceptions import DataTypeError
+from typing import Callable
 
 
 @dataclass
@@ -38,3 +38,24 @@ class DirectoryFile:
     def get_episode_from_file_name(self) -> str:
         season_episode_matches = self.__get_episode_matches()
         return season_episode_matches
+
+
+@dataclass
+class ServiceArguments:
+    directory_in: str
+    directory_out: str
+    start_number: str = ""
+    story: str = "n/a"
+    chapter: str = "1"
+    organization_file: str = "organize_chapters_to_vol.json"
+    season_number: str = "1"
+    extension: str = "mkv"
+
+
+@dataclass
+class ServiceMetaData:
+    """class for holding meta data for ebook settings"""
+
+    directory_in: str
+    directory_out: str
+    service: Callable

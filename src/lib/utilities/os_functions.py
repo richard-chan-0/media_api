@@ -1,11 +1,10 @@
 import os
 from subprocess import run, PIPE
-from src.services.rename_media.name_functions import create_calibre_image_name
 from typing import Iterable, Callable
 from PIL import Image
 from src.lib.exceptions.exceptions import FileSystemError
 from src.lib.factories.factories import create_file
-from src.lib.data_types.DirectoryFile import DirectoryFile
+from src.lib.dataclasses import DirectoryFile
 import logging
 from dotenv import load_dotenv
 from zipfile import ZipFile
@@ -19,6 +18,7 @@ ignore_files = [".DS_Store", ".localized"]
 
 def get_files(path: str) -> Iterable[DirectoryFile]:
     """function to get list of files from a path"""
+    logger.info(f"getting files from path: {path}")
     if not os.path.exists(path):
         raise FileSystemError(f"could not find: {path}")
 
