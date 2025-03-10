@@ -4,15 +4,15 @@ from marshmallow_dataclass import class_schema
 
 @dataclass
 class VideoRequest:
-    source: str
-    season_number: int = 1
+    season_number: int
+    source: str = ""
     start_number: int = 0
 
 
 @dataclass
 class ComicRequest:
-    source: str
     comic_name: str
+    source: str = ""
     start_number: int = 0
 
 
@@ -26,12 +26,6 @@ class NameChange:
 class NameChangeRequest:
     changes: list[NameChange]
 
-
-VideoRequestSchema = class_schema(VideoRequest)
-video_request_schema = VideoRequestSchema()
-
-ComicRequestSchema = class_schema(ComicRequest)
-comic_request_schema = ComicRequestSchema()
 
 NameChangeRequestSchema = class_schema(NameChangeRequest)
 name_change_request_schema = NameChangeRequestSchema()

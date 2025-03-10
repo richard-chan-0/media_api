@@ -8,6 +8,7 @@ from src.lib.dataclasses import DirectoryFile, NameChangeRequest
 import logging
 from dotenv import load_dotenv
 from zipfile import ZipFile
+from pathlib import Path
 
 load_dotenv()
 
@@ -94,7 +95,11 @@ def rename_files(rename_mapping: dict[str, str]):
 
 def rename_list_files(rename_mapping: NameChangeRequest):
     for change in rename_mapping.changes:
-        os.rename(change.old_path, change.new_path)
+        try:
+            os.rename(change.old_path, change.new_path)
+        except FileNotFoundError as err:
+            logger.error(err)
+            raise FileSystemError(f"could not rename file: {change.old_path}")
 
 
 def get_organization_file():
@@ -224,3 +229,7 @@ def create_zip_file(zip_file_path: str, files_to_zip: Iterable[DirectoryFile]):
                 raise FileSystemError(err)
 
         logger.info("zip created with path %s", zip_file_path)
+
+
+def join_path(*args):
+    return os.path.join(*args)
