@@ -4,7 +4,7 @@ from src.lib.service_constants import IMAGES_IN, IMAGES_OUT
 from src.services.rename_media.rename_media import create_jellyfin_comics_mapping
 
 
-def get_jellyfin_video_names_from_files(request):
+def get_jellyfin_comic_names_from_files(request):
     comic_request = ComicRequest(**request.form)
     files = request.files.getlist("files")
 

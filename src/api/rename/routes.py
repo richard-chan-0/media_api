@@ -3,7 +3,7 @@ import logging
 from src.api.rename.videos import (
     get_jellyfin_video_names_from_files,
 )
-from src.api.rename.comics import get_jellyfin_video_names_from_files
+from src.api.rename.comics import get_jellyfin_comic_names_from_files
 from src.lib.dataclasses.api import (
     name_change_request_schema,
 )
@@ -20,7 +20,7 @@ rename = Blueprint("rename", __name__, url_prefix="/rename")
 
 function_map = {
     "videos": get_jellyfin_video_names_from_files,
-    "comics": get_jellyfin_video_names_from_files,
+    "comics": get_jellyfin_comic_names_from_files,
 }
 
 
@@ -28,7 +28,7 @@ def upload_media(media_type: str):
     try:
         logger.info(f"uploading {media_type}")
         names = function_map[media_type](request)
-        return jsonify(convert_to_name_change_request(names))
+        return jsonify(convert_to_name_change_request(names)), 200
     except ServiceError as e:
         logger.error(e)
         return jsonify({"error": str(e)}), BAD_REQUEST_CODE
