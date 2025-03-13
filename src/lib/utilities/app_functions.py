@@ -2,9 +2,17 @@ from warnings import warn
 from argparse import ArgumentParser
 from src.lib.dataclasses.api import NameChange, NameChangeRequest
 from marshmallow import ValidationError
-from src.lib.exceptions.exceptions import BadSchemaError, RequestError
+from src.lib.exceptions.exceptions import BadSchemaError, RequestError, ServiceError
 from src.lib.utilities.os_functions import join_path
-from src.lib.service_constants import IMAGES_IN
+from src.lib.service_constants import (
+    IMAGES_IN,
+    BAD_REQUEST_CODE,
+    INTERNAL_SERVER_ERROR_CODE,
+)
+from flask import jsonify
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def deprecate_function():
@@ -56,3 +64,14 @@ def get_files_from_request(request, file_key):
     for file in files:
         file_path = join_path(IMAGES_IN, file.filename)
         file.save(file_path)
+
+
+def run_api_function(api_function, *args):
+    try:
+        return api_function(*args)
+    except ServiceError as e:
+        logger.error(e)
+        return jsonify({"error": str(e)}), BAD_REQUEST_CODE
+    except Exception as e:
+        logger.error(e)
+        return jsonify({"error": str(e)}), INTERNAL_SERVER_ERROR_CODE
