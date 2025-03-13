@@ -32,3 +32,11 @@ class DataTypeError(ServiceError):
 
 class BadSchemaError(ServiceError):
     pass
+
+
+class ApiError(ServiceError):
+    pass
+
+
+class RequestError(ApiError):
+    pass
