@@ -39,9 +39,9 @@ def rename_files():
 
 @rename.route("/videos", methods=["POST"])
 def upload_videos():
-    return run_api_function(upload_media, "videos")
+    return upload_media("videos")
 
 
 @rename.route("/comics", methods=["POST"])
 def upload_comics():
-    return run_api_function(upload_media, "comics")
+    return upload_media("comics")

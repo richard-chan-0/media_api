@@ -1,8 +1,9 @@
 from src.lib.exceptions.exceptions import OrganizeChaptersToVolError
 from src.lib.utilities.os_functions import *
-from src.lib.dataclasses import DirectoryFile, ServiceArguments
+from src.lib.dataclasses import DirectoryFile
 from json import load
 from typing import Iterable, Tuple
+from src.services.rename_media.rename_media import create_jellyfin_comic_name
 
 
 VOLUMES = "volumes"
@@ -83,6 +84,7 @@ def move_chapters_for_volume_dir(
 
 
 def move_chapters_to_volumes(
+    story_title: str,
     directory_out: str,
     chapters: Iterable[DirectoryFile],
     mapping: dict[str, Tuple[str, str]],
@@ -91,12 +93,15 @@ def move_chapters_to_volumes(
     volumes = mapping["volumes"]
     for volume in volumes:
         volume_number = volume["volume"]
+        volume_name = create_jellyfin_comic_name(
+            issue=volume_number, story_name=story_title
+        )
         chapter_details = (volume["startChapter"], volume["endChapter"])
-        sub_directory = create_sub_directory(directory_out, volume_number)
+        sub_directory = create_sub_directory(directory_out, volume_name)
         move_chapters_for_volume_dir(sub_directory, chapter_details, chapters)
 
 
-def organize_chapters_to_vol(directory_in, volume_mapping):
+def organize_chapters_to_vol(story_title, directory_in, volume_mapping):
     """function to move chapters into corresponding subdirectory folders as volumes"""
     chapters = get_files(path=directory_in)
-    move_chapters_to_volumes(directory_in, chapters, volume_mapping)
+    move_chapters_to_volumes(story_title, directory_in, chapters, volume_mapping)

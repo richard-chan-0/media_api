@@ -9,4 +9,4 @@ manage = Blueprint("manage", __name__, url_prefix="/manage")
 
 @manage.route("/volumes", methods=["POST"])
 def create_volumes_from_chapters():
-    return run_api_function(run_create_volumes, request)
+    return run_create_volumes(request)

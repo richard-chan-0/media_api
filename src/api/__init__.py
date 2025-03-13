@@ -1,7 +1,27 @@
-from flask import Flask
+from flask import Flask, jsonify
 from src.api.rename.routes import rename
 from src.api.manage.routes import manage
 from flask_cors import CORS
+from src.lib.exceptions.exceptions import ServiceError
+from src.lib.service_constants import BAD_REQUEST_CODE, INTERNAL_SERVER_ERROR_CODE
+import logging
+
+logger = logging.getLogger(__name__)
+
+
+def register_errors(app):
+
+    @app.errorhandler(ServiceError)
+    def handle_service_error(e):
+        return e.message, BAD_REQUEST_CODE
+
+    @app.errorhandler(INTERNAL_SERVER_ERROR_CODE)
+    def handle_server_error(e):
+        return e.message, INTERNAL_SERVER_ERROR_CODE
+
+    @app.errorhandler(405)
+    def handle_method_not_allowed(e):
+        return e.message, 405
 
 
 def create_app():
@@ -9,6 +29,8 @@ def create_app():
 
     app.register_blueprint(rename)
     app.register_blueprint(manage)
+
+    register_errors(app)
 
     CORS(app)
     return app
