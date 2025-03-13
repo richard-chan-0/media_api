@@ -21,23 +21,24 @@ def hello_world():
     return "Manage Media Utility API"
 
 
-@manage.route("/zip")
+@manage.route("/rezip")
 def zip_chapters_to_vol():
     try:
         form = request.form
         volume_name = create_jellyfin_comic_name(
-            issue=form.issue_number, story_name=form.story_title
+            issue=form["issue number"], story_name=form["story title"]
         )
         args = ServiceArguments(
             **{
                 "directory_in": IMAGES_IN,
                 "directory_out": IMAGES_OUT,
-                "volume_name": volume_name,
+                "volume": volume_name,
             }
         )
 
         get_files_from_request(request, "files")
         rezip_chapters_to_vol(args)
+        return f"files zipped into {volume_name}"
     except ServiceError as e:
         logger.error(e)
         return jsonify({"error": str(e)}), BAD_REQUEST_CODE
