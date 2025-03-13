@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from re import findall, sub
 from src.lib.exceptions.exceptions import DataTypeError
 from typing import Callable
@@ -47,7 +47,7 @@ class ServiceArguments:
     start_number: str = ""
     story: str = "n/a"
     volume: str = "1"
-    organization_file: str = "organize_chapters_to_vol.json"
+    volume_mapping: dict = field(default_factory=lambda: {})
     season_number: str = "1"
     extension: str = "mkv"
 

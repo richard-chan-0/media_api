@@ -15,38 +15,25 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-def get_chapters_for_volumes(directory_in, directory_out):
+def get_chapters_for_volumes(directory_in, volume_mapping):
     """creates volume folders and moves corresponding chapter files"""
-    args = create_basic_service_args(directory_in, directory_out)
+    organize_chapters_to_vol(directory_in, volume_mapping)
 
-    organize_chapters_to_vol(args)
-
-    return get_sub_directories(directory_out)
+    return get_sub_directories(directory_in)
 
 
-def create_volume(
-    directory_in: str, directory_out: str, chaper_files_path: str, volume_name: str
-):
+def create_volume(directory_in: str, chapter_files_path: str, volume_name: str):
     """function to create volume file using files in a volume directory"""
-    chapters = get_files(chaper_files_path)
-    args = create_basic_service_args(directory_in, directory_out)
+    chapters = get_files(chapter_files_path)
 
     move_files(chapters, directory_in)
-    rezip_chapters_to_vol(args, volume_name)
+    rezip_chapters_to_vol(directory_in, directory_in, volume_name)
 
-    remove_directory(chaper_files_path)
+    remove_directory(chapter_files_path)
 
 
 def create_volumes(args: ServiceArguments):
     """creates set of volume files from list of chapters"""
-    chapters_in = args.directory_in
-    chapters_out = args.directory_in
-
-    volume_folders = get_chapters_for_volumes(chapters_in, chapters_out)
-
-    volume_in = args.directory_out
-    volume_out = args.directory_out
-
+    volume_folders = get_chapters_for_volumes(args.directory_in, args.volume_mapping)
     for folder in volume_folders:
-        zip_name = f"{folder.name}.cbz"
-        create_volume(volume_in, volume_out, folder.path, zip_name)
+        create_volume(args.directory_out, folder.path, volume_name=f"{folder.name}.cbz")

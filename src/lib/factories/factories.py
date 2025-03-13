@@ -12,3 +12,7 @@ def create_file(name: str, path: str):
 
 def create_basic_service_args(directory_in: str, directory_out: str):
     return ServiceArguments(directory_in, directory_out)
+
+
+def create_service_arguments(args):
+    return ServiceArguments(**args)

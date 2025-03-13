@@ -29,7 +29,7 @@ def create_mapping_chapters_to_vols(organization_file) -> dict[str, Tuple[str, s
     """returns content of json organization file"""
     schema = get_chapters_to_vols_data() if not organization_file else organization_file
     if not schema or "volumes" not in schema:
-        raise OrganizeChaptersToVolError("schema error")
+        raise OrganizeChaptersToVolError("no organization data")
 
     chapters = schema[VOLUMES]
     mapping = {}
@@ -88,23 +88,15 @@ def move_chapters_to_volumes(
     mapping: dict[str, Tuple[str, str]],
 ):
     """creates directories for volumes and moves files into those directories"""
-    for volume, chapter_details in mapping.items():
-        sub_directory = create_sub_directory(directory_out, volume)
+    volumes = mapping["volumes"]
+    for volume in volumes:
+        volume_number = volume["volume"]
+        chapter_details = (volume["startChapter"], volume["endChapter"])
+        sub_directory = create_sub_directory(directory_out, volume_number)
         move_chapters_for_volume_dir(sub_directory, chapter_details, chapters)
 
 
-def organize_chapters_to_vol(args: ServiceArguments):
+def organize_chapters_to_vol(directory_in, volume_mapping):
     """function to move chapters into corresponding subdirectory folders as volumes"""
-    directory_in = args.directory_in
-    directory_out = args.directory_out
-    organization_file = args.organization_file
-
     chapters = get_files(path=directory_in)
-    mapping = create_mapping_chapters_to_vols(organization_file)
-    move_chapters_to_volumes(directory_out, chapters, mapping)
-
-
-def main(args: ServiceArguments):
-    """main function for organizing files feature"""
-
-    organize_chapters_to_vol(args)
+    move_chapters_to_volumes(directory_in, chapters, volume_mapping)

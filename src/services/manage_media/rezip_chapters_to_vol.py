@@ -41,12 +41,8 @@ def move_pages_to_temp(directory_in: str, temp_path: str):
     return SystemUtilities.move_files(images, temp_path)
 
 
-def rezip_chapters_to_vol(args: ServiceArguments):
+def rezip_chapters_to_vol(directory_in, directory_out, volume_name):
     """function that processes multiple cbz files into single cbz file"""
-    directory_in = args.directory_in
-    directory_out = args.directory_out
-    volume_name = args.volume
-
     logger.info("creating temp folder")
     temp_path = SystemUtilities.create_sub_directory(directory_in, TEMP_FOLDER)
 
@@ -65,8 +61,3 @@ def rezip_chapters_to_vol(args: ServiceArguments):
     print(f"pages written to volume: {volume_path}")
 
     clean_system(temp_path, chapters)
-
-
-def main(args: ServiceArguments):
-    """service to open list of zip files and compile them into single zip file"""
-    rezip_chapters_to_vol(args)
