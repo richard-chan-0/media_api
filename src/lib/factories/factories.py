@@ -1,6 +1,5 @@
 from posix import DirEntry
 from src.lib.dataclasses import DirectoryFile, ServiceArguments
-from src.lib.utilities.app_functions import read_dict
 
 
 def create_file(dir_entry: DirEntry):
