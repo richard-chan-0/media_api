@@ -1,6 +1,5 @@
 from flask import Blueprint, request
 import logging
-from src.lib.utilities.app_functions import run_api_function
 from src.api.manage.comics import run_create_volumes
 
 logger = logging.getLogger(__name__)

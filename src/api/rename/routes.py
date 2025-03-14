@@ -3,7 +3,6 @@ import logging
 from src.api.rename.videos import (
     get_jellyfin_video_names_from_files,
 )
-from src.lib.utilities.app_functions import run_api_function
 from src.api.rename.comics import get_jellyfin_comic_names_from_files
 from src.lib.dataclasses.api import (
     name_change_request_schema,
@@ -34,7 +33,7 @@ def rename_files():
     logger.info("renaming files")
     name_change_request = check_request_schema(name_change_request_schema, request)
     rename_list_files(name_change_request)
-    return "Successfully renamed files."
+    return "Successfully renamed files.", 200
 
 
 @rename.route("/videos", methods=["POST"])

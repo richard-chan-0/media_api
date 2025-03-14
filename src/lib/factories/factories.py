@@ -1,5 +1,7 @@
 from posix import DirEntry
 from src.lib.dataclasses import DirectoryFile, ServiceArguments
+from src.lib.exceptions.exceptions import RequestError
+from src.lib.dataclasses.api import VideoRequest, ComicRequest, NameChangeRequest
 
 
 def create_file(dir_entry: DirEntry):
@@ -16,3 +18,24 @@ def create_basic_service_args(directory_in: str, directory_out: str):
 
 def create_service_arguments(args):
     return ServiceArguments(**args)
+
+
+def create_video_request(request):
+    try:
+        return VideoRequest(**request.form)
+    except TypeError as e:
+        raise RequestError(e)
+
+
+def create_comic_request(request):
+    try:
+        return ComicRequest(**request.form)
+    except TypeError as e:
+        raise RequestError(e)
+
+
+# def create_name_change_request(request):
+#     try:
+#         return VideoRequest(**request.form)
+#     except TypeError as e:
+#         raise RequestError(e)

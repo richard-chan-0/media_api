@@ -13,15 +13,15 @@ def register_errors(app):
 
     @app.errorhandler(ServiceError)
     def handle_service_error(e):
-        return e.message, BAD_REQUEST_CODE
+        return jsonify({"error": str(e)}), BAD_REQUEST_CODE
 
-    @app.errorhandler(INTERNAL_SERVER_ERROR_CODE)
-    def handle_server_error(e):
-        return e.message, INTERNAL_SERVER_ERROR_CODE
+    @app.errorhandler(500)
+    def handle_internal_server_error(e):
+        return jsonify({"error": str(e)}), INTERNAL_SERVER_ERROR_CODE
 
     @app.errorhandler(405)
     def handle_method_not_allowed(e):
-        return e.message, 405
+        return jsonify({"error": str(e)}), 405
 
 
 def create_app():
