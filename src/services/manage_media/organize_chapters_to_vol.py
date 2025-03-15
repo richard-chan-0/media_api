@@ -1,8 +1,9 @@
 from src.lib.exceptions.exceptions import OrganizeChaptersToVolError
 from src.lib.utilities.os_functions import *
-from src.lib.dataclasses import DirectoryFile, ServiceArguments
+from src.lib.dataclasses import DirectoryFile
 from json import load
 from typing import Iterable, Tuple
+from src.services.rename_media.rename_media import create_jellyfin_comic_name
 
 
 VOLUMES = "volumes"
@@ -29,7 +30,7 @@ def create_mapping_chapters_to_vols(organization_file) -> dict[str, Tuple[str, s
     """returns content of json organization file"""
     schema = get_chapters_to_vols_data() if not organization_file else organization_file
     if not schema or "volumes" not in schema:
-        raise OrganizeChaptersToVolError("schema error")
+        raise OrganizeChaptersToVolError("no organization data")
 
     chapters = schema[VOLUMES]
     mapping = {}
@@ -72,7 +73,7 @@ def move_chapters_for_volume_dir(
         chapter_name = chapter.name
         chapter_path = chapter.path
         chapter_number = chapter.get_chapter_number_from_file()
-        if not (start_chapter <= chapter_number <= end_chapter):
+        if not (int(start_chapter) <= chapter_number <= int(end_chapter)):
             continue
 
         new_path = create_new_file_path(volume_path, chapter_name)
@@ -83,28 +84,24 @@ def move_chapters_for_volume_dir(
 
 
 def move_chapters_to_volumes(
+    story_title: str,
     directory_out: str,
     chapters: Iterable[DirectoryFile],
     mapping: dict[str, Tuple[str, str]],
 ):
     """creates directories for volumes and moves files into those directories"""
-    for volume, chapter_details in mapping.items():
-        sub_directory = create_sub_directory(directory_out, volume)
+    volumes = mapping["volumes"]
+    for volume in volumes:
+        volume_number = volume["volume"]
+        volume_name = create_jellyfin_comic_name(
+            issue=volume_number, story_name=story_title
+        )
+        chapter_details = (volume["startChapter"], volume["endChapter"])
+        sub_directory = create_sub_directory(directory_out, volume_name)
         move_chapters_for_volume_dir(sub_directory, chapter_details, chapters)
 
 
-def organize_chapters_to_vol(args: ServiceArguments):
+def organize_chapters_to_vol(story_title, directory_in, volume_mapping):
     """function to move chapters into corresponding subdirectory folders as volumes"""
-    directory_in = args.directory_in
-    directory_out = args.directory_out
-    organization_file = args.organization_file
-
     chapters = get_files(path=directory_in)
-    mapping = create_mapping_chapters_to_vols(organization_file)
-    move_chapters_to_volumes(directory_out, chapters, mapping)
-
-
-def main(args: ServiceArguments):
-    """main function for organizing files feature"""
-
-    organize_chapters_to_vol(args)
+    move_chapters_to_volumes(story_title, directory_in, chapters, volume_mapping)

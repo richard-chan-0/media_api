@@ -5,22 +5,24 @@ from src.lib.service_constants import (
     IMAGES_OUT,
 )
 from src.lib.dataclasses.app import ServiceArguments
-from src.services.manage_media.rezip_chapters_to_vol import rezip_chapters_to_vol
+from src.services.manage_media.create_volumes import create_volumes
+from json import loads
 
 
-def rezip_chapters_to_volume(request):
+# TODO: create error handling with flask
+def run_create_volumes(request):
     form = request.form
-    volume_name = create_jellyfin_comic_name(
-        issue=form["issue number"], story_name=form["story title"]
-    )
+    story_title = form["story title"]
+    volume_mapping = loads(form["volume mapping"])
     args = ServiceArguments(
         **{
             "directory_in": IMAGES_IN,
             "directory_out": IMAGES_OUT,
-            "volume": volume_name,
+            "volume_mapping": volume_mapping,
+            "story": story_title,
         }
     )
 
     get_files_from_request(request, "files")
-    rezip_chapters_to_vol(args)
-    return f"files zipped into {volume_name}"
+    create_volumes(args)
+    return f"new volumes created for story: {story_title}"
