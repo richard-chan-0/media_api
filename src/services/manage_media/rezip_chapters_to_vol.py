@@ -41,13 +41,13 @@ def move_pages_to_temp(directory_in: str, temp_path: str):
     return SystemUtilities.move_files(images, temp_path)
 
 
-def rezip_chapters_to_vol(volume_path, volume_name):
+def rezip_chapters_to_vol(volume_path, volume_name, ignore_files=[]):
     """function that processes multiple cbz files into single cbz file"""
     logger.info("creating temp folder")
     temp_path = SystemUtilities.create_sub_directory(volume_path, TEMP_FOLDER)
 
     logger.info("creating volume file: %s", volume_name)
-    chapters = SystemUtilities.get_files(volume_path)
+    chapters = SystemUtilities.get_files(volume_path, ignore_files)
 
     logger.info("collecting pages from chapter files")
     try:
@@ -59,5 +59,6 @@ def rezip_chapters_to_vol(volume_path, volume_name):
 
     volume_path = create_volume_from_pages(pages, volume_path, volume_name)
     print(f"pages written to volume: {volume_path}")
+    ignore_files.append(volume_name)
 
     clean_system(temp_path, chapters)

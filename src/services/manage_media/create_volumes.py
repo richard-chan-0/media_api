@@ -21,12 +21,14 @@ def create_volume_directories(story_title, directory_in, volume_mapping):
     return get_sub_directories(directory_in)
 
 
-def create_volume(volume_path: str, chapter_files_path: str, volume_name: str):
+def create_volume(
+    volume_path: str, chapter_files_path: str, volume_name: str, ignore_files=[]
+):
     """function to create volume file using files in a volume directory"""
     chapters = get_files(chapter_files_path)
     move_files(chapters, volume_path)
 
-    rezip_chapters_to_vol(volume_path, volume_name)
+    rezip_chapters_to_vol(volume_path, volume_name, ignore_files)
 
     remove_directory(chapter_files_path)
 
@@ -36,5 +38,11 @@ def create_volumes(args: ServiceArguments):
     volume_folders = create_volume_directories(
         args.story, args.directory_in, args.volume_mapping
     )
+    ignore_files = []
     for folder in volume_folders:
-        create_volume(args.directory_out, folder.path, volume_name=f"{folder.name}")
+        create_volume(
+            args.directory_out,
+            folder.path,
+            volume_name=f"{folder.name}",
+            ignore_files=ignore_files,
+        )

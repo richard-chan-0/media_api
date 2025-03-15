@@ -14,10 +14,10 @@ load_dotenv()
 
 logger = logging.getLogger(__name__)
 
-ignore_files = [".DS_Store", ".localized"]
+default_ignore_files = [".DS_Store", ".localized"]
 
 
-def get_files(path: str) -> Iterable[DirectoryFile]:
+def get_files(path: str, ignore_files=[]) -> Iterable[DirectoryFile]:
     """function to get list of files from a path"""
     logger.info(f"getting files from path: {path}")
     if not os.path.exists(path):
@@ -32,7 +32,8 @@ def get_files(path: str) -> Iterable[DirectoryFile]:
         return [
             create_file(entry.name, entry.path)
             for entry in entries
-            if os.path.isfile(entry.path) and entry.name not in ignore_files
+            if os.path.isfile(entry.path)
+            and entry.name not in [*ignore_files, *default_ignore_files]
         ]
 
 

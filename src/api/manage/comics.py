@@ -12,9 +12,6 @@ from json import loads
 # TODO: create error handling with flask
 def run_create_volumes(request):
     form = request.form
-    # volume_name = create_jellyfin_comic_name(
-    #     issue=form["issue number"], story_name=form["story title"]
-    # )
     story_title = form["story title"]
     volume_mapping = loads(form["volume mapping"])
     args = ServiceArguments(
