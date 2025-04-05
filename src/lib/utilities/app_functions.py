@@ -5,7 +5,7 @@ from marshmallow import ValidationError
 from src.lib.exceptions.exceptions import BadSchemaError, RequestError, ServiceError
 from src.lib.utilities.os_functions import join_path
 from src.lib.service_constants import (
-    IMAGES_IN,
+    INPUT_DIRECTORY,
     BAD_REQUEST_CODE,
     INTERNAL_SERVER_ERROR_CODE,
 )
@@ -62,5 +62,5 @@ def get_files_from_request(request, file_key):
         raise RequestError("no files found in request")
 
     for file in files:
-        file_path = join_path(IMAGES_IN, file.filename)
+        file_path = join_path(INPUT_DIRECTORY, file.filename)
         file.save(file_path)

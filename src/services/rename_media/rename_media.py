@@ -183,16 +183,16 @@ def rename_files_to_clean_up_downloads(args: ServiceArguments):
 
 rename_services = {
     RENAME_FILES_TO_JELLY_EPISODES: ServiceMetaData(
-        IMAGES_IN,
-        IMAGES_OUT,
+        INPUT_DIRECTORY,
+        OUTPUT_DIRECTORY,
         create_jellyfin_episodes_mapping,
     ),
     RENAME_FILES_TO_JELLY_COMICS: ServiceMetaData(
-        IMAGES_IN,
-        IMAGES_OUT,
+        INPUT_DIRECTORY,
+        OUTPUT_DIRECTORY,
         create_jellyfin_comics_mapping,
     ),
     RENAME_TO_CLEANUP: ServiceMetaData(
-        IMAGES_IN, IMAGES_IN, create_cleaned_filenames_mapping
+        INPUT_DIRECTORY, INPUT_DIRECTORY, create_cleaned_filenames_mapping
     ),
 }

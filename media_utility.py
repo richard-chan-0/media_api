@@ -1,6 +1,9 @@
 import logging
 import datetime
 from src.api import create_app
+from dotenv import load_dotenv
+
+load_dotenv()
 
 today_date = datetime.datetime.now()
 run_date = today_date.strftime("%Y-%m-%d-%H-%M-%S")

@@ -1,5 +1,5 @@
 from src.lib.dataclasses import VideoRequest, ServiceArguments
-from src.lib.service_constants import IMAGES_IN, IMAGES_OUT
+from src.lib.service_constants import INPUT_DIRECTORY, OUTPUT_DIRECTORY
 from src.services.rename_media.rename_media import create_jellyfin_episodes_mapping
 from src.lib.utilities.app_functions import get_files_from_request
 from src.lib.factories.factories import create_video_request
@@ -12,8 +12,8 @@ def get_jellyfin_video_names_from_files(request):
     return create_jellyfin_episodes_mapping(
         ServiceArguments(
             **{
-                "directory_in": IMAGES_IN,
-                "directory_out": IMAGES_OUT,
+                "directory_in": INPUT_DIRECTORY,
+                "directory_out": OUTPUT_DIRECTORY,
                 "start_number": video_request.start_number,
                 "season_number": video_request.season_number,
             }
