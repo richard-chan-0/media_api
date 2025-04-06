@@ -109,7 +109,10 @@ def create_jellyfin_episodes_mapping(args: ServiceArguments):
     start_number = args.start_number
     extension = args.extension
 
-    filename_args = {"extension": extension, "season_number": int(season_number)}
+    filename_args = {
+        "extension": extension,
+        "season_number": int(season_number) if season_number else 1,
+    }
 
     directory_entries = get_sorted_files(directory_in)
     return create_rename_mapping_with_sorted(
@@ -183,16 +186,16 @@ def rename_files_to_clean_up_downloads(args: ServiceArguments):
 
 rename_services = {
     RENAME_FILES_TO_JELLY_EPISODES: ServiceMetaData(
-        IMAGES_IN,
-        IMAGES_OUT,
+        INPUT_DIRECTORY,
+        OUTPUT_DIRECTORY,
         create_jellyfin_episodes_mapping,
     ),
     RENAME_FILES_TO_JELLY_COMICS: ServiceMetaData(
-        IMAGES_IN,
-        IMAGES_OUT,
+        INPUT_DIRECTORY,
+        OUTPUT_DIRECTORY,
         create_jellyfin_comics_mapping,
     ),
     RENAME_TO_CLEANUP: ServiceMetaData(
-        IMAGES_IN, IMAGES_IN, create_cleaned_filenames_mapping
+        INPUT_DIRECTORY, INPUT_DIRECTORY, create_cleaned_filenames_mapping
     ),
 }

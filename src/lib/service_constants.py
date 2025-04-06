@@ -1,3 +1,5 @@
+from os import getenv
+
 ORGANIZE_CHAPTERS_TO_VOL_NAME = "organize_chapters_to_vol"
 RENAME_TO_CALIBRE_IMAGE = "create_calibre_image_name"
 RENAME_SEASONED_TO_JELLY_NAME = "rename_seasoned_video_to_jellyfin_name"
@@ -8,8 +10,8 @@ REZIP_CHAPTERS_TO_VOL_NAME = "rezip_chapters_to_vol"
 CREATE_VOLUMES_NAME = "create_volumes"
 PREPARE_FOR_JELLYFIN = "prepare_for_jellyfin"
 RENAME_TO_CLEANUP = "rename_files_to_clean_up_downloads"
-IMAGES_IN = "input"
-IMAGES_OUT = "output"
+INPUT_DIRECTORY = getenv("INPUT_DIRECTORY")
+OUTPUT_DIRECTORY = getenv("OUTPUT_DIRECTORY")
 
 INTERNAL_SERVER_ERROR_CODE = 500
 BAD_REQUEST_CODE = 400
