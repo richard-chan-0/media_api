@@ -11,7 +11,8 @@ from src.lib.utilities.app_functions import (
     convert_to_name_change_request,
     check_request_schema,
 )
-from src.lib.utilities.os_functions import rename_list_files
+from src.lib.utilities.os_functions import rename_list_files, get_files
+from src.lib.service_constants import INPUT_DIRECTORY
 
 logger = logging.getLogger(__name__)
 rename = Blueprint("rename", __name__, url_prefix="/rename")
@@ -44,3 +45,9 @@ def upload_videos():
 @rename.route("/comics", methods=["POST"])
 def upload_comics():
     return upload_media("comics")
+
+
+@rename.route("/read", methods=["GET"])
+def get_files_to_be_renamed():
+    files = get_files(INPUT_DIRECTORY)
+    return jsonify(files), 200

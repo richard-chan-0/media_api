@@ -58,9 +58,11 @@ def check_request_schema(schema, request):
 
 def get_files_from_request(request, file_key):
     files = request.files.getlist(file_key)
-    if not files:
-        raise RequestError("no files found in request")
+    logger.info("no files found in request")
 
     for file in files:
         file_path = join_path(INPUT_DIRECTORY, file.filename)
-        file.save(file_path)
+        try:
+            file.save(file_path)
+        except OSError as e:
+            raise ServiceError(e)

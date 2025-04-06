@@ -109,7 +109,10 @@ def create_jellyfin_episodes_mapping(args: ServiceArguments):
     start_number = args.start_number
     extension = args.extension
 
-    filename_args = {"extension": extension, "season_number": int(season_number)}
+    filename_args = {
+        "extension": extension,
+        "season_number": int(season_number) if season_number else 1,
+    }
 
     directory_entries = get_sorted_files(directory_in)
     return create_rename_mapping_with_sorted(
