@@ -1,14 +1,10 @@
-# Calibre Rename PNG Utility
+# Media Api
 
 ## Description
 
-this project was created to assist in creating png files to bundle them into a cbz file for calibre.
+this project is for renaming and managing files for storing on Jellyfin
 
 # Using Utility
-
-## tkinter
-
-added tkinter gui, run utility with `python main.py`
 
 ## flask api
 
