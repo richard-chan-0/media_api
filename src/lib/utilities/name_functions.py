@@ -42,7 +42,7 @@ def create_jellyfin_comic_name(issue: int, story_name: str) -> str:
 
 def get_cleanup_regex():
     """function to retrieve regex that cleans up characters in parenthesis or brackets"""
-    return "(\(.+\)|\[.+\])"
+    return r"(\(.+\)|\[.+\])"
 
 
 def cleanup_filename(story_name: str, file: DirectoryFile):
