@@ -2,7 +2,7 @@
 **/*.png
 **/*.pyc
 **/*.pdf
-input
+input/*
 output
 .env
 *venv

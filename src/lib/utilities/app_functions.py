@@ -6,8 +6,6 @@ from src.lib.exceptions.exceptions import BadSchemaError, RequestError, ServiceE
 from src.lib.utilities.os_functions import join_path
 from src.lib.service_constants import (
     INPUT_DIRECTORY,
-    BAD_REQUEST_CODE,
-    INTERNAL_SERVER_ERROR_CODE,
 )
 from flask import jsonify
 import logging
@@ -63,6 +61,7 @@ def get_files_from_request(request, file_key):
     for file in files:
         file_path = join_path(INPUT_DIRECTORY, file.filename)
         try:
+            logger.info("saving file %s to filepath %s", file, file_path)
             file.save(file_path)
         except OSError as e:
             raise ServiceError(e)
