@@ -2,6 +2,7 @@ import logging
 import datetime
 from src.api import create_app
 from dotenv import load_dotenv
+import debugpy
 
 load_dotenv()
 
@@ -22,4 +23,7 @@ def home():
 
 
 if __name__ == "__main__":
+    debugpy.listen(("0.0.0.0", 5678))
+    debugpy.wait_for_client()
+    print("Debugger attached")
     app.run(debug=False, host="0.0.0.0")
