@@ -9,6 +9,7 @@ import logging
 from dotenv import load_dotenv
 from zipfile import ZipFile
 from pathlib import Path
+from shutil import move
 
 load_dotenv()
 
@@ -91,14 +92,14 @@ def rename_page_images(
 
 def rename_files(rename_mapping: dict[str, str]):
     for old_file_path, new_file_path in rename_mapping.items():
-        os.rename(old_file_path, new_file_path)
+        move(old_file_path, new_file_path)
 
 
 def rename_list_files(rename_mapping: NameChangeRequest):
     for change in rename_mapping.changes:
         try:
-            os.rename(change.old_path, change.new_path)
-        except FileNotFoundError as err:
+            move(change.old_path, change.new_path)
+        except FileNotFoundError | OSError as err:
             logger.error(err)
             raise FileSystemError(f"could not rename file: {change.old_path}")
 
