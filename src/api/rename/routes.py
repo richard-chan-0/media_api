@@ -11,8 +11,8 @@ from src.lib.utilities.app_functions import (
     convert_to_name_change_request,
     check_request_schema,
 )
-from src.lib.utilities.os_functions import rename_list_files, get_files
-from src.lib.service_constants import INPUT_DIRECTORY
+from src.lib.utilities.os_functions import rename_list_files, get_files, transfer_files
+from src.lib.service_constants import INPUT_DIRECTORY, OUTPUT_DIRECTORY
 
 logger = logging.getLogger(__name__)
 rename = Blueprint("rename", __name__, url_prefix="/rename")
@@ -33,6 +33,7 @@ def upload_media(media_type: str):
 def rename_files():
     logger.info("renaming files")
     name_change_request = check_request_schema(name_change_request_schema, request)
+    logger.info(name_change_request)
     rename_list_files(name_change_request)
     return "Successfully renamed files.", 200
 
@@ -51,3 +52,9 @@ def upload_comics():
 def get_files_to_be_renamed():
     files = get_files(INPUT_DIRECTORY)
     return jsonify(files), 200
+
+
+@rename.route("/push", methods=["GET"])
+def push_files():
+    transfer_files(INPUT_DIRECTORY, OUTPUT_DIRECTORY)
+    return "Successfully pushed files.", 200
