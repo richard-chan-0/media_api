@@ -50,8 +50,9 @@ def upload_comics():
 
 @rename.route("/read", methods=["GET"])
 def get_files_to_be_renamed():
-    files = get_files(INPUT_DIRECTORY)
-    return jsonify(files), 200
+    input_directory_files = get_files(INPUT_DIRECTORY)
+    output_directory_files = get_files(OUTPUT_DIRECTORY)
+    return jsonify([*input_directory_files, *output_directory_files]), 200
 
 
 @rename.route("/push", methods=["GET"])
