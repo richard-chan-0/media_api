@@ -139,6 +139,7 @@ def move_files(files_to_move: Iterable[DirectoryFile], destination_folder: str):
     for file in files_to_move:
         source = file.path
         destination = create_new_file_path(destination_folder, file.name)
+        logger.info("moving file %s to path %s", file.name, destination)
         move_file(source, destination)
         destination_paths.append(destination)
 
@@ -148,6 +149,7 @@ def move_files(files_to_move: Iterable[DirectoryFile], destination_folder: str):
 def transfer_files(source_directory: str, destination_directory: str):
     """function to read files from source directory into destination directory"""
     source_files = get_files(source_directory)
+    logger.info("moving files from %s to %s", source_directory, destination_directory)
     move_files(source_files, destination_directory)
 
 

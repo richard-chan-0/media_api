@@ -56,5 +56,6 @@ def get_files_to_be_renamed():
 
 @rename.route("/push", methods=["GET"])
 def push_files():
+    logger.info("pushing files to shared folder")
     transfer_files(INPUT_DIRECTORY, OUTPUT_DIRECTORY)
     return "Successfully pushed files.", 200
