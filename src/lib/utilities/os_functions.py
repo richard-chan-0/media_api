@@ -122,7 +122,7 @@ def move_file(old_path: str, new_path: str):
     if not os.path.exists(old_path):
         raise FileSystemError(f"could not find file with path: {old_path}")
     try:
-        os.rename(old_path, new_path)
+        move(old_path, new_path)
     except FileNotFoundError as err:
         logger.error(err)
         raise FileSystemError(f"could not move file to path: {new_path}")
@@ -139,6 +139,7 @@ def move_files(files_to_move: Iterable[DirectoryFile], destination_folder: str):
     for file in files_to_move:
         source = file.path
         destination = create_new_file_path(destination_folder, file.name)
+        logger.info("moving file %s to path %s", file.name, destination)
         move_file(source, destination)
         destination_paths.append(destination)
 
@@ -148,6 +149,7 @@ def move_files(files_to_move: Iterable[DirectoryFile], destination_folder: str):
 def transfer_files(source_directory: str, destination_directory: str):
     """function to read files from source directory into destination directory"""
     source_files = get_files(source_directory)
+    logger.info("moving files from %s to %s", source_directory, destination_directory)
     move_files(source_files, destination_directory)
 
 
