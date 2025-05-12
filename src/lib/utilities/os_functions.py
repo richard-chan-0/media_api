@@ -170,7 +170,7 @@ def remove_directory(path: str):
 def remove_file(path: str):
     """function to remove a file or directory"""
     if not os.path.exists(path):
-        raise FileSystemError(f"could not remove file: {path}")
+        raise FileSystemError(f"could not find file: {path}")
     try:
         os.remove(path)
     except Exception as err:
