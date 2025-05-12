@@ -11,8 +11,14 @@ from src.lib.utilities.app_functions import (
     convert_to_name_change_request,
     check_request_schema,
 )
-from src.lib.utilities.os_functions import rename_list_files, get_files, transfer_files
+from src.lib.utilities.os_functions import (
+    rename_list_files,
+    get_files,
+    transfer_files,
+    remove_file,
+)
 from src.lib.service_constants import INPUT_DIRECTORY, OUTPUT_DIRECTORY
+from src.lib.utilities.os_functions import create_new_file_path
 
 logger = logging.getLogger(__name__)
 rename = Blueprint("rename", __name__, url_prefix="/rename")
@@ -60,3 +66,24 @@ def push_files():
     logger.info("pushing files to shared folder")
     transfer_files(INPUT_DIRECTORY, OUTPUT_DIRECTORY)
     return "Successfully pushed files.", 200
+
+
+@rename.route("/delete", methods=["POST"])
+def delete_file():
+    logger.info("deleting file")
+    file = request.form["file-to-delete"]
+    is_file_deleted = False
+    for directory in [INPUT_DIRECTORY, OUTPUT_DIRECTORY]:
+        delete_file_path = create_new_file_path(directory, file)
+        logger.info(f"deleting file {delete_file_path}")
+        try:
+            remove_file(delete_file_path)
+            is_file_deleted = True
+        except FileExistsError as err:
+            logger.error(err)
+
+    return (
+        ("Successfully deleted file.", 200)
+        if is_file_deleted
+        else ("Could not delete file: File not found.", 404)
+    )

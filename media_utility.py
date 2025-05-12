@@ -2,8 +2,13 @@ import logging
 import datetime
 from src.api import create_app
 from dotenv import load_dotenv
+from debugpy import listen
+from os import getenv
 
 load_dotenv()
+
+# if getenv("FLASK_ENV") == "development":
+#     listen(("0.0.0.0", 5003))
 
 today_date = datetime.datetime.now()
 run_date = today_date.strftime("%Y-%m-%d-%H-%M-%S")
