@@ -5,7 +5,7 @@ from src.lib.utilities.app_functions import get_files_from_request
 from src.lib.factories.factories import create_comic_request
 
 
-def get_jellyfin_comic_names_from_files(request):
+def get_jellyfin_comic_names_from_request(request):
     comic_request = create_comic_request(request)
     get_files_from_request(request, "files")
 

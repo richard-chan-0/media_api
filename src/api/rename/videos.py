@@ -5,7 +5,7 @@ from src.lib.utilities.app_functions import get_files_from_request
 from src.lib.factories.factories import create_video_request
 
 
-def get_jellyfin_video_names_from_files(request):
+def get_jellyfin_video_names_from_request(request):
     video_request = create_video_request(request)
     get_files_from_request(request, "files")
 

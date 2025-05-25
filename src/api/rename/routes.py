@@ -1,9 +1,9 @@
 from flask import Blueprint, request, jsonify
 import logging
 from src.api.rename.videos import (
-    get_jellyfin_video_names_from_files,
+    get_jellyfin_video_names_from_request,
 )
-from src.api.rename.comics import get_jellyfin_comic_names_from_files
+from src.api.rename.comics import get_jellyfin_comic_names_from_request
 from src.lib.dataclasses.api import (
     name_change_request_schema,
 )
@@ -24,8 +24,8 @@ logger = logging.getLogger(__name__)
 rename = Blueprint("rename", __name__, url_prefix="/rename")
 
 function_map = {
-    "videos": get_jellyfin_video_names_from_files,
-    "comics": get_jellyfin_comic_names_from_files,
+    "videos": get_jellyfin_video_names_from_request,
+    "comics": get_jellyfin_comic_names_from_request,
 }
 
 
