@@ -56,12 +56,15 @@ def check_request_schema(schema, request):
 
 def get_files_from_request(request, file_key):
     files = request.files.getlist(file_key)
-    logger.info("no files found in request")
+    if not files:
+        logger.info("no files found in request")
+        return
 
+    logger.info("saving %s files from request", len(files))
     for file in files:
         file_path = join_path(INPUT_DIRECTORY, file.filename)
         try:
-            logger.info("saving file %s to filepath %s", file, file_path)
+            logger.info("saving...\nfile:%s\nfilepath:%s\n", file, file_path)
             file.save(file_path)
         except OSError as e:
             raise ServiceError(e)

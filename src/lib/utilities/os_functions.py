@@ -42,6 +42,7 @@ def get_sorted_files(
     directory_in: str, sort_method=lambda entry: entry.name
 ) -> Iterable[DirectoryFile]:
     """function to get list of files from a directory and sort them"""
+    logger.info(f"getting sorted files from directory: {directory_in}")
     directory_entries = get_files(directory_in)
     directory_entries.sort(key=sort_method)
     return directory_entries
