@@ -79,6 +79,7 @@ def delete_file():
         try:
             remove_file(delete_file_path)
             is_file_deleted = True
+            break
         except FileExistsError as err:
             logger.error(err)
 
