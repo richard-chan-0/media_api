@@ -32,7 +32,6 @@ def create_volume(
     logger.info(f"Moved chapters to {volume_path}")
 
     rezip_chapters_to_vol(volume_path, volume_name, ignore_files)
-
     remove_directory(chapter_files_path)
 
 
@@ -47,6 +46,6 @@ def create_volumes(args: ServiceArguments):
         create_volume(
             args.directory_in,
             folder.path,
-            volume_name=f"{folder.name}",
+            volume_name=f"{folder.name.replace('-folder', '')}",
             ignore_files=ignore_files,
         )

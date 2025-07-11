@@ -71,7 +71,7 @@ def move_chapters_to_volumes(
             issue=volume_number, story_name=story_title
         )
         chapter_details = (volume["startChapter"], volume["endChapter"])
-        sub_directory = create_sub_directory(directory_out, volume_name)
+        sub_directory = create_sub_directory(directory_out, f"{volume_name}-folder")
         move_chapters_for_volume_dir(sub_directory, chapter_details, chapters)
 
 
