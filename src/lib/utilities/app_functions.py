@@ -2,10 +2,10 @@ from warnings import warn
 from argparse import ArgumentParser
 from src.lib.dataclasses.api import NameChange, NameChangeRequest
 from marshmallow import ValidationError
-from src.lib.exceptions.exceptions import BadSchemaError, RequestError, ServiceError
+from src.lib.exceptions.exceptions import BadSchemaError, ServiceError
 from src.lib.utilities.os_functions import join_path
 from src.lib.service_constants import (
-    INPUT_DIRECTORY,
+    PROCESS_DIRECTORY,
 )
 from flask import jsonify
 import logging
@@ -62,7 +62,7 @@ def get_files_from_request(request, file_key):
 
     logger.info("saving %s files from request", len(files))
     for file in files:
-        file_path = join_path(INPUT_DIRECTORY, file.filename)
+        file_path = join_path(PROCESS_DIRECTORY, file.filename)
         try:
             logger.info("saving...\nfile:%s\nfilepath:%s\n", file, file_path)
             file.save(file_path)

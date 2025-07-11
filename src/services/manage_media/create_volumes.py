@@ -41,7 +41,7 @@ def create_volumes(args: ServiceArguments):
     ignore_files = []
     for folder in volume_folders:
         create_volume(
-            args.directory_out,
+            args.directory_in,
             folder.path,
             volume_name=f"{folder.name}",
             ignore_files=ignore_files,

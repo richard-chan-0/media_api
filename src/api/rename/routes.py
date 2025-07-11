@@ -17,7 +17,7 @@ from src.lib.utilities.os_functions import (
     transfer_files,
     remove_file,
 )
-from src.lib.service_constants import INPUT_DIRECTORY, OUTPUT_DIRECTORY
+from src.lib.service_constants import PROCESS_DIRECTORY
 from src.lib.utilities.os_functions import create_new_file_path
 
 logger = logging.getLogger(__name__)
@@ -56,15 +56,14 @@ def upload_comics():
 
 @rename.route("/read", methods=["GET"])
 def get_files_to_be_renamed():
-    input_directory_files = get_files(INPUT_DIRECTORY)
-    output_directory_files = get_files(OUTPUT_DIRECTORY)
-    return jsonify([*input_directory_files, *output_directory_files]), 200
+    input_directory_files = get_files(PROCESS_DIRECTORY)
+    return jsonify(input_directory_files), 200
 
 
 @rename.route("/push", methods=["GET"])
 def push_files():
     logger.info("pushing files to shared folder")
-    transfer_files(INPUT_DIRECTORY, OUTPUT_DIRECTORY)
+    # transfer_files(PROCESS_DIRECTORY, OUTPUT_DIRECTORY)
     return "Successfully pushed files.", 200
 
 
@@ -72,19 +71,13 @@ def push_files():
 def delete_file():
     logger.info("deleting file")
     file = request.form["file-to-delete"]
-    is_file_deleted = False
-    for directory in [INPUT_DIRECTORY, OUTPUT_DIRECTORY]:
-        delete_file_path = create_new_file_path(directory, file)
-        logger.info(f"deleting file {delete_file_path}")
-        try:
-            remove_file(delete_file_path)
-            is_file_deleted = True
-            break
-        except FileExistsError as err:
-            logger.error(err)
 
-    return (
-        ("Successfully deleted file.", 200)
-        if is_file_deleted
-        else ("Could not delete file: File not found.", 404)
-    )
+    delete_file_path = create_new_file_path(PROCESS_DIRECTORY, file)
+    logger.info(f"deleting file {delete_file_path}")
+    try:
+        remove_file(delete_file_path)
+        return "Successfully deleted file.", 200
+
+    except FileExistsError as err:
+        logger.error(err)
+        return "Could not delete file: File not found.", 404

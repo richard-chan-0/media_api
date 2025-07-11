@@ -91,23 +91,14 @@ def rename_page_images(
         os.remove(file.path)
 
 
-def rename_files(rename_mapping: dict[str, str]):
-    for old_file_path, new_file_path in rename_mapping.items():
-        move(old_file_path, new_file_path)
-
-
 def rename_list_files(rename_mapping: NameChangeRequest):
     for change in rename_mapping.changes:
         try:
-            move(change.old_path, change.new_path)
+            logger.info("renaming file from %s to %s", change.old_path, change.new_path)
+            os.rename(change.old_path, change.new_path)
         except FileNotFoundError | OSError as err:
             logger.error(err)
             raise FileSystemError(f"could not rename file: {change.old_path}")
-
-
-def get_organization_file():
-    """returns the env variable for the json file to organize volumes and chapters"""
-    return os.getenv("ORGANIZATION_FILE")
 
 
 def create_sub_directory(directory_out: str, sub_directory: str):
@@ -123,7 +114,7 @@ def move_file(old_path: str, new_path: str):
     if not os.path.exists(old_path):
         raise FileSystemError(f"could not find file with path: {old_path}")
     try:
-        move(old_path, new_path)
+        os.rename(old_path, new_path)
     except FileNotFoundError as err:
         logger.error(err)
         raise FileSystemError(f"could not move file to path: {new_path}")
