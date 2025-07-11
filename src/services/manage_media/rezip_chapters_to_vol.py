@@ -58,7 +58,7 @@ def rezip_chapters_to_vol(volume_path, volume_name, ignore_files=[]):
     pages = move_pages_to_temp(volume_path, temp_path)
 
     volume_path = create_volume_from_pages(pages, volume_path, volume_name)
-    print(f"pages written to volume: {volume_path}")
+    logger.info(f"pages written to volume: {volume_path}")
     ignore_files.append(volume_name)
 
     clean_system(temp_path, chapters)
