@@ -30,12 +30,16 @@ def get_files(path: str, ignore_files=[]) -> Iterable[DirectoryFile]:
         return [create_file(filename, file_path)]
 
     with os.scandir(path) as entries:
-        return [
+        directory_files = [
             create_file(entry.name, entry.path)
             for entry in entries
             if os.path.isfile(entry.path)
             and entry.name not in [*ignore_files, *default_ignore_files]
         ]
+
+        directory_files.sort(key=lambda entry: entry.name)
+
+        return directory_files
 
 
 def get_sorted_files(
@@ -91,23 +95,14 @@ def rename_page_images(
         os.remove(file.path)
 
 
-def rename_files(rename_mapping: dict[str, str]):
-    for old_file_path, new_file_path in rename_mapping.items():
-        move(old_file_path, new_file_path)
-
-
 def rename_list_files(rename_mapping: NameChangeRequest):
     for change in rename_mapping.changes:
         try:
-            move(change.old_path, change.new_path)
+            logger.info("renaming file from %s to %s", change.old_path, change.new_path)
+            os.rename(change.old_path, change.new_path)
         except FileNotFoundError | OSError as err:
             logger.error(err)
             raise FileSystemError(f"could not rename file: {change.old_path}")
-
-
-def get_organization_file():
-    """returns the env variable for the json file to organize volumes and chapters"""
-    return os.getenv("ORGANIZATION_FILE")
 
 
 def create_sub_directory(directory_out: str, sub_directory: str):
@@ -123,7 +118,7 @@ def move_file(old_path: str, new_path: str):
     if not os.path.exists(old_path):
         raise FileSystemError(f"could not find file with path: {old_path}")
     try:
-        move(old_path, new_path)
+        os.rename(old_path, new_path)
     except FileNotFoundError as err:
         logger.error(err)
         raise FileSystemError(f"could not move file to path: {new_path}")
@@ -215,11 +210,22 @@ def parse_path(path: str):
 
 def extract_zip_file_content(directory_in: str, zip_files: Iterable[DirectoryFile]):
     """function to extract all page files from chapter files"""
+    page_number = 0
     for file in zip_files:
         logger.info("unzipping file: %s", file.name)
-        if is_compressed(file.name):
-            with ZipFile(file.path, "r") as zip:
-                zip.extractall(directory_in)
+        if not is_compressed(file.name):
+            continue
+        with ZipFile(file.path, "r") as zip_ref:
+            jpg_files = [f for f in zip_ref.namelist() if f.lower().endswith(".jpg")]
+            jpg_files.sort()
+            for jpg_file in jpg_files:
+                new_name = (
+                    f"0{page_number}.jpg" if page_number < 10 else f"{page_number}.jpg"
+                )
+                dest_path = os.path.join(directory_in, new_name)
+                with zip_ref.open(jpg_file) as source, open(dest_path, "wb") as target:
+                    target.write(source.read())
+                page_number += 1
 
 
 def create_zip_file(zip_file_path: str, files_to_zip: Iterable[DirectoryFile]):

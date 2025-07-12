@@ -12,38 +12,12 @@ START_CHAPTER = "startChapter"
 END_CHAPTER = "endChapter"
 
 
-def get_chapters_to_vols_data():
-    file_name = get_organization_file()
-    file = open(file_name)
-    return load(file)
-
-
 def is_valid_chapter(chapter):
     """function to determine if chapter contains all attributes"""
     is_with_volume = VOLUME in chapter
     is_with_start = START_CHAPTER in chapter
     is_with_end = END_CHAPTER in chapter
     return all([is_with_end, is_with_start, is_with_volume])
-
-
-def create_mapping_chapters_to_vols(organization_file) -> dict[str, Tuple[str, str]]:
-    """returns content of json organization file"""
-    schema = get_chapters_to_vols_data() if not organization_file else organization_file
-    if not schema or "volumes" not in schema:
-        raise OrganizeChaptersToVolError("no organization data")
-
-    chapters = schema[VOLUMES]
-    mapping = {}
-    for chapter in chapters:
-        if not is_valid_chapter(chapter):
-            raise OrganizeChaptersToVolError("volume missing attribute")
-
-        volume = chapter[VOLUME]
-        start_chapter = chapter[START_CHAPTER]
-        end_chapter = chapter[END_CHAPTER]
-        mapping[volume] = (start_chapter, end_chapter)
-
-    return mapping
 
 
 def update_chapter_list(
@@ -97,7 +71,7 @@ def move_chapters_to_volumes(
             issue=volume_number, story_name=story_title
         )
         chapter_details = (volume["startChapter"], volume["endChapter"])
-        sub_directory = create_sub_directory(directory_out, volume_name)
+        sub_directory = create_sub_directory(directory_out, f"{volume_name}-folder")
         move_chapters_for_volume_dir(sub_directory, chapter_details, chapters)
 
 

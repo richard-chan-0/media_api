@@ -43,7 +43,6 @@ class DirectoryFile:
 @dataclass
 class ServiceArguments:
     directory_in: str
-    directory_out: str
     start_number: str = ""
     story: str = "n/a"
     volume: str = "1"
