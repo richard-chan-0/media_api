@@ -14,7 +14,6 @@ from src.lib.utilities.app_functions import (
 from src.lib.utilities.os_functions import (
     rename_list_files,
     get_files,
-    transfer_files,
     remove_file,
 )
 from src.lib.service_constants import PROCESS_DIRECTORY
