@@ -8,8 +8,7 @@ from src.lib.dataclasses import DirectoryFile, NameChangeRequest
 import logging
 from dotenv import load_dotenv
 from zipfile import ZipFile
-from pathlib import Path
-from shutil import move
+
 
 load_dotenv()
 
@@ -142,13 +141,6 @@ def move_files(files_to_move: Iterable[DirectoryFile], destination_folder: str):
     return destination_paths
 
 
-def transfer_files(source_directory: str, destination_directory: str):
-    """function to read files from source directory into destination directory"""
-    source_files = get_files(source_directory)
-    logger.info("moving files from %s to %s", source_directory, destination_directory)
-    move_files(source_files, destination_directory)
-
-
 def remove_directory(path: str):
     """function to remove directory and it's contents"""
     if not os.path.exists(path):
@@ -172,19 +164,9 @@ def remove_file(path: str):
         raise FileExistsError(err)
 
 
-def get_env(env_var: str) -> str:
-    """function to return environment variable"""
-    return os.getenv(env_var)
-
-
 def create_new_file_path(new_dir: str, file_name: str) -> str:
     """function to concat directory and file into new path"""
     return f"{new_dir}/{file_name}"
-
-
-def run_shell_command(command: Iterable[str]):
-    """runs a shell command given a list of arguments"""
-    return run(command, stdout=PIPE, encoding="utf-8")
 
 
 def is_dir(path: str):
