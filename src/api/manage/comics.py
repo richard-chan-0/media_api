@@ -8,7 +8,6 @@ from src.services.manage_media.create_volumes import create_volumes
 from json import loads
 
 
-# TODO: create error handling with flask
 def run_create_volumes(request):
     form = request.form
     story_title = form["story title"]
